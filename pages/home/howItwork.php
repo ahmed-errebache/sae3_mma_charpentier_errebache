@@ -120,8 +120,25 @@ include '../../includes/header.php';
                     PRÊT À VOTER ?
                 </h3>
                 <p class="font-anek text-gris-clair/90 text-lg mb-6 max-w-2xl mx-auto">
-                    Rejoignez des milliers de passionnés et participez à l'élection la plus attendue du MMA
+                    Rejoignez des milliers de passionnés et participez à l'élection la plus attendue du MMA français
                 </p>
+                
+                <!-- Statistiques fictives -->
+                <div class="grid grid-cols-3 gap-4 mb-6 max-w-md mx-auto">
+                    <div class="text-center">
+                        <div class="font-bebas text-2xl text-rouge">1,247</div>
+                        <div class="font-anek text-xs text-gris-clair/60">Votes déjà exprimés</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-bebas text-2xl text-bleu">156</div>
+                        <div class="font-anek text-xs text-gris-clair/60">Professionnels</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-bebas text-2xl text-dore">8</div>
+                        <div class="font-anek text-xs text-gris-clair/60">Candidats</div>
+                    </div>
+                </div>
+                
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="../register.php" class="inline-flex items-center justify-center px-8 py-4 font-anek font-medium text-noir bg-dore hover:bg-dore/90 rounded-lg transition-all duration-200">
                         S'inscrire (Public)
