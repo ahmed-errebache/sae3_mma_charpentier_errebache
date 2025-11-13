@@ -12,6 +12,20 @@ include '../../includes/header.php';
             <p class="max-w-2xl mb-6 font-anek font-normal text-noir/80 lg:mb-8 md:text-lg lg:text-xl dark:text-gris-clair/90">
                 Une plateforme de vote transparente réunissant le public, les coachs et les journalistes
             </p>
+            
+            <!-- Badges de crédibilité -->
+            <div class="flex flex-wrap gap-3 mb-6">
+                <span class="inline-flex items-center px-3 py-1 text-xs font-anek font-medium text-rouge bg-rouge/10 rounded-full">
+                    🏆 Officiel
+                </span>
+                <span class="inline-flex items-center px-3 py-1 text-xs font-anek font-medium text-bleu bg-bleu/10 rounded-full">
+                    🔒 Sécurisé
+                </span>
+                <span class="inline-flex items-center px-3 py-1 text-xs font-anek font-medium text-dore bg-dore/10 rounded-full">
+                    ⚡ Temps réel
+                </span>
+            </div>
+            
             <a href="#" class="inline-flex items-center justify-center px-6 py-3 mr-4 font-anek font-medium text-center text-white rounded-lg bg-rouge hover:bg-rouge/90 focus:ring-4 focus:ring-rouge/30 transition-all duration-200">
                 Se connecter
                 <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
