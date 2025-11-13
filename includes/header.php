@@ -40,7 +40,13 @@
                             "800":"#991b1b",
                             "900":"#7f1d1d",
                             "950":"#450a0a"
-                        }
+                        },
+
+                        // Couleurs d'état et feedback
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
                     },
                     fontFamily: {
                         // Typographies personnalisées
