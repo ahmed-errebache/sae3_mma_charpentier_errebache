@@ -1,7 +1,9 @@
 <?php
 $page_title = "Countdown - Plateforme MMA";
-// include '../../includes/header.php';
-?><section class="py-12 bg-noir">
+include '../../includes/header.php';
+?>
+
+<section class="py-12 bg-noir">
     <div class="max-w-4xl mx-auto px-4">
         <h2 class="font-bebas text-4xl md:text-5xl text-center text-white mb-2 tracking-wide">
             COMPTE À REBOURS
@@ -53,11 +55,17 @@ $page_title = "Countdown - Plateforme MMA";
                 <p class="text-lg font-anek font-medium text-dore mt-3 text-center">SECONDES</p>
             </div>
         </div>
+
+        <!-- Message d'état -->
+        <div class="text-center mt-8">
+            <p class="font-anek text-gris-clair/60 text-sm" id="countdown-status">
+                Vote en cours - Chaque seconde compte !
+            </p>
+        </div>
     </div>
 </section>
+
 <!-- Script JavaScript pour le countdown -->
 <script src="../../assets/js/countdown.js"></script>
 
-<?php 
-// include '../../includes/footer.php'; 
-?> 
+<?php include '../../includes/footer.php'; ?>
