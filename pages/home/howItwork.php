@@ -1,180 +1,121 @@
 <?php
-$page_title = "Comment ça marche ? - Plateforme MMA";
-include '../../includes/header.php';
+/**
+ * Section "Comment ça marche"
+ * Explique le processus de vote en 4 étapes simples
+ */
 ?>
 
-<section class="py-16 bg-gris-clair">
+<section class="py-16 bg-gris-clair" id="comment-ca-marche">
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Titre principal -->
+        
+        <!-- En-tête de section -->
         <div class="text-center mb-16">
             <h2 class="font-bebas text-6xl md:text-7xl text-noir mb-6 tracking-wide">
                 COMMENT ÇA MARCHE ?
             </h2>
             <p class="font-anek text-xl text-noir/70 max-w-3xl mx-auto">
-                Découvrez le processus démocratique et transparent de notre élection annuelle du combattant MMA de l'année
-            </p>        </div>       
-        <!-- Étapes par ligne de 2 -->
-        <div class="max-w-6xl mx-auto">
-            <!-- Ligne 1 - Étapes 1 et 2 -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <!-- Étape 1 -->
+                Un processus simple et transparent pour élire le combattant qui a marqué l'année 2025
+            </p>        
+        </div>       
+        
+        <!-- Étapes simplifiées -->
+        <div class="max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Étape 1 : Connexion -->
                 <div class="step-card opacity-0 translate-y-8 transition-all duration-1000" id="step-1">
-                    <div class="bg-white p-6 rounded-xl shadow-lg h-full">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-rouge rounded-full flex items-center justify-center mr-4">
-                                <span class="font-bebas text-xl text-white">01</span>
-                            </div>
-                            <h3 class="font-bebas text-2xl text-rouge tracking-wide">
-                                INSCRIPTION
-                            </h3>
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-center h-full">
+                        <div class="w-20 h-20 bg-rouge rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
                         </div>
-                        <div class="pl-16">
-                            <p class="font-anek text-noir/80 text-base leading-relaxed mb-3">
-                                <strong class="text-rouge">Public :</strong> Créez votre compte unique (une inscription par machine)
-                            </p>
-                            <p class="font-anek text-noir/80 text-base leading-relaxed">
-                                <strong class="text-bleu">Professionnels :</strong> Code unique par email
-                            </p>
-                        </div>
+                        <h3 class="font-bebas text-2xl text-rouge tracking-wide mb-4">
+                            CONNECTEZ-VOUS
+                        </h3>
+                        <p class="font-anek text-noir/80 text-base leading-relaxed">
+                            <span class="block mb-2"><strong>Journalistes & Coachs :</strong> Code unique reçu par email</span>
+                            <span class="block"><strong>Public :</strong> Inscription unique</span>
+                        </p>
                     </div>
                 </div>
 
-                <!-- Étape 2 -->
+                <!-- Étape 2 : Votez -->
                 <div class="step-card opacity-0 translate-y-8 transition-all duration-1000" id="step-2">
-                    <div class="bg-white p-6 rounded-xl shadow-lg h-full">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-bleu rounded-full flex items-center justify-center mr-4">
-                                <span class="font-bebas text-xl text-white">02</span>
-                            </div>
-                            <h3 class="font-bebas text-2xl text-bleu tracking-wide">
-                                DÉCOUVERTE
-                            </h3>
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-center h-full">
+                        <div class="w-20 h-20 bg-bleu rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                         </div>
-                        <div class="pl-16">
-                            <p class="font-anek text-noir/80 text-base leading-relaxed mb-3">
-                                Explorez les profils des combattants avec photos, palmarès et highlights vidéo
-                            </p>
-                            <div class="flex items-center text-dore font-anek font-medium text-sm">
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
-                                </svg>
-                                Performances 2025 uniquement
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>            <!-- Ligne 2 - Étapes 3 et 4 -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Étape 3 -->
-                <div class="step-card opacity-0 translate-y-8 transition-all duration-1000" id="step-3">
-                    <div class="bg-white p-6 rounded-xl shadow-lg h-full">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-dore rounded-full flex items-center justify-center mr-4">
-                                <span class="font-bebas text-xl text-noir">03</span>
-                            </div>
-                            <h3 class="font-bebas text-2xl text-dore tracking-wide">
-                                VOTE SÉCURISÉ
-                            </h3>
-                        </div>
-                        <div class="pl-16">
-                            <p class="font-anek text-noir/80 text-base leading-relaxed mb-3">
-                                Sélectionnez votre combattant favori. Vote unique et anonyme.
-                            </p>
-                            <div class="grid grid-cols-1 gap-2 text-xs font-anek font-medium">
-                                <div class="text-rouge text-center p-2 bg-rouge/10 rounded">Public: 20%</div>
-                                <div class="text-bleu text-center p-2 bg-bleu/10 rounded">Journalistes: 40%</div>
-                                <div class="text-dore text-center p-2 bg-dore/10 rounded">Coachs: 40%</div>
-                            </div>
+                        <h3 class="font-bebas text-2xl text-bleu tracking-wide mb-4">
+                            VOTEZ
+                        </h3>
+                        <p class="font-anek text-noir/80 text-base leading-relaxed">
+                            Découvrez les candidats avec leurs performances 2025 et choisissez le combattant qui vous a le plus marqué cette année.
+                        </p>
+                        <div class="mt-4 inline-flex items-center text-dore font-anek font-medium text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,2L13.09,8.26L22,9L13.09,9.74L12,16L10.91,9.74L2,9L10.91,8.26L12,2Z"/>
+                            </svg>
+                            Vote unique et anonyme
                         </div>
                     </div>
                 </div>
 
-                <!-- Étape 4 -->
-                <div class="step-card opacity-0 translate-y-8 transition-all duration-1000" id="step-4">
-                    <div class="bg-white p-6 rounded-xl shadow-lg h-full">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-noir rounded-full flex items-center justify-center mr-4">
-                                <span class="font-bebas text-xl text-white">04</span>
-                            </div>
-                            <h3 class="font-bebas text-2xl text-noir tracking-wide">
-                                RÉSULTATS
-                            </h3>
+                <!-- Étape 3 : Résultats -->
+                <div class="step-card opacity-0 translate-y-8 transition-all duration-1000" id="step-3">
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-center h-full">
+                        <div class="w-20 h-20 bg-dore rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-10 h-10 text-noir" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
                         </div>
-                        <div class="pl-16">
-                            <p class="font-anek text-noir/80 text-base leading-relaxed mb-3">
-                                Découvrez le vainqueur grâce au calcul automatique pondéré
-                            </p>
-                            <div class="bg-noir p-3 rounded-lg">
-                                <p class="font-anek text-white font-medium text-center text-sm">
-                                    🏆 Combattant de l'année
-                                </p>
-                            </div>
-                        </div>
+                        <h3 class="font-bebas text-2xl text-dore tracking-wide mb-4">
+                            RÉSULTATS
+                        </h3>
+                        <p class="font-anek text-noir/80 text-base leading-relaxed mb-4">
+                            Calcul automatique avec pondération équilibrée entre expertise professionnelle et passion du public.
+                        </p>
+                        <h2 class="font-bebas text-noir font-large">
+                                 COMBATTANT DE L'ANNÉE 2025
+                        </h2>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-16">
-            <div class="bg-noir p-8 rounded-2xl shadow-lg">
-                <h3 class="font-bebas text-4xl text-white mb-4 tracking-wide">
-                    PRÊT À VOTER ?
-                </h3>
-                <p class="font-anek text-gris-clair/90 text-lg mb-6 max-w-2xl mx-auto">
-                    Rejoignez des milliers de passionnés et participez à l'élection la plus attendue du MMA français
-                </p>
-                
-                <!-- Statistiques fictives -->
-                <div class="grid grid-cols-3 gap-4 mb-6 max-w-md mx-auto">
-                    <div class="text-center">
-                        <div class="font-bebas text-2xl text-rouge">1,247</div>
-                        <div class="font-anek text-xs text-gris-clair/60">Votes déjà exprimés</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="font-bebas text-2xl text-bleu">156</div>
-                        <div class="font-anek text-xs text-gris-clair/60">Professionnels</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="font-bebas text-2xl text-dore">8</div>
-                        <div class="font-anek text-xs text-gris-clair/60">Candidats</div>
-                    </div>
-                </div>
-                
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="../register.php" class="inline-flex items-center justify-center px-8 py-4 font-anek font-medium text-noir bg-dore hover:bg-dore/90 rounded-lg transition-all duration-200">
-                        S'inscrire (Public)
-                    </a>
-                    <a href="../login.php" class="inline-flex items-center justify-center px-8 py-4 font-anek font-medium text-white border-2 border-white hover:bg-white hover:text-noir rounded-lg transition-all duration-200">
-                        Se connecter
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Animation simple par ligne d'étapes -->
+<!-- Animation progressive et fluide -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const steps = document.querySelectorAll('.step-card');
-    let currentStep = 0;
     
-    function showNextSteps() {
-        // Afficher 2 étapes à la fois (ligne par ligne)
-        for (let i = 0; i < 2 && currentStep < steps.length; i++) {
-            steps[currentStep].classList.remove('opacity-0', 'translate-y-8');
-            steps[currentStep].classList.add('opacity-100', 'translate-y-0');
-            currentStep++;
-        }
-        
-        // Afficher la prochaine ligne après 2 secondes
-        if (currentStep < steps.length) {
-            setTimeout(showNextSteps, 2000);
-        }
+    // Fonction pour déclencher l'animation au scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Animation en cascade avec délais
+                steps.forEach((step, index) => {
+                    setTimeout(() => {
+                        step.classList.remove('opacity-0', 'translate-y-8');
+                        step.classList.add('opacity-100', 'translate-y-0');
+                    }, index * 300); // 300ms entre chaque carte
+                });
+                
+                // On désactive l'observer après la première animation
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { 
+        threshold: 0.2 // Animation quand 20% de la section est visible
+    });
+    
+    // Observer la section
+    const section = document.getElementById('comment-ca-marche');
+    if (section) {
+        observer.observe(section);
     }
-    
-    // Démarrer l'animation après un court délai
-    setTimeout(showNextSteps, 500);
 });
 </script>
-
-<?php include '../../includes/footer.php'; ?>
