@@ -1,18 +1,22 @@
 <?php
-$page_title = "Countdown - Plateforme MMA";
-include '../../includes/header.php';
+/**
+ * Section countdown - Affiche le temps restant pour voter
+ * Utilise un script JS pour mettre à jour en temps réel
+ */
 ?>
 
 <section class="py-12 bg-noir">
     <div class="max-w-4xl mx-auto px-4">
-        <h2 class="font-bebas text-4xl md:text-5xl text-center text-white mb-2 tracking-wide">
-            COMPTE À REBOURS
-        </h2>
-        <p class="font-anek text-center text-gris-clair/80 mb-8">
-            Temps restant avant la fin des votes
-        </p>
         
+        <!-- En-tête de la section -->
+        <h2 class="font-bebas text-4xl md:text-5xl text-center text-white mb-2 tracking-wide">
+            TEMPS RESTANT AVANT LA FIN DES VOTES
+        </h2>
+        
+        <!-- Affichage du chronomètre -->
         <div class="flex items-center justify-center w-full gap-6 count-down-main">
+            
+            <!-- Jours -->
             <div class="timer flex flex-col items-center">
                 <div class="bg-rouge py-6 px-4 rounded-xl shadow-lg min-w-[80px]">
                     <h3 class="countdown-element days font-bebas text-3xl text-white text-center leading-none">
@@ -24,6 +28,7 @@ include '../../includes/header.php';
             
             <div class="text-3xl font-bebas text-dore">:</div>
             
+            <!-- Heures -->
             <div class="timer flex flex-col items-center">
                 <div class="bg-bleu py-6 px-4 rounded-xl shadow-lg min-w-[80px]">
                     <h3 class="countdown-element hours font-bebas text-3xl text-white text-center leading-none">
@@ -35,6 +40,7 @@ include '../../includes/header.php';
             
             <div class="text-3xl font-bebas text-dore">:</div>
             
+            <!-- Minutes -->
             <div class="timer flex flex-col items-center">
                 <div class="bg-dore py-6 px-4 rounded-xl shadow-lg min-w-[80px]">
                     <h3 class="countdown-element minutes font-bebas text-3xl text-noir text-center leading-none">
@@ -46,6 +52,7 @@ include '../../includes/header.php';
             
             <div class="text-3xl font-bebas text-dore">:</div>
             
+            <!-- Secondes avec animation -->
             <div class="timer flex flex-col items-center">
                 <div class="bg-gris-clair py-6 px-4 rounded-xl shadow-lg min-w-[80px] animate-pulse">
                     <h3 class="countdown-element seconds font-bebas text-3xl text-noir text-center leading-none">
@@ -56,16 +63,14 @@ include '../../includes/header.php';
             </div>
         </div>
 
-        <!-- Message d'état -->
+        <!-- Message d'information -->
         <div class="text-center mt-8">
-            <p class="font-anek text-gris-clair/60 text-sm" id="countdown-status">
+            <h4 class="font-anek text-gris-clair" id="countdown-status">
                 Vote en cours - Chaque seconde compte !
-            </p>
+            </h4>
         </div>
     </div>
 </section>
 
-<!-- Script JavaScript pour le countdown -->
+<!-- Chargement du script pour le compteur -->
 <script src="../../assets/js/countdown.js"></script>
-
-<?php include '../../includes/footer.php'; ?>
