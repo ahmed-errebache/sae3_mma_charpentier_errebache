@@ -1,20 +1,25 @@
 <?php
 // Configuration de la base de données
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'mma_platform');
+define('USER',"mma_user");
+define('PASSWD',"");
+define('SERVER',"localhost");
+define('BASE',"mma_election");
 
 // Configuration de l'application
-define('SITE_NAME', 'Plateforme MMA');
-define('BASE_URL', 'http://localhost/MMA');
+define('SITE_NAME', 'MMA Fighter Election');
+define('BASE_URL', 'http://localhost/MMA_Fighter_Election/');
 
 // Connexion à la base de données
-try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch(PDOException $e) {
-    die("Erreur de connexion à la base de données: " . $e->getMessage());
+function dbconnect(){
+  $dsn="mysql:dbname=".BASE.";host=".SERVER; 
+  try{ 
+    $connexion=new PDO($dsn,USER,PASSWD); 
+    $connexion->exec("set names utf8"); //Support utf8
+  } 
+  catch(PDOException $e){ 
+    printf("Échec de la connexion: %s\n", $e->getMessage()); 
+    exit(); 
+  } 
+  return $connexion; 
 }
 ?>
