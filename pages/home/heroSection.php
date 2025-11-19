@@ -35,7 +35,7 @@
         
         <!-- Image d'illustration (cachée sur mobile) -->
         <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
-            <img src="../../assets/img/hero-section.png" 
+            <img src="<?php echo $base_url; ?>/assets/img/hero-section.png" 
                  alt="Combattants MMA en action" 
                  class="hero-image w-full rounded-lg shadow-2xl opacity-0 translate-x-8 transition-all duration-1200 delay-900" />
         </div>
