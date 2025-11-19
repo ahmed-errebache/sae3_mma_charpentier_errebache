@@ -69,7 +69,7 @@
                                 </h3>
                             </div>
                             <p class="font-anek text-noir/80 text-base leading-relaxed">
-                                L'avis des fans et amateurs de MMA complète l'évaluation avec 20% du poids décisionnel.
+                                L'avis des fans et amateurs de MMA complète également l'évaluation avec 20 % du poids décisionnel.
                             </p>
                         </div>
                     </div>
