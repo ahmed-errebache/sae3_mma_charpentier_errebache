@@ -40,7 +40,7 @@
                         </p>
 
                         <!-- Bouton principal -->
-                        <a href="../contact.php" class="inline-block bg-blue-500 text-white font-bebas text-xl px-8 py-4 rounded-lg tracking-wide hover:bg-blue-600 transition-colors duration-300">
+                        <a href="<?php echo $base_url; ?>/pages/contact.php" class="inline-block bg-blue-500 text-white font-bebas text-xl px-8 py-4 rounded-lg tracking-wide hover:bg-blue-600 transition-colors duration-300">
                             NOUS CONTACTER
                         </a>
                     </div>
