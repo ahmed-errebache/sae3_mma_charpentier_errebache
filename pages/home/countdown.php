@@ -1,7 +1,6 @@
 <?php
 /**
  * Section countdown - Affiche le temps restant pour voter
- * Utilise un script JS pour mettre à jour en temps réel
  */
 ?>
 

@@ -24,27 +24,12 @@ $base_url = '/sae3_mma_charpentier_errebache';
             theme: {
                 extend: {
                     colors: {
-                        // Palette colorielle personnalisée
+                        // Palette colorielle 
                         'rouge': '#DE1315',
                         'bleu': '#1847C7', 
                         'dore': '#D5A845',
                         'gris-clair': '#F3F3F3',
                         'noir': '#19191E',
-                        
-                        // Couleurs primaires existantes
-                        primary: {
-                            "50":"#fef2f2",
-                            "100":"#fee2e2",
-                            "200":"#fecaca",
-                            "300":"#fca5a5",
-                            "400":"#f87171",
-                            "500":"#ef4444",
-                            "600":"#dc2626",
-                            "700":"#b91c1c",
-                            "800":"#991b1b",
-                            "900":"#7f1d1d",
-                            "950":"#450a0a"
-                        },
 
                         // Couleurs d'état et feedback
                         success: '#10B981',
@@ -53,15 +38,11 @@ $base_url = '/sae3_mma_charpentier_errebache';
                         info: '#3B82F6',
                     },
                     fontFamily: {
-                        // Typographies personnalisées
+                        // Typographies
                         'bebas': ['Bebas Neue', 'sans-serif'],
                         'anek': ['Anek Bangla', 'sans-serif']
                     },
-                    fontSize: {
-                        // Tailles personnalisées si nécessaire
-                        'display': ['4rem', '1'],
-                        'hero': ['3rem', '1.1'],
-                    }
+                    
                 }
             }
         }
