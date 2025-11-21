@@ -73,7 +73,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 sm:p-8">
             <h1 class="text-2xl font-bold text-center text-mma-dark mb-6">Connexion</h1>
 
-            <form action="login" method="post" class="space-y-6">
+            <?php if (!empty($error)): ?>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    <?php echo htmlspecialchars($error); ?>
+                </div>
+            <?php endif; ?>
+
+            <form action="login.php" method="post" class="space-y-6">
                 <!-- Type d'utilisateur -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
