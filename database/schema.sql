@@ -11,21 +11,18 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+ /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+ /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+ /*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de données : `mma_election`
 --
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `administrateur`
---
+-- Table `administrateur`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `administrateur`;
 CREATE TABLE IF NOT EXISTS `administrateur` (
@@ -38,10 +35,8 @@ CREATE TABLE IF NOT EXISTS `administrateur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `candidat`
---
+-- Table `candidat`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `candidat`;
 CREATE TABLE IF NOT EXISTS `candidat` (
@@ -60,10 +55,8 @@ CREATE TABLE IF NOT EXISTS `candidat` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `college`
---
+-- Table `college`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `college`;
 CREATE TABLE IF NOT EXISTS `college` (
@@ -74,19 +67,17 @@ CREATE TABLE IF NOT EXISTS `college` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Déchargement des données de la table `college`
+-- Données de la table `college`
 --
 
 INSERT INTO `college` (`ID_college`, `type`, `poids`) VALUES
-(1, 'public', '0.20'),
-(2, 'journaliste', '0.40'),
-(3, 'coach', '0.40');
+(1, 'public', 0.20),
+(2, 'journaliste', 0.40),
+(3, 'coach', 0.40);
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `electeur`
---
+-- Table `electeur`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `electeur`;
 CREATE TABLE IF NOT EXISTS `electeur` (
@@ -100,24 +91,26 @@ CREATE TABLE IF NOT EXISTS `electeur` (
   `nationalite` varchar(50) DEFAULT NULL,
   `adresse_IP` varchar(45) DEFAULT NULL,
   `code_fourni` varchar(50) DEFAULT NULL,
-  `has_voted` tinyint(1) DEFAULT '0',
+  `has_voted` tinyint(1) DEFAULT 0,
   `id_college` int DEFAULT NULL,
   PRIMARY KEY (`ID_electeur`),
   KEY `fk_electeur_college` (`id_college`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Déchargement des données de la table `electeur`
+-- Données de la table `electeur`
 --
 
-INSERT INTO `electeur` (`ID_electeur`, `email`, `mot_de_passe`, `prenom`, `nom`, `age`, `sexe`, `nationalite`, `adresse_IP`, `code_fourni`, `has_voted`, `id_college`) VALUES
-(1, 'lucascharpentier55@gmail.com', 'Lulu', 'Lucas', 'Charpentier', 21, 'Homme', 'Française', '127.0.3.2', NULL, 0, 1);
+INSERT INTO `electeur`
+(`ID_electeur`, `email`, `mot_de_passe`, `prenom`, `nom`, `age`, `sexe`,
+ `nationalite`, `adresse_IP`, `code_fourni`, `has_voted`, `id_college`)
+VALUES
+(1, 'lucascharpentier55@gmail.com', 'Lulu', 'Lucas', 'Charpentier',
+ 21, 'Homme', 'Française', '127.0.3.2', NULL, 0, 1);
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `media`
---
+-- Table `media`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `media`;
 CREATE TABLE IF NOT EXISTS `media` (
@@ -130,10 +123,8 @@ CREATE TABLE IF NOT EXISTS `media` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `post`
---
+-- Table `post`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `post`;
 CREATE TABLE IF NOT EXISTS `post` (
@@ -144,10 +135,8 @@ CREATE TABLE IF NOT EXISTS `post` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `reaction`
---
+-- Table `reaction`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `reaction`;
 CREATE TABLE IF NOT EXISTS `reaction` (
@@ -163,10 +152,8 @@ CREATE TABLE IF NOT EXISTS `reaction` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `scrutin`
---
+-- Table `scrutin`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `scrutin`;
 CREATE TABLE IF NOT EXISTS `scrutin` (
@@ -181,10 +168,8 @@ CREATE TABLE IF NOT EXISTS `scrutin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
-
---
--- Structure de la table `vote`
---
+-- Table `vote`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `vote`;
 CREATE TABLE IF NOT EXISTS `vote` (
@@ -202,50 +187,51 @@ CREATE TABLE IF NOT EXISTS `vote` (
   KEY `fk_vote_scrutin` (`id_scrutin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Contraintes pour les tables déchargées
---
+-- --------------------------------------------------------
+-- Contraintes
+-- --------------------------------------------------------
 
---
--- Contraintes pour la table `candidat`
---
 ALTER TABLE `candidat`
-  ADD CONSTRAINT `fk_candidat_scrutin` FOREIGN KEY (`id_scrutin`) REFERENCES `scrutin` (`ID_scrutin`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_candidat_scrutin`
+    FOREIGN KEY (`id_scrutin`) REFERENCES `scrutin` (`ID_scrutin`)
+    ON DELETE SET NULL ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `electeur`
---
 ALTER TABLE `electeur`
-  ADD CONSTRAINT `fk_electeur_college` FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_electeur_college`
+    FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`)
+    ON DELETE SET NULL ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `media`
---
 ALTER TABLE `media`
-  ADD CONSTRAINT `fk_media_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_media_post`
+    FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`)
+    ON DELETE SET NULL ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `reaction`
---
 ALTER TABLE `reaction`
-  ADD CONSTRAINT `fk_reaction_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_reaction_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_reaction_electeur`
+    FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`)
+    ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_reaction_post`
+    FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`)
+    ON DELETE SET NULL ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `scrutin`
---
 ALTER TABLE `scrutin`
-  ADD CONSTRAINT `fk_scrutin_admin` FOREIGN KEY (`id_admin`) REFERENCES `administrateur` (`ID_admin`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_scrutin_admin`
+    FOREIGN KEY (`id_admin`) REFERENCES `administrateur` (`ID_admin`)
+    ON DELETE SET NULL ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `vote`
---
 ALTER TABLE `vote`
-  ADD CONSTRAINT `fk_vote_candidat` FOREIGN KEY (`id_candidat`) REFERENCES `candidat` (`ID_candidat`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_vote_college` FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_vote_scrutin` FOREIGN KEY (`id_scrutin`) REFERENCES `scrutin` (`ID_scrutin`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_vote_candidat`
+    FOREIGN KEY (`id_candidat`) REFERENCES `candidat` (`ID_candidat`)
+    ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_vote_college`
+    FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`)
+    ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_vote_scrutin`
+    FOREIGN KEY (`id_scrutin`) REFERENCES `scrutin` (`ID_scrutin`)
+    ON DELETE SET NULL ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+ /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+ /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

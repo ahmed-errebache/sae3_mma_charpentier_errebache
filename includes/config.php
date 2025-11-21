@@ -1,6 +1,6 @@
 <?php
 // Configuration de la base de données
-define('USER',"mma_user");
+define('USER',"root");
 define('PASSWD',"");
 define('SERVER',"localhost");
 define('BASE',"mma_election");

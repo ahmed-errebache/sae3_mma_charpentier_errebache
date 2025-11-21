@@ -37,6 +37,8 @@ if (!$Email || !$UserType) {
     exit;
 }
 
+
+
 $errors  = [];
 $success = '';
 
@@ -65,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = "L'âge doit être un nombre positif.";
         }
 
-        // ⚠️ Sexe limité à Homme / Femme
+        //  Sexe limité à Homme / Femme
         if (!in_array($sexe, ['Homme', 'Femme'], true)) {
             $errors[] = "Le sexe doit être « Homme » ou « Femme ».";
         }
@@ -168,6 +170,10 @@ try {
 ?>
 
 <?php include '../includes/header.php'; ?>
+
+
+
+
 
 <main class="flex-1">
     <div class="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -279,6 +285,8 @@ try {
                                         Femme
                                     </option>
                                 </select>
+                                <input type="text" name="sexe" value="<?php echo htmlspecialchars($user['sexe'] ?? ''); ?>"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Adresse mail</label>
@@ -349,5 +357,7 @@ try {
         </div>
     </div>
 </main>
+
+
 
 <?php include '../includes/footer.php'; ?>
