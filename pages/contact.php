@@ -1,28 +1,25 @@
 <?php
+/**
+ * PAGE CONTACT - ÉLECTION MMA 2025
+ * ===================================
+ */
 
+// Démarrage de la session pour gérer l'utilisateur connecté
 session_start();
 
+// Connexion à la base de données
 include '../includes/config.php'; 
-
 $connexion = dbconnect();
 
+// Chargement de l'en-tête avec navigation
+include '../includes/header.php'; 
 ?>
 
-
-<?php include '../includes/header.php'; ?>
-
-
-
-
-
-
-
-
-<!-- Page Contact  -->
+<!-- FORMULAIRE DE CONTACT -->
 <div class="min-h-screen bg-gris-clair py-16">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- En-tête -->
+        <!--  TITRE DE LA PAGE -->
         <div class="text-center mb-12">
             <h1 class="text-4xl font-bebas text-noir mb-4 tracking-wide">
                 CONTACT
@@ -32,17 +29,18 @@ $connexion = dbconnect();
             </p>
         </div>
 
-        <!-- Contenu principal -->
+        <!-- Formulaire et informations côte à côte -->
         <div class="bg-white rounded-xl shadow-lg p-8 lg:p-12">
             <div class="grid lg:grid-cols-2 gap-12">
                 
-                <!-- Formulaire -->
+                <!-- Formulaire de contact -->
                 <div>
                     <h2 class="text-2xl font-bebas text-noir mb-6 tracking-wide">
                         ENVOYEZ UN MESSAGE
                     </h2>
                     
                     <form action="#" method="POST" class="space-y-6">
+                        
                         <div>
                             <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">
                                 Nom *
@@ -71,13 +69,12 @@ $connexion = dbconnect();
                         </div>
 
                         <button type="submit"
-                            class="w-full bg-rouge text-white font-bebas text-lg py-3 px-6 rounded-lg tracking-wide hover:bg-rouge/90 transition-colors duration-200">
+                            class="w-full bg-rouge text-white font-bebas text-lg py-3 px-6 rounded-lg tracking-wide hover:bg-rouge/90 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-rouge/50 focus:ring-offset-2 shadow-lg">
                             ENVOYER
                         </button>
                     </form>
                 </div>
 
-                <!-- Informations -->
                 <div class="space-y-8">
                     <div>
                         <h3 class="text-xl font-bebas text-noir mb-4 tracking-wide">
@@ -123,13 +120,14 @@ $connexion = dbconnect();
             </div>
         </div>
 
-        <!-- Boutons retour -->
         <div class="text-center mt-12">
+            <!-- Retour à l'accueil -->
             <a href="<?php echo $base_url; ?>/index.php" 
                 class="inline-flex items-center px-6 py-3 bg-rouge text-white font-bebas text-lg rounded-lg tracking-wide hover:bg-rouge/90 transition-colors duration-200 mr-4">
                 RETOUR ACCUEIL
             </a>
-            <a href="<?php echo $base_url; ?>/candidats.php" 
+            <!-- Voir les candidats pour voter -->
+            <a href="<?php echo $base_url; ?>/pages/candidats.php" 
                 class="inline-flex items-center px-6 py-3 bg-transparent text-bleu border-2 border-bleu font-bebas text-lg rounded-lg tracking-wide hover:bg-bleu hover:text-white transition-colors duration-200">
                 VOIR CANDIDATS
             </a>

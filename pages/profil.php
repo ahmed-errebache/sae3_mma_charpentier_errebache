@@ -302,7 +302,7 @@ try {
 
                         <div class="pt-4 flex justify-end">
                             <button type="submit"
-                                    class="inline-flex justify-center rounded-md border border-transparent bg-mma-blue px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue">
+                                    class="inline-flex justify-center rounded-md border border-transparent bg-mma-blue px-4 py-2 text-sm font-medium text-black shadow-sm hover:text-whitebg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue">
                                 Enregistrer les modifications
                             </button>
                         </div>
