@@ -53,7 +53,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_type']   = $table;
 
                 // Redirection (à adapter)
-                header('Location: accueil.php');
+                header('Location: ../index.php');
                 exit;
             } else {
                 $error = "Email ou mot de passe incorrect.";
