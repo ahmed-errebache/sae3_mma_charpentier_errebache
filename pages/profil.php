@@ -2,6 +2,21 @@
 
 session_start();
 
+// Déconnexion manuelle via le bouton
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+
+    // Suppression des variables de session
+    unset($_SESSION['isConnected'], $_SESSION['email'], $_SESSION['user_type']);
+
+    // Facultatif : détruire totalement la session
+    // session_destroy();
+
+    // Redirection vers l'accueil
+    header('Location: accueil.php');
+    exit;
+}
+
+
 include '../includes/config.php';
 
 // Revérifier que l'utilisateur est connecté
@@ -50,6 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!ctype_digit($age) || (int)$age <= 0) {
             $errors[] = "L'âge doit être un nombre positif.";
+        }
+
+        //  Sexe limité à Homme / Femme
+        if (!in_array($sexe, ['Homme', 'Femme'], true)) {
+            $errors[] = "Le sexe doit être « Homme » ou « Femme ».";
         }
 
         if (empty($errors)) {
@@ -149,9 +169,9 @@ try {
 
 ?>
 
-
-
 <?php include '../includes/header.php'; ?>
+
+
 
 
 
@@ -254,6 +274,17 @@ try {
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Sexe</label>
+                                <!-- Select limité à Homme / Femme -->
+                                <select name="sexe"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                    <option value="">-- Sélectionnez --</option>
+                                    <option value="Homme" <?php echo (isset($user['sexe']) && $user['sexe'] === 'Homme') ? 'selected' : ''; ?>>
+                                        Homme
+                                    </option>
+                                    <option value="Femme" <?php echo (isset($user['sexe']) && $user['sexe'] === 'Femme') ? 'selected' : ''; ?>>
+                                        Femme
+                                    </option>
+                                </select>
                                 <input type="text" name="sexe" value="<?php echo htmlspecialchars($user['sexe'] ?? ''); ?>"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
                             </div>
@@ -311,6 +342,15 @@ try {
                         </div>
                     </form>
                 <?php endif; ?>
+
+                <!-- BOUTON DE DÉCONNEXION, CENTRÉ SOUS LE BLOC PROFIL -->
+                <div class="mt-8 flex justify-center">
+                    <a href="profil.php?action=logout"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+                        Se déconnecter
+                    </a>
+                </div>
+
 
             <?php endif; ?>
 

@@ -141,7 +141,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div>
                     <button
                         type="submit"
-                        class="w-full inline-flex justify-center items-center px-4 py-2 rounded-md bg-mma-blue text-white font-medium shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue"
+                        class="w-full inline-flex justify-center items-center px-4 py-2 rounded-md bg-mma-blue text-black font-medium shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue"
                     >
                         Confirmer
                     </button>
