@@ -1,7 +1,16 @@
 <?php
-$page_title = "Test Tailwind - Plateforme MMA";
-include 'includes/header.php';
+
+session_start();
+
+include '../includes/config.php'; 
+
+$connexion = dbconnect();
+
 ?>
+
+
+<?php include '../includes/header.php'; ?>
+
 
 <!-- Exemple avec Tailwind CSS -->
 <div class="container mx-auto p-8">
@@ -22,4 +31,4 @@ include 'includes/header.php';
 </div>
 
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>
