@@ -12,7 +12,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     // session_destroy();
 
     // Redirection vers l'accueil
-    header('Location: accueil.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -285,8 +285,6 @@ try {
                                         Femme
                                     </option>
                                 </select>
-                                <input type="text" name="sexe" value="<?php echo htmlspecialchars($user['sexe'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Adresse mail</label>
@@ -302,7 +300,7 @@ try {
 
                         <div class="pt-4 flex justify-end">
                             <button type="submit"
-                                    class="inline-flex justify-center rounded-md border border-transparent bg-mma-blue px-4 py-2 text-sm font-medium text-black shadow-sm hover:text-whitebg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue">
+                                    class="inline-flex justify-center rounded-md border border-transparent bg-mma-blue px-4 py-2 text-sm font-medium text-black shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue">
                                 Enregistrer les modifications
                             </button>
                         </div>

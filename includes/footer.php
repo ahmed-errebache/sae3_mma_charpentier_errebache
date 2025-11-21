@@ -6,7 +6,7 @@
 
 <footer class="bg-neutral-primary-soft rounded-base shadow-xs border border-default m-4">
     <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-      <span class="text-sm text-body sm:text-center">Lucas Charpentier, Ahmed Errebache. <a href="Accueil" class="hover:underline">MMA Fighter Election</a>
+      <span class="text-sm text-body sm:text-center">Lucas Charpentier, Ahmed Errebache. <a href="#" class="hover:underline">MMA Fighter Election</a>
     </span>
     <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-body sm:mt-0">
         <li>

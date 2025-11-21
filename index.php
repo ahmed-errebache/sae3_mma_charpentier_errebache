@@ -5,7 +5,15 @@
  */
 
 $page_title = "Élection MMA 2025 - Votez pour votre combattant favori";
+
 // Inclusion du fichier de configuration
+
+session_start();
+
+include 'includes/config.php'; 
+
+$connexion = dbconnect();
+
 include 'includes/header.php';
 ?>
 
