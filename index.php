@@ -24,5 +24,6 @@ include 'includes/header.php';
 <!-- Section contact pour l'aide -->
 <?php include 'pages/home/contactSection.php'; ?>
 
+
 <!-- Inclusion du pied de page -->
 <?php include 'includes/footer.php'; ?>

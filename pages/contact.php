@@ -11,7 +11,14 @@ $connexion = dbconnect();
 
 <?php include '../includes/header.php'; ?>
 
-<!-- Page Contact Simple -->
+
+
+
+
+
+
+
+<!-- Page Contact  -->
 <div class="min-h-screen bg-gris-clair py-16">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         

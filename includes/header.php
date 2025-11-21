@@ -9,12 +9,18 @@ $base_url = '/sae3_mma_charpentier_errebache';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>    <!-- Google Fonts pour les typographies personnalisées -->
+    <title>MMA Fighter Election</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>    
+    <!-- Google Fonts pour les typographies personnalisées -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <title>MMA Fighter Election</title>    <!-- CSS personnalisé -->
+    <title>MMA Fighter Election</title>    
+    <!-- CSS personnalisé -->
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/style.css">
     
     <!-- Configuration Tailwind personnalisée -->
