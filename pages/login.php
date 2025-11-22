@@ -19,7 +19,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Veuillez remplir tous les champs.';
     } else {
 
-        // Les clés correspondent aux value des boutons radio
+        // Les clés correspondent aux value des boutons radio, et les valeurs sont les noms des tables de la base de données
         $tables = [
             'electeur_public' => 'electeur',
             'electeur_pro'    => 'electeur',
@@ -31,7 +31,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!isset($tables[$user_type])) {
             $error = "Type d'utilisateur invalide.";
         } else {
-            $table = $tables[$user_type]; // <--- on utilise bien $user_type
+            $table = $tables[$user_type];
 
 
             $sql = "SELECT COUNT(*) 
@@ -47,12 +47,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $row_count = $stmt->fetchColumn();
 
+            // Vérification qu'il existe bien 1 ligne avec cet email et mot de passe pour ce type d'utilisateur
             if ($row_count == 1) {
                 $_SESSION["isConnected"] = true;
                 $_SESSION['email']       = $email;
                 $_SESSION['user_type']   = $table;
 
-                // Redirection (à adapter)
+                // Redirection vers la page d'accueil
                 header('Location: ../index.php');
                 exit;
             } else {
@@ -93,7 +94,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span class="text-sm text-gray-700">Électeur public</span>
                         </label>
 
-                        <!-- Electeur pro -->
+                        <!-- Electeur professionnel -->
                         <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-mma-blue">
                             <input type="radio" name="user_type" value="electeur_pro" class="h-4 w-4 text-mma-blue">
                             <span class="text-sm text-gray-700">Électeur professionnel</span>
@@ -105,7 +106,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span class="text-sm text-gray-700">Candidat</span>
                         </label>
 
-                        <!-- Admin -->
+                        <!-- Administrateur -->
                         <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-mma-blue">
                             <input type="radio" name="user_type" value="admin" class="h-4 w-4 text-mma-blue">
                             <span class="text-sm text-gray-700">Administrateur</span>
@@ -124,8 +125,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         name="email"
                         required
                         class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mma-blue focus:border-mma-blue"
-                        placeholder="email@example.com"
-                    >
+                        placeholder="email@example.com">
                 </div>
 
                 <!-- Mot de passe -->
@@ -139,16 +139,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         name="password"
                         required
                         class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mma-blue focus:border-mma-blue"
-                        placeholder="••••••••"
-                    >
+                        placeholder="••••••••">
                 </div>
 
                 <!-- Bouton confirmer -->
                 <div>
                     <button
                         type="submit"
-                        class="w-full inline-flex justify-center items-center px-4 py-2 rounded-md bg-mma-blue text-black font-medium shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue"
-                    >
+                        class="w-full inline-flex justify-center items-center px-4 py-2 rounded-md bg-mma-blue text-black font-medium shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue">
                         Confirmer
                     </button>
                 </div>

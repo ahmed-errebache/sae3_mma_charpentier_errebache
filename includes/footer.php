@@ -1,6 +1,7 @@
    <!-- JavaScript -->
     <script src="assets/js/countdown.js"></script>
     <script src="assets/js/main.js"></script>
+<!-- fin des "div" placés dans le header -->
 </div>
 </div>
 
