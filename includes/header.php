@@ -57,7 +57,7 @@ $base_url = '/sae3_mma_charpentier_errebache';
         }
     </script>
 </head>
-<body id="top" class="bg-gray-50">
+<body id="top" class="bg-gris-clair">
     
     <!-- Header fixe avec taille définie -->
     <header class="fixed top-0 left-0 w-full h-20 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50 shadow-sm">
@@ -80,6 +80,7 @@ $base_url = '/sae3_mma_charpentier_errebache';
                     </div>
                 </div>
                 
+                <!-- boutons placés au centre -->
                 <div class="md:flex md:space-x-8 hidden">
                     <a href="<?php echo $base_url; ?>/index.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Accueil</a>
                     <a href="<?php echo $base_url; ?>/pages/candidats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Candidats</a>
@@ -88,16 +89,20 @@ $base_url = '/sae3_mma_charpentier_errebache';
                 
                 <div class="md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0 hidden">
                     <?php
+                        // si on est connecté, le bouton "profil" est affiché
                         if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true)
-                            echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/profil.php" class="items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-dore border border-dore hover:bg-dore/80 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/30">
-                                Mon Profil
-                            </a></span>';
+                            echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/profil.php" class="items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-dore border border-dore hover:bg-dore/80 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/30">Mon Profil</a></span>';
+                        // sinon le bouton "se connecter" est affiché
                         else
                             echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/login.php" class="items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-rouge/80 backdrop-blur-sm inline-flex border border-white/30 hover:bg-rouge hover:border-white transition-all duration-200">Se connecter</a></span>';
                     ?>
 
                     <span class="ml-3 rounded-md inline-flex shadow-lg">
-                        <a href="<?php echo $base_url; ?>/pages/register.php" class="justify-center rounded-md py-2 px-3 bg-blanc text-noir text-sm font-medium shadow-lg inline-flex border border-blanc focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 hover:bg-gris-clair hover:scale-105 transition-all duration-200">S'inscrire</a>
+                        <?php 
+                        // si on est connecté, le bouton "s'inscrire" n'est pas affiché
+                        if (!isset($_SESSION['isConnected']) || $_SESSION['isConnected'] !== true)
+                            echo '<a href="'.$base_url.'/pages/register.php" class="justify-center rounded-md py-2 px-3 bg-blanc text-noir text-sm font-medium shadow-lg inline-flex border border-blanc focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 hover:bg-gris-clair hover:scale-105 transition-all duration-200">S\'inscrire</a>';
+                        ?>                        
                     </span>
                 </div>
             </nav>

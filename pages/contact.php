@@ -83,17 +83,17 @@ include '../includes/header.php';
                         
                         <div class="space-y-4">
                             <div>
-                                <h4 class="font-semibold text-gray-900 font-anek">Email</h4>
+                                <h4 class="font-semibold text-noir font-anek">Email</h4>
                                 <p class="text-gray-600 font-anek">contact@mmafighterelection.fr</p>
                             </div>
                             
                             <div>
-                                <h4 class="font-semibold text-gray-900 font-anek">Équipe</h4>
+                                <h4 class="font-semibold text-noir font-anek">Équipe</h4>
                                 <p class="text-gray-600 font-anek">Lucas Charpentier & Ahmed Errebache</p>
                             </div>
                             
                             <div>
-                                <h4 class="font-semibold text-gray-900 font-anek">Projet</h4>
+                                <h4 class="font-semibold text-noir font-anek">Projet</h4>
                                 <p class="text-gray-600 font-anek">SAÉ S3 - IUT de Saint Die</p>
                             </div>
                         </div>

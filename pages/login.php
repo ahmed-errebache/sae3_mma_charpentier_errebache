@@ -19,7 +19,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Veuillez remplir tous les champs.';
     } else {
 
-        // Les clés correspondent aux value des boutons radio
+        // Les clés correspondent aux value des boutons radio, et les valeurs sont les noms des tables de la base de données
         $tables = [
             'electeur_public' => 'electeur',
             'electeur_pro'    => 'electeur',
@@ -31,7 +31,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!isset($tables[$user_type])) {
             $error = "Type d'utilisateur invalide.";
         } else {
-            $table = $tables[$user_type]; // <--- on utilise bien $user_type
+            $table = $tables[$user_type];
 
 
             $sql = "SELECT COUNT(*) 
@@ -47,12 +47,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $row_count = $stmt->fetchColumn();
 
+            // Vérification qu'il existe bien 1 ligne avec cet email et mot de passe pour ce type d'utilisateur
             if ($row_count == 1) {
                 $_SESSION["isConnected"] = true;
                 $_SESSION['email']       = $email;
                 $_SESSION['user_type']   = $table;
 
-                // Redirection (à adapter)
+                // Redirection vers la page d'accueil
                 header('Location: ../index.php');
                 exit;
             } else {
@@ -71,10 +72,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="flex-1">
     <div class="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 sm:p-8">
-            <h1 class="text-2xl font-bold text-center text-mma-dark mb-6">Connexion</h1>
+            <h1 class="text-2xl font-bold text-center text-noir mb-6">Connexion</h1>
 
             <?php if (!empty($error)): ?>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                <div class="bg-error/10 border border-error text-error px-4 py-3 rounded">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>
@@ -88,26 +89,26 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <!-- Electeur public -->
-                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-mma-blue">
-                            <input type="radio" name="user_type" value="electeur_public" class="h-4 w-4 text-mma-blue" required>
+                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-bleu">
+                            <input type="radio" name="user_type" value="electeur_public" class="h-4 w-4 text-bleu" required>
                             <span class="text-sm text-gray-700">Électeur public</span>
                         </label>
 
-                        <!-- Electeur pro -->
-                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-mma-blue">
-                            <input type="radio" name="user_type" value="electeur_pro" class="h-4 w-4 text-mma-blue">
+                        <!-- Electeur professionnel -->
+                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-bleu">
+                            <input type="radio" name="user_type" value="electeur_pro" class="h-4 w-4 text-bleu">
                             <span class="text-sm text-gray-700">Électeur professionnel</span>
                         </label>
 
                         <!-- Candidat -->
-                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-mma-blue">
-                            <input type="radio" name="user_type" value="candidat" class="h-4 w-4 text-mma-blue">
+                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-bleu">
+                            <input type="radio" name="user_type" value="candidat" class="h-4 w-4 text-bleu">
                             <span class="text-sm text-gray-700">Candidat</span>
                         </label>
 
-                        <!-- Admin -->
-                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-mma-blue">
-                            <input type="radio" name="user_type" value="admin" class="h-4 w-4 text-mma-blue">
+                        <!-- Administrateur -->
+                        <label class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer hover:border-bleu">
+                            <input type="radio" name="user_type" value="admin" class="h-4 w-4 text-bleu">
                             <span class="text-sm text-gray-700">Administrateur</span>
                         </label>
                     </div>
@@ -123,9 +124,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         id="email"
                         name="email"
                         required
-                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mma-blue focus:border-mma-blue"
-                        placeholder="email@example.com"
-                    >
+                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
+                        placeholder="email@example.com">
                 </div>
 
                 <!-- Mot de passe -->
@@ -138,18 +138,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         id="password"
                         name="password"
                         required
-                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mma-blue focus:border-mma-blue"
-                        placeholder="••••••••"
-                    >
+                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
+                        placeholder="••••••••">
                 </div>
 
-                <!-- Bouton confirmer -->
+                <!-- Bouton se connecter -->
                 <div>
                     <button
                         type="submit"
-                        class="w-full inline-flex justify-center items-center px-4 py-2 rounded-md bg-mma-blue text-black font-medium shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue"
-                    >
-                        Confirmer
+                        class="w-full inline-flex justify-center items-center px-4 py-2 rounded-md bg-rouge text-white font-medium shadow hover:bg-rouge/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rouge">
+                        Se connecter
                     </button>
                 </div>
             </form>
