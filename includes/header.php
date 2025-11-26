@@ -10,6 +10,9 @@ $base_url = '/sae3_mma_charpentier_errebache';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MMA Fighter Election</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="<?php echo $base_url; ?>/assets/img/favicon.ico" />
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
