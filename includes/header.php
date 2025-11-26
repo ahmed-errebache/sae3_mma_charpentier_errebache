@@ -54,7 +54,7 @@ $base_url = '/sae3_mma_charpentier_errebache';
         }
     </script>
 </head>
-<body id="top" class="bg-gray-50">
+<body id="top" class="bg-gris-clair">
     
     <!-- Header fixe avec taille définie -->
     <header class="fixed top-0 left-0 w-full h-20 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50 shadow-sm">
@@ -95,8 +95,11 @@ $base_url = '/sae3_mma_charpentier_errebache';
                     ?>
 
                     <span class="ml-3 rounded-md inline-flex shadow-lg">
-                        <!-- fonctionnalité encore non implémentée -->
-                        <a href="<?php echo $base_url; ?>/pages/register.php" class="justify-center rounded-md py-2 px-3 bg-blanc text-noir text-sm font-medium shadow-lg inline-flex border border-blanc focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 hover:bg-gris-clair hover:scale-105 transition-all duration-200">S'inscrire</a>
+                        <?php 
+                        // si on est connecté, le bouton "s'inscrire" n'est pas affiché
+                        if (!isset($_SESSION['isConnected']) || $_SESSION['isConnected'] !== true)
+                            echo '<a href="'.$base_url.'/pages/register.php" class="justify-center rounded-md py-2 px-3 bg-blanc text-noir text-sm font-medium shadow-lg inline-flex border border-blanc focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 hover:bg-gris-clair hover:scale-105 transition-all duration-200">S\'inscrire</a>';
+                        ?>                        
                     </span>
                 </div>
             </nav>

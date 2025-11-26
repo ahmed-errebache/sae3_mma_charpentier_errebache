@@ -175,14 +175,14 @@ try {
 <main class="flex-1">
     <div class="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 sm:p-8">
-            <h1 class="text-2xl font-bold text-center text-gray-900 mb-6">
+            <h1 class="text-2xl font-bold text-center text-noir mb-6">
                 Mon profil
             </h1>
 
             <!-- Messages d'erreur -->
             <?php if (!empty($errors)): ?>
-                <div class="mb-4 rounded-md bg-red-50 p-4">
-                    <ul class="list-disc list-inside text-sm text-red-700">
+                <div class="mb-4 rounded-md bg-error/10 p-4">
+                    <ul class="list-disc list-inside text-sm text-error">
                         <?php foreach ($errors as $error): ?>
                             <li><?php echo htmlspecialchars($error); ?></li>
                         <?php endforeach; ?>
@@ -192,7 +192,7 @@ try {
 
             <!-- Message de succès -->
             <?php if ($success): ?>
-                <div class="mb-4 rounded-md bg-green-50 p-4 text-sm text-green-700">
+                <div class="mb-4 rounded-md bg-success/10 p-4 text-sm text-success">
                     <?php echo htmlspecialchars($success); ?>
                 </div>
             <?php endif; ?>
@@ -209,31 +209,31 @@ try {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <h2 class="text-sm font-medium text-gray-500">Prénom</h2>
-                                <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['prenom'] ?? ''); ?></p>
+                                <p class="mt-1 text-noir"><?php echo htmlspecialchars($user['prenom'] ?? ''); ?></p>
                             </div>
                             <div>
                                 <h2 class="text-sm font-medium text-gray-500">Surnom</h2>
-                                <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['surnom'] ?? ''); ?></p>
+                                <p class="mt-1 text-noir"><?php echo htmlspecialchars($user['surnom'] ?? ''); ?></p>
                             </div>
                             <div>
                                 <h2 class="text-sm font-medium text-gray-500">Nom</h2>
-                                <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['nom'] ?? ''); ?></p>
+                                <p class="mt-1 text-noir"><?php echo htmlspecialchars($user['nom'] ?? ''); ?></p>
                             </div>
                             <div>
                                 <h2 class="text-sm font-medium text-gray-500">Nationalité</h2>
-                                <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['nationalite'] ?? ''); ?></p>
+                                <p class="mt-1 text-noir"><?php echo htmlspecialchars($user['nationalite'] ?? ''); ?></p>
                             </div>
                             <div>
                                 <h2 class="text-sm font-medium text-gray-500">Palmarès de l'année</h2>
-                                <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['palmares_annee'] ?? ''); ?></p>
+                                <p class="mt-1 text-noir"><?php echo htmlspecialchars($user['palmares_annee'] ?? ''); ?></p>
                             </div>
                             <div>
                                 <h2 class="text-sm font-medium text-gray-500">Email</h2>
-                                <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['email'] ?? ''); ?></p>
+                                <p class="mt-1 text-noir"><?php echo htmlspecialchars($user['email'] ?? ''); ?></p>
                             </div>
                             <div>
                                 <h2 class="text-sm font-medium text-gray-500">Mot de passe</h2>
-                                <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['mot_de_passe'] ?? ''); ?></p>
+                                <p class="mt-1 text-noir"><?php echo htmlspecialchars($user['mot_de_passe'] ?? ''); ?></p>
                             </div>
                         </div>
 
@@ -252,29 +252,29 @@ try {
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nom</label>
                                 <input type="text" name="nom" value="<?php echo htmlspecialchars($user['nom'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Prénom</label>
                                 <input type="text" name="prenom" value="<?php echo htmlspecialchars($user['prenom'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                             <div>
                                 <!-- Age limité à des entiers -->
                                 <label class="block text-sm font-medium text-gray-700">Âge</label>
                                 <input type="number" name="age" value="<?php echo htmlspecialchars($user['age'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue" min="1">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu" min="1">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nationalité</label>
                                 <input type="text" name="nationalite" value="<?php echo htmlspecialchars($user['nationalite'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                             <div>
                                 <!-- Sexe limité à Homme / Femme -->
                                 <label class="block text-sm font-medium text-gray-700">Sexe</label>
                                 <select name="sexe"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                                     <option value="">-- Sélectionnez --</option>
                                     <option value="Homme" <?php echo (isset($user['sexe']) && $user['sexe'] === 'Homme') ? 'selected' : ''; ?>>
                                         Homme
@@ -287,19 +287,19 @@ try {
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Adresse mail</label>
                                 <input type="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700">Mot de passe</label>
                                 <input type="text" name="password" value="<?php echo htmlspecialchars($user['mot_de_passe'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                         </div>
 
                         <!-- bouton enregistrer -->
                         <div class="pt-4 flex justify-end">
                             <button type="submit"
-                                    class="inline-flex justify-center rounded-md border border-transparent bg-mma-blue px-4 py-2 text-sm font-medium text-black shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue">
+                                    class="inline-flex justify-center rounded-md border border-transparent bg-bleu px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
                             </button>
                         </div>
@@ -312,29 +312,29 @@ try {
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nom</label>
                                 <input type="text" name="nom" value="<?php echo htmlspecialchars($user['nom'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Prénom</label>
                                 <input type="text" name="prenom" value="<?php echo htmlspecialchars($user['prenom'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Adresse mail</label>
                                 <input type="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Mot de passe</label>
                                 <input type="text" name="password" value="<?php echo htmlspecialchars($user['mot_de_passe'] ?? ''); ?>"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-mma-blue focus:border-mma-blue">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-bleu focus:border-bleu">
                             </div>
                         </div>
 
                         <!-- bouton enregistrer -->
                         <div class="pt-4 flex justify-end">
                             <button type="submit"
-                                    class="inline-flex justify-center rounded-md border border-transparent bg-mma-blue px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mma-blue">
+                                    class="inline-flex justify-center rounded-md border border-transparent bg-bleu px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
                             </button>
                         </div>
@@ -344,7 +344,7 @@ try {
                 <!-- bouton déconnexion -->
                 <div class="mt-8 flex justify-center">
                     <a href="profil.php?action=logout"
-                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-rouge text-white hover:bg-rouge/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rouge">
                         Se déconnecter
                     </a>
                 </div>
