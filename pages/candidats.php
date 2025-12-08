@@ -2,7 +2,6 @@
 session_start();
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/functions.php';
-require_once __DIR__ . '/../includes/header.php';
 
 $action = $_GET['action'] ?? 'liste';
 
@@ -19,6 +18,8 @@ if ($isAdmin) {
     header('Location: ../admin/index.php' . (isset($_GET['edit']) ? '?edit=' . $_GET['edit'] : ''));
     exit();
 }
+
+require_once __DIR__ . '/../includes/header.php';
 
 $candidats = getTousCandidats();
 ?>
