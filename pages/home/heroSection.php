@@ -20,12 +20,21 @@
             
             <!-- Boutons d'action principaux -->
             <div class="hero-buttons flex flex-wrap gap-3 opacity-0 translate-y-8 transition-all duration-1000 delay-600">
-                <a href="<?php echo $base_url; ?>/login.php" class="inline-flex items-center justify-center px-6 py-3 font-anek font-medium text-center text-white rounded-lg bg-rouge hover:bg-rouge/90 focus:ring-4 focus:ring-rouge/30 transition-all duration-200 hover:scale-105">
-                    Se connecter
-                    <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                </a>
+                <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true): ?>
+                    <a href="<?php echo $base_url; ?>/pages/profil.php" class="inline-flex items-center justify-center px-6 py-3 font-anek font-medium text-center text-white rounded-lg bg-dore hover:bg-dore/90 focus:ring-4 focus:ring-dore/30 transition-all duration-200 hover:scale-105">
+                        Mon Profil
+                        <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                <?php else: ?>
+                    <a href="<?php echo $base_url; ?>/pages/login.php" class="inline-flex items-center justify-center px-6 py-3 font-anek font-medium text-center text-white rounded-lg bg-rouge hover:bg-rouge/90 focus:ring-4 focus:ring-rouge/30 transition-all duration-200 hover:scale-105">
+                        Se connecter
+                        <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                <?php endif; ?>
                 
                 <a href="#comment-ca-marche" class="inline-flex items-center justify-center px-6 py-3 font-anek font-medium text-center text-noir border-2 border-bleu rounded-lg hover:bg-bleu hover:text-white focus:ring-4 focus:ring-bleu/30 dark:text-white dark:border-dore dark:hover:bg-dore dark:hover:text-noir transition-all duration-200 hover:scale-105">
                     En savoir plus

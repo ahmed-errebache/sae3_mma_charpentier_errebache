@@ -2,14 +2,14 @@
 
 session_start();
 
-include '../includes/config.php'; 
+require_once '../includes/config.php'; 
 
 $connexion = dbconnect();
 
 ?>
 
 
-<?php include '../includes/header.php'; ?>
+<?php require_once '../includes/header.php'; ?>
 
 
 
@@ -19,4 +19,4 @@ $connexion = dbconnect();
 
 
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

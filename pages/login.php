@@ -2,7 +2,7 @@
 
 session_start();
 
-include '../includes/config.php'; 
+require_once '../includes/config.php'; 
 
 $connexion = dbconnect();
 
@@ -65,7 +65,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 
-<?php include '../includes/header.php'; ?>
+<?php require_once '../includes/header.php'; ?>
 
 
 
@@ -157,4 +157,4 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

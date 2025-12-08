@@ -14,7 +14,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 }
 
 
-include '../includes/config.php';
+require_once '../includes/config.php';
 
 // Revérification que l'utilisateur est connecté
 if (!isset($_SESSION['isConnected']) || $_SESSION['isConnected'] !== true) {
@@ -166,7 +166,7 @@ try {
 
 ?>
 
-<?php include '../includes/header.php'; ?>
+<?php require_once '../includes/header.php'; ?>
 
 
 
@@ -358,4 +358,4 @@ try {
 
 
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

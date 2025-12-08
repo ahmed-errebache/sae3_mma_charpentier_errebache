@@ -8,11 +8,11 @@
 session_start();
 
 // Connexion à la base de données
-include '../includes/config.php'; 
+require_once '../includes/config.php'; 
 $connexion = dbconnect();
 
 // Chargement de l'en-tête avec navigation
-include '../includes/header.php'; 
+require_once '../includes/header.php'; 
 ?>
 
 <!-- FORMULAIRE DE CONTACT -->
@@ -135,4 +135,4 @@ include '../includes/header.php';
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>
