@@ -22,10 +22,16 @@ function creerCandidat($data) {
     $mdpProvisoire = genererMotDePasseProvisoire();
     $mdpHash = password_hash($mdpProvisoire, PASSWORD_DEFAULT);
     
-    $palmaresJson = json_encode($data['palmares']);
+    // Créer le palmarès au format JSON
+    $palmares = json_encode([
+        'victoires' => (int)$data['victoires'],
+        'defaites' => (int)$data['defaites'],
+        'egalites' => (int)$data['egalites'],
+        'no_contest' => (int)$data['no_contest']
+    ]);
     
-    $sql = "INSERT INTO candidat (email, mot_de_passe, nom, prenom, nationalite, pays_origine, palmares, mdp_provisoire, compte_verifie, compte_actif) 
-            VALUES (:email, :mdp, :nom, :prenom, :nationalite, :pays_origine, :palmares, 1, 0, 1)";
+    $sql = "INSERT INTO candidat (email, mot_de_passe, nom, prenom, nationalite, palmares, mdp_provisoire, compte_verifie, compte_actif) 
+            VALUES (:email, :mdp, :nom, :prenom, :nationalite, :palmares, 1, 0, 1)";
     
     $stmt = $conn->prepare($sql);
     $result = $stmt->execute([
@@ -34,8 +40,7 @@ function creerCandidat($data) {
         ':nom' => $data['nom'],
         ':prenom' => $data['prenom'],
         ':nationalite' => $data['nationalite'],
-        ':pays_origine' => $data['pays_origine'],
-        ':palmares' => $palmaresJson
+        ':palmares' => $palmares
     ]);
     
     if ($result) {
@@ -153,12 +158,18 @@ function getCandidatByEmail($email) {
 function modifierCandidatAdmin($id, $data) {
     $conn = dbconnect();
     
-    $palmaresJson = json_encode($data['palmares']);
+    // Créer le palmarès au format JSON
+    $palmares = json_encode([
+        'victoires' => (int)$data['victoires'],
+        'defaites' => (int)$data['defaites'],
+        'egalites' => (int)$data['egalites'],
+        'no_contest' => (int)$data['no_contest']
+    ]);
     
-    $sql = "UPDATE candidat 
+        $sql = "UPDATE candidat 
             SET nom = :nom, prenom = :prenom, nationalite = :nationalite, 
-                pays_origine = :pays_origine, palmares = :palmares 
-            WHERE ID_candidat = :id";
+                palmares = :palmares 
+            WHERE id_candidat = :id";
     
     $stmt = $conn->prepare($sql);
     return $stmt->execute([
@@ -166,8 +177,7 @@ function modifierCandidatAdmin($id, $data) {
         ':nom' => $data['nom'],
         ':prenom' => $data['prenom'],
         ':nationalite' => $data['nationalite'],
-        ':pays_origine' => $data['pays_origine'],
-        ':palmares' => $palmaresJson
+        ':palmares' => $palmares
     ]);
 }
 
@@ -183,7 +193,7 @@ function changerMotDePasseCandidat($email, $mdpProvisoire, $nouveauMdp) {
 }
 
 // Finaliser le compte candidat - Étape 2: Compléter profil
-function completerProfilCandidat($id, $nouveauMdp, $surnom, $slugon, $photo) {
+function completerProfilCandidat($id, $nouveauMdp, $surnom, $photo) {
     $conn = dbconnect();
     
     $photoPath = null;
@@ -194,7 +204,7 @@ function completerProfilCandidat($id, $nouveauMdp, $surnom, $slugon, $photo) {
     $mdpHash = password_hash($nouveauMdp, PASSWORD_DEFAULT);
     
     $sql = "UPDATE candidat 
-            SET mot_de_passe = :mdp, surnom = :surnom, slugon = :slugon, 
+            SET mot_de_passe = :mdp, surnom = :surnom, 
                 photo_profil = :photo, mdp_provisoire = 0, compte_verifie = 1 
             WHERE ID_candidat = :id";
     
@@ -203,7 +213,6 @@ function completerProfilCandidat($id, $nouveauMdp, $surnom, $slugon, $photo) {
         ':id' => $id,
         ':mdp' => $mdpHash,
         ':surnom' => $surnom,
-        ':slugon' => $slugon,
         ':photo' => $photoPath
     ]);
 }

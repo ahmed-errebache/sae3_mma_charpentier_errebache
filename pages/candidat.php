@@ -42,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalisation_action']
             $_SESSION['temp_candidat_id'],
             $_SESSION['temp_nouveau_mdp'],
             $_POST['surnom'],
-            $_POST['slugon'],
             $_FILES['photo'] ?? null
         )) {
             unset($_SESSION['temp_candidat_id']);
@@ -57,16 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalisation_action']
 }
 
 $etape = $_GET['etape'] ?? 1;
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finaliser votre compte - MMA Fighter Election</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
 
 <?php if ($action === 'finaliser'): ?>
     
@@ -149,12 +141,6 @@ $etape = $_GET['etape'] ?? 1;
                     </div>
 
                     <div>
-                        <label class="block text-gray-700 font-medium mb-2">Slogan</label>
-                        <input type="text" name="slugon" required 
-                            class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
-                    </div>
-
-                    <div>
                         <label class="block text-gray-700 font-medium mb-2">Photo de profil</label>
                         <input type="file" name="photo" accept="image/*" required 
                             class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
@@ -188,5 +174,4 @@ $etape = $_GET['etape'] ?? 1;
     </div>
 <?php endif; ?>
 
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

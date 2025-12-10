@@ -16,15 +16,15 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (isset($_POST['action']) && $_POST['action'] === 'ajouter_candidat') {
-        $palmares = array_filter($_POST['palmares']);
-        
         $data = [
             'email' => $_POST['email'],
             'nom' => $_POST['nom'],
             'prenom' => $_POST['prenom'],
             'nationalite' => $_POST['nationalite'],
-            'pays_origine' => $_POST['pays_origine'],
-            'palmares' => $palmares
+            'victoires' => $_POST['victoires'],
+            'defaites' => $_POST['defaites'],
+            'egalites' => $_POST['egalites'],
+            'no_contest' => $_POST['no_contest']
         ];
         
         $result = creerCandidat($data);
@@ -37,14 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     if (isset($_POST['action']) && $_POST['action'] === 'modifier_candidat') {
-        $palmares = array_filter($_POST['palmares']);
-        
         $data = [
             'nom' => $_POST['nom'],
             'prenom' => $_POST['prenom'],
             'nationalite' => $_POST['nationalite'],
-            'pays_origine' => $_POST['pays_origine'],
-            'palmares' => $palmares
+            'victoires' => $_POST['victoires'],
+            'defaites' => $_POST['defaites'],
+            'egalites' => $_POST['egalites'],
+            'no_contest' => $_POST['no_contest']
         ];
         
         if (modifierCandidatAdmin($_POST['id_candidat'], $data)) {
@@ -71,26 +71,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+require_once __DIR__ . '/../includes/header.php';
+
 $candidats = getTousCandidats();
-$pays = getListePays();
 
 $candidatEdit = null;
 if (isset($_GET['edit'])) {
     $candidatEdit = getCandidatById($_GET['edit']);
-    if ($candidatEdit) {
-        $candidatEdit['palmares_array'] = json_decode($candidatEdit['palmares'], true) ?: [];
+    if ($candidatEdit && $candidatEdit['palmares']) {
+        $palmares_data = json_decode($candidatEdit['palmares'], true) ?: [];
+        $candidatEdit['victoires'] = $palmares_data['victoires'] ?? 0;
+        $candidatEdit['defaites'] = $palmares_data['defaites'] ?? 0;
+        $candidatEdit['egalites'] = $palmares_data['egalites'] ?? 0;
+        $candidatEdit['no_contest'] = $palmares_data['no_contest'] ?? 0;
     }
 }
+
+$pays = getListePays();
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration - Gestion des Candidats</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
 
 <div class="container mx-auto px-4 py-8">
     <div class="mb-8">
@@ -159,39 +159,36 @@ if (isset($_GET['edit'])) {
                         <?php endforeach; ?>
                     </select>
                 </div>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-3">Pays d'origine</label>
-                    <select name="pays_origine" required 
-                        class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
-                        <option value="">Sélectionner...</option>
-                        <?php foreach ($pays as $p): ?>
-                            <option value="<?php echo htmlspecialchars($p); ?>"
-                                <?php echo ($candidatEdit && $candidatEdit['pays_origine'] === $p) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($p); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
             </div>
 
             <div>
-                <label class="block text-gray-700 font-medium mb-3">Palmarès 2025</label>
-                <div id="palmares-container" class="space-y-4">
-                    <?php
-                    $palmaresArray = $candidatEdit ? $candidatEdit['palmares_array'] : [''];
-                    foreach ($palmaresArray as $palmares):
-                    ?>
-                    <input type="text" name="palmares[]" 
-                        value="<?php echo htmlspecialchars($palmares); ?>"
-                        placeholder="Ex: Champion UFC 2025"
-                        class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
-                    <?php endforeach; ?>
+                <label class="block text-gray-700 font-bold mb-3">Palmarès 2025</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-600 text-sm mb-2">Victoires</label>
+                        <input type="number" name="victoires" min="0" required 
+                            value="<?php echo $candidatEdit ? $candidatEdit['victoires'] : 0; ?>"
+                            class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-600 text-sm mb-2">Défaites</label>
+                        <input type="number" name="defaites" min="0" required 
+                            value="<?php echo $candidatEdit ? $candidatEdit['defaites'] : 0; ?>"
+                            class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-600 text-sm mb-2">Égalités</label>
+                        <input type="number" name="egalites" min="0" required 
+                            value="<?php echo $candidatEdit ? $candidatEdit['egalites'] : 0; ?>"
+                            class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-600 text-sm mb-2">No Contest</label>
+                        <input type="number" name="no_contest" min="0" required 
+                            value="<?php echo $candidatEdit ? $candidatEdit['no_contest'] : 0; ?>"
+                            class="w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500">
+                    </div>
                 </div>
-                <button type="button" onclick="ajouterPalmares()" 
-                    class="mt-4 text-gray-700 hover:text-gray-900 font-medium">
-                    + Ajouter une ligne
-                </button>
             </div>
 
             <div class="flex gap-4">
@@ -266,17 +263,4 @@ if (isset($_GET['edit'])) {
     </div>
 </div>
 
-<script>
-function ajouterPalmares() {
-    const container = document.getElementById('palmares-container');
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.name = 'palmares[]';
-    input.placeholder = 'Ex: Champion UFC 2025';
-    input.className = 'w-full px-4 py-3 border rounded focus:outline-none focus:border-gray-500';
-    container.appendChild(input);
-}
-</script>
-
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

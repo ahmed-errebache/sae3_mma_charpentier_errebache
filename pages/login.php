@@ -33,29 +33,26 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $table = $tables[$user_type];
 
-
-            $sql = "SELECT COUNT(*) 
-                    FROM $table 
-                    WHERE email = :email 
-                    AND mot_de_passe = :password";
-
+            // Récupérer l'utilisateur par email
+            $sql = "SELECT * FROM $table WHERE email = :email";
             $stmt = $connexion->prepare($sql);
-            $stmt->execute([
-                ':email'    => $email,
-                ':password' => $password
-            ]);
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $row_count = $stmt->fetchColumn();
+            // Vérifier si l'utilisateur existe et si le mot de passe correspond
+            if ($user && password_verify($password, $user['mot_de_passe'])) {
+                // Pour les candidats, vérifier que le compte est vérifié
+                if ($user_type === 'candidat' && isset($user['compte_verifie']) && $user['compte_verifie'] == 0) {
+                    $error = "Veuillez finaliser votre compte avant de vous connecter.";
+                } else {
+                    $_SESSION["isConnected"] = true;
+                    $_SESSION['email']       = $email;
+                    $_SESSION['user_type']   = $table;
 
-            // Vérification qu'il existe bien 1 ligne avec cet email et mot de passe pour ce type d'utilisateur
-            if ($row_count == 1) {
-                $_SESSION["isConnected"] = true;
-                $_SESSION['email']       = $email;
-                $_SESSION['user_type']   = $table;
-
-                // Redirection vers la page d'accueil
-                header('Location: ../index.php');
-                exit;
+                    // Redirection vers la page d'accueil
+                    header('Location: ../index.php');
+                    exit;
+                }
             } else {
                 $error = "Email ou mot de passe incorrect.";
             }
