@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once '../includes/config.php'; 
 
 $connexion = dbconnect();
@@ -39,9 +40,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = "Veuillez finaliser votre compte avant de vous connecter.";
                 } else {
                     $_SESSION["isConnected"] = true;
-                    $_SESSION['email'] = $email;
-                    $_SESSION['user_type'] = $table;
+                    $_SESSION['email']       = $email;
+                    $_SESSION['user_type']   = $table;
 
+                    // Redirection vers la page d'accueil
                     header('Location: ../index.php');
                     exit;
                 }
@@ -54,6 +56,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once '../includes/header.php';
 ?>
+
+
+<?php require_once '../includes/header.php'; ?>
+
+
 
 <main class="flex-1">
     <div class="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -145,5 +152,7 @@ require_once '../includes/header.php';
         </div>
     </div>
 </main>
+
+
 
 <?php require_once '../includes/footer.php'; ?>

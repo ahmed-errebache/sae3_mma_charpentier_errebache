@@ -1,7 +1,7 @@
 <?php
 session_start();
+
 require_once '../includes/config.php'; 
-require_once '../includes/functions.php';
 
 $connexion = dbconnect();
 
@@ -64,11 +64,7 @@ require_once '../includes/header.php';
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 sm:p-8">
             <h1 class="text-2xl font-bold text-center text-noir mb-6">Inscription</h1>
 
-            <?php if (!empty($error)): ?>
-                <div class="bg-error/10 border border-error text-error px-4 py-3 rounded mb-4">
-                    <?php echo htmlspecialchars($error); ?>
-                </div>
-            <?php endif; ?>
+<?php require_once '../includes/header.php'; ?>
 
             <?php if (!empty($success)): ?>
                 <div class="bg-success/10 border border-success text-success px-4 py-3 rounded mb-4">

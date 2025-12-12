@@ -3,7 +3,21 @@ session_start();
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
 
-// Vérifier si connecté
+// Déconnexion avec le bouton
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+
+    // Suppression des variables de session
+    unset($_SESSION['isConnected'], $_SESSION['email'], $_SESSION['user_type']);
+
+    // Redirection vers l'accueil
+    header('Location: ../index.php');
+    exit;
+}
+
+
+require_once '../includes/config.php';
+
+// Revérification que l'utilisateur est connecté
 if (!isset($_SESSION['isConnected']) || $_SESSION['isConnected'] !== true) {
     header('Location: login.php');
     exit;
@@ -216,6 +230,12 @@ try {
 
 require_once '../includes/header.php';
 ?>
+
+<?php require_once '../includes/header.php'; ?>
+
+
+
+
 
 <main class="flex-1">
     <div class="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
@@ -457,5 +477,7 @@ require_once '../includes/header.php';
         </div>
     </div>
 </main>
+
+
 
 <?php require_once '../includes/footer.php'; ?>

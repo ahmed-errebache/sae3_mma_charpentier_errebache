@@ -39,10 +39,10 @@
             <!-- Boutons d'action principaux -->
             <div class="hero-buttons flex flex-wrap gap-3 opacity-0 translate-y-8 transition-all duration-1000 delay-600">
                 <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true): ?>
-                    <a href="<?php echo $base_url; ?>/pages/profil.php" class="inline-flex items-center justify-center px-6 py-3 font-anek font-medium text-center text-white rounded-lg bg-rouge hover:bg-rouge/90 focus:ring-4 focus:ring-rouge/30 transition-all duration-200 hover:scale-105">
+                    <a href="<?php echo $base_url; ?>/pages/profil.php" class="inline-flex items-center justify-center px-6 py-3 font-anek font-medium text-center text-white rounded-lg bg-dore hover:bg-dore/90 focus:ring-4 focus:ring-dore/30 transition-all duration-200 hover:scale-105">
                         Mon Profil
                         <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                         </svg>
                     </a>
                 <?php else: ?>
