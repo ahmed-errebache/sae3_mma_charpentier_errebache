@@ -1,73 +1,59 @@
 <?php
-
 session_start();
-
-include '../includes/config.php'; 
+require_once '../includes/config.php'; 
 
 $connexion = dbconnect();
 
 $error = '';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupération des données du formulaire
     $user_type = $_POST['user_type'] ?? '';
-    $email     = $_POST['email'] ?? '';
-    $password  = $_POST['password'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    // Validation simple
     if (empty($user_type) || empty($email) || empty($password)) {
         $error = 'Veuillez remplir tous les champs.';
     } else {
-
-        // Les clés correspondent aux value des boutons radio, et les valeurs sont les noms des tables de la base de données
         $tables = [
             'electeur_public' => 'electeur',
-            'electeur_pro'    => 'electeur',
-            'candidat'        => 'candidat',
-            'admin'           => 'administrateur'
+            'electeur_pro' => 'electeur',
+            'candidat' => 'candidat',
+            'admin' => 'administrateur'
         ];
 
-        // Vérifier que le type est autorisé
         if (!isset($tables[$user_type])) {
             $error = "Type d'utilisateur invalide.";
         } else {
             $table = $tables[$user_type];
 
-
-            $sql = "SELECT COUNT(*) 
-                    FROM $table 
-                    WHERE email = :email 
-                    AND mot_de_passe = :password";
-
+            // Récupérer l'utilisateur par email
+            $sql = "SELECT * FROM $table WHERE email = :email";
             $stmt = $connexion->prepare($sql);
-            $stmt->execute([
-                ':email'    => $email,
-                ':password' => $password
-            ]);
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $row_count = $stmt->fetchColumn();
+            // Vérifier si l'utilisateur existe et si le mot de passe correspond
+            if ($user && password_verify($password, $user['mot_de_passe'])) {
+                // Pour les candidats, vérifier que le compte est vérifié
+                if ($user_type === 'candidat' && isset($user['compte_verifie']) && $user['compte_verifie'] == 0) {
+                    $error = "Veuillez finaliser votre compte avant de vous connecter.";
+                } else {
+                    $_SESSION["isConnected"] = true;
+                    $_SESSION['email'] = $email;
+                    $_SESSION['user_type'] = $table;
 
-            // Vérification qu'il existe bien 1 ligne avec cet email et mot de passe pour ce type d'utilisateur
-            if ($row_count == 1) {
-                $_SESSION["isConnected"] = true;
-                $_SESSION['email']       = $email;
-                $_SESSION['user_type']   = $table;
-
-                // Redirection vers la page d'accueil
-                header('Location: ../index.php');
-                exit;
+                    header('Location: ../index.php');
+                    exit;
+                }
             } else {
                 $error = "Email ou mot de passe incorrect.";
             }
         }
     }
 }
+
+require_once '../includes/header.php';
 ?>
-
-
-<?php include '../includes/header.php'; ?>
-
-
 
 <main class="flex-1">
     <div class="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -150,11 +136,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         Se connecter
                     </button>
                 </div>
+
+                <!-- Lien vers inscription -->
+                <div class="text-center text-sm text-gray-600">
+                    Pas encore inscrit ? <a href="register.php" class="text-bleu hover:underline font-medium">S'inscrire</a>
+                </div>
             </form>
         </div>
     </div>
 </main>
 
-
-
-<?php include '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

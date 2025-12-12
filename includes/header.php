@@ -1,6 +1,23 @@
 <?php
 // Chemin de base du projet
 $base_url = '/sae3_mma_charpentier_errebache';
+
+// Récupérer les informations de l'utilisateur connecté
+$user_name = '';
+if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isset($_SESSION['email']) && isset($_SESSION['user_type'])) {
+    require_once __DIR__ . '/config.php';
+    $conn = dbconnect();
+    $table = $_SESSION['user_type'];
+    
+    $sql = "SELECT prenom, nom FROM $table WHERE email = :email LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':email' => $_SESSION['email']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($user) {
+        $user_name = $user['prenom'] . ' ' . $user['nom'];
+    }
+}
 ?>
 
 
@@ -16,13 +33,12 @@ $base_url = '/sae3_mma_charpentier_errebache';
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>    
+    
     <!-- Google Fonts pour les typographies personnalisées -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <title>MMA Fighter Election</title>    
+    
     <!-- CSS personnalisé -->
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/style.css">
     
@@ -87,14 +103,21 @@ $base_url = '/sae3_mma_charpentier_errebache';
                     <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
                 </div>
                 
-                <div class="md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0 hidden">
+                <div class="md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0 hidden gap-3">
                     <?php
-                        // si on est connecté, le bouton "profil" est affiché
-                        if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true)
+                        // si on est connecté, afficher les boutons profil et déconnexion
+                        if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true) {
                             echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/profil.php" class="items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-dore border border-dore hover:bg-dore/80 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/30">Mon Profil</a></span>';
+                            echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/logout.php" class="items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-rouge/80 backdrop-blur-sm inline-flex border border-white/30 hover:bg-rouge hover:border-white transition-all duration-200" title="Se déconnecter">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                            </a></span>';
+                        }
                         // sinon le bouton "se connecter" est affiché
-                        else
+                        else {
                             echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/login.php" class="items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-rouge/80 backdrop-blur-sm inline-flex border border-white/30 hover:bg-rouge hover:border-white transition-all duration-200">Se connecter</a></span>';
+                        }
                     ?>
 
                     <span class="ml-3 rounded-md inline-flex shadow-lg">
