@@ -293,4 +293,214 @@ function getListePays() {
         "Uruguay", "Vanuatu", "Vatican", "Venezuela", "Viêt Nam", "Yémen", "Zambie", "Zimbabwe"
     ];
 }
+
+/**
+ * Récupère le scrutin actif
+ * @return array|null Le scrutin en cours ou null
+ */
+function getScrutinActif() {
+    try {
+        $conn = dbconnect();
+        $sql = "SELECT * FROM scrutin 
+                WHERE statut = 'en_cours' 
+                AND date_ouverture <= NOW() 
+                AND date_fermeture >= NOW() 
+                ORDER BY date_ouverture DESC 
+                LIMIT 1";
+        
+        $stmt = $conn->query($sql);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erreur getScrutinActif: " . $e->getMessage());
+        return null;
+    }
+}
+
+/**
+ * Vérifie si un électeur peut voter
+ * @param int $id_electeur L'ID de l'électeur
+ * @return array ['peut_voter' => bool, 'message' => string, 'scrutin' => array|null]
+ */
+function peutVoter($id_electeur) {
+    try {
+        $conn = dbconnect();
+        
+        // Vérifier scrutin actif
+        $scrutin = getScrutinActif();
+        if (!$scrutin) {
+            return [
+                'peut_voter' => false,
+                'message' => 'Aucun scrutin n\'est actuellement ouvert.',
+                'scrutin' => null
+            ];
+        }
+        
+        // Vérifier si l'électeur a déjà voté pour ce scrutin
+        $sql = "SELECT COUNT(*) as nb_votes 
+                FROM vote 
+                WHERE id_electeur = :id_electeur 
+                AND id_scrutin = :id_scrutin";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            ':id_electeur' => $id_electeur,
+            ':id_scrutin' => $scrutin['id_scrutin']
+        ]);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result['nb_votes'] > 0) {
+            return [
+                'peut_voter' => false,
+                'message' => 'Vous avez déjà voté pour ce scrutin.',
+                'scrutin' => $scrutin
+            ];
+        }
+        
+        return [
+            'peut_voter' => true,
+            'message' => 'Vous pouvez voter.',
+            'scrutin' => $scrutin
+        ];
+        
+    } catch (PDOException $e) {
+        error_log("Erreur peutVoter: " . $e->getMessage());
+        return [
+            'peut_voter' => false,
+            'message' => 'Une erreur est survenue lors de la vérification.',
+            'scrutin' => null
+        ];
+    }
+}
+
+/**
+ * Enregistre un vote dans la base de données
+ * @param int $id_electeur L'ID de l'électeur
+ * @param int $id_candidat L'ID du candidat choisi
+ * @return array ['success' => bool, 'message' => string]
+ */
+function enregistrerVote($id_electeur, $id_candidat) {
+    try {
+        $conn = dbconnect();
+        
+        // Vérifier si l'électeur peut voter
+        $verification = peutVoter($id_electeur);
+        if (!$verification['peut_voter']) {
+            return [
+                'success' => false,
+                'message' => $verification['message']
+            ];
+        }
+        
+        $scrutin = $verification['scrutin'];
+        
+        // Récupérer le type d'électeur
+        $sqlElecteur = "SELECT type_electeur FROM electeur WHERE id_electeur = :id_electeur";
+        $stmtElecteur = $conn->prepare($sqlElecteur);
+        $stmtElecteur->execute([':id_electeur' => $id_electeur]);
+        $electeur = $stmtElecteur->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$electeur) {
+            return [
+                'success' => false,
+                'message' => 'Électeur introuvable.'
+            ];
+        }
+        
+        // Vérifier que le candidat existe et est vérifié
+        $sqlCandidat = "SELECT id_candidat FROM candidat 
+                        WHERE id_candidat = :id_candidat 
+                        AND compte_verifie = 1";
+        $stmtCandidat = $conn->prepare($sqlCandidat);
+        $stmtCandidat->execute([':id_candidat' => $id_candidat]);
+        
+        if (!$stmtCandidat->fetch()) {
+            return [
+                'success' => false,
+                'message' => 'Candidat invalide.'
+            ];
+        }
+        
+        // Transaction pour garantir l'intégrité
+        $conn->beginTransaction();
+        
+        try {
+            // Enregistrer le vote
+            $sqlVote = "INSERT INTO vote (id_electeur, id_candidat, id_scrutin, type_electeur) 
+                        VALUES (:id_electeur, :id_candidat, :id_scrutin, :type_electeur)";
+            
+            $stmtVote = $conn->prepare($sqlVote);
+            $stmtVote->execute([
+                ':id_electeur' => $id_electeur,
+                ':id_candidat' => $id_candidat,
+                ':id_scrutin' => $scrutin['id_scrutin'],
+                ':type_electeur' => $electeur['type_electeur']
+            ]);
+            
+            // Mettre à jour le flag a_vote
+            $sqlUpdate = "UPDATE electeur SET a_vote = 1 WHERE id_electeur = :id_electeur";
+            $stmtUpdate = $conn->prepare($sqlUpdate);
+            $stmtUpdate->execute([':id_electeur' => $id_electeur]);
+            
+            $conn->commit();
+            
+            return [
+                'success' => true,
+                'message' => 'Votre vote a été enregistré avec succès !'
+            ];
+            
+        } catch (PDOException $e) {
+            $conn->rollBack();
+            error_log("Erreur transaction vote: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Une erreur est survenue lors de l\'enregistrement du vote.'
+            ];
+        }
+        
+    } catch (PDOException $e) {
+        error_log("Erreur enregistrerVote: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Une erreur est survenue. Veuillez réessayer.'
+        ];
+    }
+}
+
+/**
+ * Récupère le vote d'un électeur pour le scrutin actif
+ * @param int $id_electeur L'ID de l'électeur
+ * @return array|null Les informations du vote ou null si aucun vote
+ */
+function getVoteElecteur($id_electeur) {
+    try {
+        $conn = dbconnect();
+        
+        // Récupérer le scrutin actif
+        $scrutin = getScrutinActif();
+        if (!$scrutin) {
+            return null;
+        }
+        
+        $sql = "SELECT v.*, 
+                       c.nom, c.prenom, c.surnom, c.photo_profil, c.nationalite,
+                       v.date_vote
+                FROM vote v
+                JOIN candidat c ON v.id_candidat = c.id_candidat
+                WHERE v.id_electeur = :id_electeur 
+                AND v.id_scrutin = :id_scrutin";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            ':id_electeur' => $id_electeur,
+            ':id_scrutin' => $scrutin['id_scrutin']
+        ]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+        
+    } catch (PDOException $e) {
+        error_log("Erreur getVoteElecteur: " . $e->getMessage());
+        return null;
+    }
+}
 ?>
