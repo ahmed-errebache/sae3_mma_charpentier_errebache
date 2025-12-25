@@ -182,7 +182,7 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                 <input type="hidden" name="action" value="voter">
                 
                 <!-- Grille des candidats -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     <?php foreach ($candidats as $candidat): ?>
                         <label class="cursor-pointer group">
                             <input type="radio" 
@@ -191,9 +191,9 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                                    class="peer hidden"
                                    required>
                             
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-transparent peer-checked:border-rouge peer-checked:shadow-xl transition-all duration-300 hover:shadow-lg">
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden border-2 border-transparent peer-checked:border-rouge peer-checked:shadow-2xl transition-all duration-300 hover:shadow-xl hover:scale-105">
                                 <!-- Photo -->
-                                <div class="aspect-square bg-gray-100 flex items-center justify-center p-4">
+                                <div class="relative w-full h-40 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-3">
                                     <?php 
                                     $photoUrl = !empty($candidat['photo_profil']) 
                                         ? $baseUrl . '/' . $candidat['photo_profil'] 
@@ -201,7 +201,7 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                                     ?>
                                     <img src="<?php echo htmlspecialchars($photoUrl); ?>" 
                                          alt="<?php echo htmlspecialchars($candidat['nom'] . ' ' . $candidat['prenom']); ?>"
-                                         class="w-full h-full object-cover rounded-full">
+                                         class="max-w-full max-h-full object-contain">
                                 </div>
                                 
                                 <!-- Informations -->
@@ -221,8 +221,8 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                                     </p>
                                     
                                     <!-- Badge sélectionné -->
-                                    <div class="mt-4 text-center">
-                                        <span class="hidden peer-checked:inline-block px-4 py-2 bg-rouge text-white font-bebas text-sm rounded-full">
+                                    <div class="mt-3 text-center">
+                                        <span class="hidden peer-checked:inline-flex items-center gap-1 px-4 py-2 bg-rouge text-white font-bebas text-sm rounded-full shadow-lg animate-pulse">
                                             ✓ SÉLECTIONNÉ
                                         </span>
                                     </div>
@@ -253,11 +253,11 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                 <div class="mb-8 p-4 bg-blue-50 rounded-lg text-center">
                     <p class="text-bleu font-medium">Liste des candidats (vote non disponible)</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <?php foreach ($candidats as $candidat): ?>
                         <div class="bg-white rounded-lg shadow-md overflow-hidden">
                             <!-- Photo -->
-                            <div class="aspect-square bg-gray-100 flex items-center justify-center p-4">
+                            <div class="relative w-full h-40 bg-gray-100 flex items-center justify-center">
                                 <?php 
                                 $photoUrl = !empty($candidat['photo_profil']) 
                                     ? $baseUrl . '/' . $candidat['photo_profil'] 
@@ -265,7 +265,7 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                                 ?>
                                 <img src="<?php echo htmlspecialchars($photoUrl); ?>" 
                                      alt="<?php echo htmlspecialchars($candidat['nom'] . ' ' . $candidat['prenom']); ?>"
-                                     class="w-full h-full object-cover rounded-full">
+                                     class="max-w-full max-h-full object-contain">
                             </div>
                             
                             <!-- Informations -->
