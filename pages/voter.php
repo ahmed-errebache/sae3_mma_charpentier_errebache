@@ -26,12 +26,15 @@ if (!$electeur) {
 $successMessage = '';
 $errorMessage = '';
 $voteExistant = null;
+$peutVoter = false;
+$messageVerification = '';
+$scrutinActif = null;
 
 // Traitement du formulaire de vote
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    if ($_POST['action'] === 'voter' && isset($_POST['candidat_id'])) {
+    if ($_POST['action'] === 'voter' && isset($_POST['candidat_id']) && isset($electeur['ID_electeur'])) {
         $id_candidat = (int)$_POST['candidat_id'];
-        $resultat = enregistrerVote($electeur['id_electeur'], $id_candidat);
+        $resultat = enregistrerVote($electeur['ID_electeur'], $id_candidat);
         
         if ($resultat['success']) {
             $successMessage = $resultat['message'];
@@ -44,15 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// Vérifier si l'électeur peut voter
-$verification = peutVoter($electeur['id_electeur']);
-$peutVoter = $verification['peut_voter'];
-$messageVerification = $verification['message'];
-$scrutinActif = $verification['scrutin'];
-
-// Récupérer le vote existant si l'électeur a déjà voté
-if (!$peutVoter && $scrutinActif) {
-    $voteExistant = getVoteElecteur($electeur['id_electeur']);
+// Vérifier si l'électeur peut voter (seulement si on a l'id)
+if (isset($electeur['ID_electeur'])) {
+    $verification = peutVoter($electeur['ID_electeur']);
+    $peutVoter = $verification['peut_voter'];
+    $messageVerification = $verification['message'];
+    $scrutinActif = $verification['scrutin'];
+    
+    // Récupérer le vote existant si l'électeur a déjà voté
+    if (!$peutVoter && $scrutinActif) {
+        $voteExistant = getVoteElecteur($electeur['ID_electeur']);
+    }
 }
 
 // Récupérer tous les candidats vérifiés
@@ -167,11 +172,7 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
         <?php if (!$peutVoter && !$scrutinActif): ?>
             <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
                 <div class="text-6xl mb-4">🗳️</div>
-                <p class="text-xl text-gray-700 mb-4"><?php echo htmlspecialchars($messageVerification); ?></p>
-                <a href="<?php echo $baseUrl; ?>" 
-                   class="inline-block px-6 py-3 bg-bleu text-white font-bebas text-xl rounded-lg hover:bg-bleu/90 transition">
-                    Retour à l'accueil
-                </a>
+                <p class="text-xl text-gray-700"><?php echo htmlspecialchars($messageVerification); ?></p>
             </div>
         <?php endif; ?>
 
@@ -186,7 +187,7 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                         <label class="cursor-pointer group">
                             <input type="radio" 
                                    name="candidat_id" 
-                                   value="<?php echo $candidat['id_candidat']; ?>"
+                                   value="<?php echo htmlspecialchars($candidat['ID_candidat']); ?>"
                                    class="peer hidden"
                                    required>
                             
@@ -228,6 +229,8 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         </label>
+                            </div>
+                        </label>
                     <?php endforeach; ?>
                 </div>
 
@@ -240,6 +243,51 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                     </button>
                 </div>
             </form>
+        <?php elseif (!$peutVoter && empty($candidats)): ?>
+            <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
+                <p class="text-xl text-gray-700">Aucun candidat n'est actuellement disponible pour le vote.</p>
+            </div>
+        <?php elseif (!$peutVoter && !empty($candidats)): ?>
+            <!-- Affichage des candidats en lecture seule -->
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-8 p-4 bg-blue-50 rounded-lg text-center">
+                    <p class="text-bleu font-medium">Liste des candidats (vote non disponible)</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php foreach ($candidats as $candidat): ?>
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                            <!-- Photo -->
+                            <div class="aspect-square bg-gray-100 flex items-center justify-center p-4">
+                                <?php 
+                                $photoUrl = !empty($candidat['photo_profil']) 
+                                    ? $baseUrl . '/' . $candidat['photo_profil'] 
+                                    : $baseUrl . '/assets/img/default-avatar.png';
+                                ?>
+                                <img src="<?php echo htmlspecialchars($photoUrl); ?>" 
+                                     alt="<?php echo htmlspecialchars($candidat['nom'] . ' ' . $candidat['prenom']); ?>"
+                                     class="w-full h-full object-cover rounded-full">
+                            </div>
+                            
+                            <!-- Informations -->
+                            <div class="p-4">
+                                <h3 class="text-xl font-bebas text-noir text-center mb-1">
+                                    <?php echo htmlspecialchars($candidat['nom'] . ' ' . $candidat['prenom']); ?>
+                                </h3>
+                                
+                                <?php if (!empty($candidat['surnom'])): ?>
+                                    <p class="text-center text-gray-600 italic mb-2">
+                                        "<?php echo htmlspecialchars($candidat['surnom']); ?>"
+                                    </p>
+                                <?php endif; ?>
+                                
+                                <p class="text-center text-sm text-gray-600">
+                                    🏁 <?php echo htmlspecialchars($candidat['nationalite']); ?>
+                                </p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         <?php elseif ($peutVoter && empty($candidats)): ?>
             <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
                 <p class="text-xl text-gray-700">Aucun candidat n'est actuellement disponible pour le vote.</p>
