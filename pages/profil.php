@@ -85,26 +85,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
     } elseif ($userType === 'electeur') {
-        // Électeur peut modifier toutes ses infos sauf l'email
+        // Electeur peut modifier uniquement nom et prenom
         $nom = trim($_POST['nom'] ?? '');
         $prenom = trim($_POST['prenom'] ?? '');
-        $age = trim($_POST['age'] ?? '');
-        $nationalite = trim($_POST['nationalite'] ?? '');
-        $sexe = trim($_POST['sexe'] ?? '');
         $currentPassword = trim($_POST['current_password'] ?? '');
         $newPassword = trim($_POST['new_password'] ?? '');
         $confirmPassword = trim($_POST['confirm_password'] ?? '');
         
         if (empty($nom) || empty($prenom)) {
-            $errors[] = "Le nom et prénom sont obligatoires.";
-        }
-        
-        if (!empty($age) && (!ctype_digit($age) || (int)$age <= 0)) {
-            $errors[] = "L'âge doit être un nombre positif.";
-        }
-        
-        if (!empty($sexe) && !in_array($sexe, ['Homme', 'Femme'], true)) {
-            $errors[] = "Le sexe doit être « Homme » ou « Femme ».";
+            $errors[] = "Le nom et prenom sont obligatoires.";
         }
         
         // Si on veut changer le mot de passe
@@ -115,6 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = "Le mot de passe actuel est incorrect.";
             } elseif (empty($newPassword)) {
                 $errors[] = "Veuillez entrer un nouveau mot de passe.";
+            } elseif (!validerMotDePasse($newPassword)) {
+                $errors[] = "Le mot de passe doit contenir au moins 8 caracteres, une majuscule et un chiffre.";
             } elseif ($newPassword !== $confirmPassword) {
                 $errors[] = "Les nouveaux mots de passe ne correspondent pas.";
             }
@@ -125,18 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sql = "UPDATE electeur SET nom = :nom, prenom = :prenom";
                 $params = [':nom' => $nom, ':prenom' => $prenom, ':email' => $email];
                 
-                if (!empty($age)) {
-                    $sql .= ", age = :age";
-                    $params[':age'] = (int)$age;
-                }
-                if (!empty($nationalite)) {
-                    $sql .= ", nationalite = :nationalite";
-                    $params[':nationalite'] = $nationalite;
-                }
-                if (!empty($sexe)) {
-                    $sql .= ", sexe = :sexe";
-                    $params[':sexe'] = $sexe;
-                }
                 if (!empty($newPassword) && !empty($currentPassword)) {
                     $sql .= ", mot_de_passe = :password";
                     $params[':password'] = password_hash($newPassword, PASSWORD_DEFAULT);
@@ -146,23 +125,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $connexion->prepare($sql);
                 $stmt->execute($params);
                 
-                $success = "Informations mises à jour avec succès.";
+                $success = "Informations mises a jour avec succes.";
             } catch (PDOException $e) {
-                $errors[] = "Erreur lors de la mise à jour.";
+                $errors[] = "Erreur lors de la mise a jour.";
             }
         }
         
     } elseif ($userType === 'candidat') {
-        // Candidat peut modifier : surnom, photo et mot de passe
+        // Candidat peut modifier : surnom (optionnel), photo et mot de passe
         $surnom = trim($_POST['surnom'] ?? '');
         $currentPassword = trim($_POST['current_password'] ?? '');
         $newPassword = trim($_POST['new_password'] ?? '');
         $confirmPassword = trim($_POST['confirm_password'] ?? '');
         $photo = $_FILES['photo'] ?? null;
-        
-        if (empty($surnom)) {
-            $errors[] = "Le surnom est obligatoire.";
-        }
         
         // Si on veut changer le mot de passe
         if (!empty($currentPassword) || !empty($newPassword) || !empty($confirmPassword)) {
@@ -172,6 +147,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = "Le mot de passe actuel est incorrect.";
             } elseif (empty($newPassword)) {
                 $errors[] = "Veuillez entrer un nouveau mot de passe.";
+            } elseif (!validerMotDePasse($newPassword)) {
+                $errors[] = "Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.";
             } elseif ($newPassword !== $confirmPassword) {
                 $errors[] = "Les nouveaux mots de passe ne correspondent pas.";
             }
@@ -180,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             try {
                 $sql = "UPDATE candidat SET surnom = :surnom";
-                $params = [':surnom' => $surnom, ':email' => $email];
+                $params = [':surnom' => $surnom ?: null, ':email' => $email];
                 
                 // Upload photo si fournie
                 if ($photo && $photo['error'] === 0) {
@@ -290,8 +267,20 @@ require_once '../includes/header.php';
                                     <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['email'] ?? ''); ?></p>
                                 </div>
                                 <div>
+                                    <p class="text-sm font-medium text-gray-500">Âge</p>
+                                    <p class="mt-1 text-gray-900">
+                                        <?php 
+                                        if (!empty($user['date_naissance'])) {
+                                            echo calculerAge($user['date_naissance']) . ' ans';
+                                        } else {
+                                            echo 'Non renseigné';
+                                        }
+                                        ?>
+                                    </p>
+                                </div>
+                                <div>
                                     <p class="text-sm font-medium text-gray-500">Nationalité</p>
-                                    <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['nationalite'] ?? ''); ?></p>
+                                    <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['nationalite'] ?? 'Non renseigné'); ?></p>
                                 </div>
                             </div>
                         </div>
@@ -301,9 +290,10 @@ require_once '../includes/header.php';
                             <h2 class="text-lg font-semibold text-gray-900">Informations modifiables</h2>
                             
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Surnom de combat *</label>
-                                <input type="text" name="surnom" value="<?php echo htmlspecialchars($user['surnom'] ?? ''); ?>" required
-                                    class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Surnom de combat</label>
+                                <input type="text" name="surnom" value="<?php echo htmlspecialchars($user['surnom'] ?? ''); ?>"
+                                    class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
+                                    placeholder="Optionnel">
                             </div>
 
                             <div>
@@ -351,43 +341,72 @@ require_once '../includes/header.php';
                     </form>
 
                 <?php elseif ($userType === 'electeur'): ?>
-                    <!-- PROFIL ÉLECTEUR - Tout modifiable sauf email -->
+                    <!-- PROFIL ELECTEUR - Afficher toutes les infos, modification limitee a nom et prenom -->
                     <form method="post" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
-                                <input type="text" name="nom" value="<?php echo htmlspecialchars($user['nom'] ?? ''); ?>" required
-                                    class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-3 mb-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-3">Informations personnelles</h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                                    <input type="text" name="nom" value="<?php echo htmlspecialchars($user['nom'] ?? ''); ?>" required
+                                        class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Prenom *</label>
+                                    <input type="text" name="prenom" value="<?php echo htmlspecialchars($user['prenom'] ?? ''); ?>" required
+                                        class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
-                                <input type="text" name="prenom" value="<?php echo htmlspecialchars($user['prenom'] ?? ''); ?>" required
-                                    class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Âge</label>
-                                <input type="number" name="age" value="<?php echo htmlspecialchars($user['age'] ?? ''); ?>" min="1"
-                                    class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nationalité</label>
-                                <input type="text" name="nationalite" value="<?php echo htmlspecialchars($user['nationalite'] ?? ''); ?>"
-                                    class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Sexe</label>
-                                <select name="sexe"
-                                    class="block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
-                                    <option value="">-- Sélectionnez --</option>
-                                    <option value="Homme" <?php echo (isset($user['sexe']) && $user['sexe'] === 'Homme') ? 'selected' : ''; ?>>Homme</option>
-                                    <option value="Femme" <?php echo (isset($user['sexe']) && $user['sexe'] === 'Femme') ? 'selected' : ''; ?>>Femme</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" disabled
-                                    class="block w-full rounded-md border border-gray-300 bg-gray-100 shadow-sm px-3 py-2 text-gray-500 cursor-not-allowed">
-                                <p class="mt-1 text-xs text-gray-500">L'email ne peut pas être modifié</p>
+                            
+                            <div class="border-t border-gray-200 pt-4 mt-4">
+                                <h3 class="text-sm font-semibold text-gray-900 mb-3">Informations non modifiables</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Email</p>
+                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['email'] ?? ''); ?></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Age</p>
+                                        <p class="mt-1 text-gray-900">
+                                            <?php 
+                                            if (!empty($user['age'])) {
+                                                echo htmlspecialchars($user['age']) . ' ans';
+                                            } else {
+                                                echo 'Non renseigne';
+                                            }
+                                            ?>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Sexe</p>
+                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['sexe'] ?? 'Non renseigne'); ?></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Nationalite</p>
+                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['nationalite'] ?? 'Non renseignee'); ?></p>
+                                    </div>
+                                    <?php if (!empty($user['code_fourni'])): ?>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Type de professionnel</p>
+                                        <p class="mt-1 text-gray-900">
+                                            <?php 
+                                            $sqlCollege = "SELECT type FROM college WHERE ID_college = :id";
+                                            $stmtCollege = $connexion->prepare($sqlCollege);
+                                            $stmtCollege->execute([':id' => $user['id_college']]);
+                                            $college = $stmtCollege->fetch(PDO::FETCH_ASSOC);
+                                            if ($college && $college['type'] === 'journaliste') {
+                                                echo 'Journaliste';
+                                            } elseif ($college && $college['type'] === 'coach') {
+                                                echo 'Coach';
+                                            } else {
+                                                echo 'Electeur public';
+                                            }
+                                            ?>
+                                        </p>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                         
