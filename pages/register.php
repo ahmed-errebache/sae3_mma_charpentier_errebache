@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+// Rediriger si déjà connecté
+if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true) {
+    header('Location: /sae3_mma_charpentier_errebache/index.php');
+    exit;
+}
+
 require_once '../includes/config.php'; 
 
 $connexion = dbconnect();
