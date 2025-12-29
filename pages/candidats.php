@@ -186,11 +186,3 @@ $candidats = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </script>
 </body>
 </html>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    </div>
-</div>
-
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
-</body>
-</html>

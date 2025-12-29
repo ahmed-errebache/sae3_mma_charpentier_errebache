@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 12 déc. 2025 à 14:58
+-- Généré le : lun. 29 déc. 2025 à 14:25
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.0.30
 
@@ -40,7 +40,7 @@ CREATE TABLE `administrateur` (
 --
 
 INSERT INTO `administrateur` (`ID_admin`, `email`, `mot_de_passe`, `prenom`, `nom`) VALUES
-(1, 'ahmed@exemple.com', '$2y$12$LJQ9CYnZtP0tnGQZVzdSf.MorzpHWTi1wK6IoW51aK6QQMu1qluS2', 'ahmed', 'errebache');
+(1, 'admin@exemple.com', '$2y$12$vB0Awg2G7/1de8kRZ8qeOeD9XCGGQ7hNeaPLufKLIeYjb6k3HDtFu', 'Admin', 'Système');
 
 -- --------------------------------------------------------
 
@@ -72,7 +72,46 @@ CREATE TABLE `candidat` (
 --
 
 INSERT INTO `candidat` (`ID_candidat`, `email`, `mot_de_passe`, `mdp_provisoire`, `prenom`, `surnom`, `slogan`, `nom`, `nationalite`, `palmares`, `photo_profil`, `compte_verifie`, `compte_actif`, `date_creation`, `date_verification`, `id_scrutin`) VALUES
-(12, 'ahmed.errebache1@gmail.com', '$2y$10$dsEtO91HW08/zPupDuQ1qORJLEZuV/fBFSZmwbn7Mq4IFafjo0MVm', '0', 'Ahmed', 'cc', NULL, 'Errebache', 'Maroc', '{\"victoires\":10,\"defaites\":5,\"egalites\":2,\"no_contest\":0}', '/sae3_mma_charpentier_errebache/images/candidats/candidat_69399d159efd14.99079324.png', 1, 1, '2025-12-09 08:43:39', NULL, NULL);
+(1, 'candidat1@exemple.com', '$2y$12$wqUSXjvhhGVRQ156SfxBneJV/9t5Cgvmc/MFu1K.RHyDLWLnWbxZK', NULL, 'Alexandre', 'Le Lion', 'Force et détermination', 'Silva', 'Brésilienne', '{\"victoires\":25,\"defaites\":5,\"egalites\":2,\"no_contest\":1}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
+(2, 'candidat2@exemple.com', '$2y$12$.xS3KTR9yDAzHJqwA.B2xeRFRXQ0g4CgCYRLnIlQbEfcTpJ1LRMKK', NULL, 'Khabib', 'L\'Aigle', 'Invincibilité incarnée', 'Nurmagomedov', 'Russe', '{\"victoires\":29,\"defaites\":0,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
+(3, 'candidat3@exemple.com', '$2y$12$5HEr6pPP.FvWYszmzLTOBOx7QwnBsd9SdTzPqs6jo6re.uqArLvty', NULL, 'Ronda', 'Rowdy', 'La pionnière', 'Rousey', 'Américaine', '{\"victoires\":12,\"defaites\":2,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
+(4, 'candidat4@exemple.com', '$2y$12$U/lwSheLdsGjhRpgO04CK.QcftRzadpsD.C9HID.lHKBau4CI08li', NULL, 'Georges', 'GSP', 'Le rush canadien', 'St-Pierre', 'Canadienne', '{\"victoires\":26,\"defaites\":2,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
+(5, 'candidat5@exemple.com', '$2y$12$Otji.p.PHTwV/c1W9mUX2OPHR.NU0Fx2B2libG465ZM/UjC0qQHhO', NULL, 'Amanda', 'La Lionne', 'Double championne', 'Nunes', 'Brésilienne', '{\"victoires\":22,\"defaites\":5,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `code_professionnel`
+--
+
+CREATE TABLE `code_professionnel` (
+  `ID_code` int(11) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `prenom` varchar(50) NOT NULL,
+  `nom` varchar(50) NOT NULL,
+  `type_professionnel` enum('journaliste','coach') NOT NULL,
+  `date_generation` datetime DEFAULT current_timestamp(),
+  `date_utilisation` datetime DEFAULT NULL,
+  `utilise` tinyint(1) DEFAULT 0,
+  `id_college` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `code_professionnel`
+--
+
+INSERT INTO `code_professionnel` (`ID_code`, `code`, `email`, `prenom`, `nom`, `type_professionnel`, `date_generation`, `date_utilisation`, `utilise`, `id_college`) VALUES
+(1, 'JOURN001-2025', 'journaliste1@exemple.com', 'Jacques', 'Moreau', 'journaliste', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 2),
+(2, 'JOURN002-2025', 'journaliste2@exemple.com', 'Catherine', 'Leroy', 'journaliste', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 2),
+(3, 'JOURN003-2025', 'journaliste3@exemple.com', 'Philippe', 'Girard', 'journaliste', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 2),
+(4, 'JOURN004-2025', 'journaliste4@exemple.com', 'Isabelle', 'Rousseau', 'journaliste', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 2),
+(5, 'JOURN005-2025', 'journaliste5@exemple.com', 'Thomas', 'Vincent', 'journaliste', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 2),
+(6, 'COACH001-2025', 'coach1@exemple.com', 'Marc', 'Fontaine', 'coach', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 3),
+(7, 'COACH002-2025', 'coach2@exemple.com', 'Nathalie', 'Chevalier', 'coach', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 3),
+(8, 'COACH003-2025', 'coach3@exemple.com', 'Olivier', 'Gauthier', 'coach', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 3),
+(9, 'COACH004-2025', 'coach4@exemple.com', 'Valérie', 'Lambert', 'coach', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 3),
+(10, 'COACH005-2025', 'coach5@exemple.com', 'Sébastien', 'Bonnet', 'coach', '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -121,10 +160,21 @@ CREATE TABLE `electeur` (
 --
 
 INSERT INTO `electeur` (`ID_electeur`, `email`, `mot_de_passe`, `prenom`, `nom`, `age`, `sexe`, `nationalite`, `adresse_IP`, `code_fourni`, `has_voted`, `id_college`) VALUES
-(1, 'lucascharpentier55@gmail.com', 'Lulu', 'Lucas', 'Charpentier', 21, 'Homme', 'Française', '127.0.3.2', NULL, 0, 1),
-(2, 'ahmedw@gmail.com', '$2y$10$FPjoU4qnPaiH3vT2Ca0VWOBB1WB5XN.WsddRjma.effi496DSdw.G', 'w', 'ahmed', NULL, NULL, 'marocc', NULL, NULL, 0, 1),
-(3, 'cc@gmail.com', '$2y$10$wFUbfAsd8Yghe7mfeK0lveZvt37GN764AzDo2ysOFGtQxWo3hVP6.', 'ahmed', 'ahmed', NULL, NULL, NULL, NULL, NULL, 0, 1),
-(4, 'ahmed.errebache@gmail.com', '$2y$10$xgefDhmRD2k9LsuSbep4o.w4bYdN86tmMGXVQncU9OsHXBCZGy5aO', 'ahmed', 'ahmed', NULL, NULL, NULL, NULL, NULL, 0, 1);
+(1, 'electeur1@exemple.com', '$2y$12$pDxPB429Rsc0KAVy71zgguKwslDAo8K709JVU7f7ohm3/J9UWw00W', 'Jean', 'Dupont', 28, 'Homme', 'Française', NULL, NULL, 0, 1),
+(2, 'electeur2@exemple.com', '$2y$12$SO6o8Lb23Vf.vQ8/8z/afOZPC1qHQ6f2e6FtMyU6BQVFm61zh8CGW', 'Marie', 'Martin', 32, 'Femme', 'Française', NULL, NULL, 0, 1),
+(3, 'electeur3@exemple.com', '$2y$12$30v3JsQ7y.osjnN8pnTu1e51qVeFSr2TbVO.nVG78pgedCgIwLPg6', 'Pierre', 'Bernard', 45, 'Homme', 'Française', NULL, NULL, 0, 1),
+(4, 'electeur4@exemple.com', '$2y$12$tN1p9LzpamK8cWWawHyjyun/mIh06MsG.4WYKfCWrCAnVlMNeqi02', 'Sophie', 'Dubois', 26, 'Femme', 'Française', NULL, NULL, 0, 1),
+(5, 'electeur5@exemple.com', '$2y$12$w41PyhJNWqjgRaV8GIeDB.FTBGOtZPYlhoZCAkT8t/z/y/ZjpNGyC', 'Lucas', 'Laurent', 35, 'Homme', 'Française', NULL, NULL, 0, 1),
+(6, 'journaliste1@exemple.com', '$2y$12$SsOjyrzErxzovpbR2lcbAOBS7dA57L4N6OAAmMAkk0b4yrGchk0sO', 'Jacques', 'Moreau', 42, 'Homme', 'Française', NULL, 'JOURN001-2025', 0, 2),
+(7, 'journaliste2@exemple.com', '$2y$12$5KSMDuwgnb64R9BAkVZit.kd58rJQNE54T6lntXJR.1lhxBTYRHla', 'Catherine', 'Leroy', 38, 'Femme', 'Française', NULL, 'JOURN002-2025', 0, 2),
+(8, 'journaliste3@exemple.com', '$2y$12$aCqNByCS7zaL/8OoMY06d.AA8m3CONBVm63MiTdm.yjAfauE4I7tW', 'Philippe', 'Girard', 45, 'Homme', 'Française', NULL, 'JOURN003-2025', 0, 2),
+(9, 'journaliste4@exemple.com', '$2y$12$c9gCMwkDSW2UpuHio3cbG.Vlt0Nkr226ZdaJRmLuYEidRzeZKIJ4O', 'Isabelle', 'Rousseau', 40, 'Femme', 'Française', NULL, 'JOURN004-2025', 0, 2),
+(10, 'journaliste5@exemple.com', '$2y$12$NhXyGJqTX8Y1kQcoAzNjx.iZsawpTet2ltRybKAgMsT/WNY4w3uw6', 'Thomas', 'Vincent', 36, 'Homme', 'Française', NULL, 'JOURN005-2025', 0, 2),
+(11, 'coach1@exemple.com', '$2y$12$AkqS3Gyg9/jrEZooKhQjkucOrz2Xm6yIA90rEhc0Z0CeMQNObUKdG', 'Marc', 'Fontaine', 50, 'Homme', 'Française', NULL, 'COACH001-2025', 0, 3),
+(12, 'coach2@exemple.com', '$2y$12$FYEQRk6wiJ32r3kEj.XrceXC9By0JLPYSuGQczGvC.9XmXVtrkpou', 'Nathalie', 'Chevalier', 44, 'Femme', 'Française', NULL, 'COACH002-2025', 0, 3),
+(13, 'coach3@exemple.com', '$2y$12$9Y/9hhOefKvNz/cmpcQSsusvDxTneeq49uzQqImEneVaHc9WSsvH.', 'Olivier', 'Gauthier', 48, 'Homme', 'Française', NULL, 'COACH003-2025', 0, 3),
+(14, 'coach4@exemple.com', '$2y$12$iQquGaqiM/u.IxbARqKhrOW2yDDLSIm1zqQKzEMJORjbk2fKOlMWG', 'Valérie', 'Lambert', 46, 'Femme', 'Française', NULL, 'COACH004-2025', 0, 3),
+(15, 'coach5@exemple.com', '$2y$12$gt51uE0U4xDnHkxT5Tlve./4MnLIo0Dc6q1sugJcok3iV5dY7QSqi', 'Sébastien', 'Bonnet', 52, 'Homme', 'Française', NULL, 'COACH005-2025', 0, 3);
 
 -- --------------------------------------------------------
 
@@ -181,6 +231,13 @@ CREATE TABLE `scrutin` (
   `id_admin` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `scrutin`
+--
+
+INSERT INTO `scrutin` (`ID_scrutin`, `annee`, `date_ouverture`, `date_fermeture`, `phase`, `id_admin`) VALUES
+(1, 2025, '2025-01-15', '2025-12-31', 'vote', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -206,15 +263,24 @@ CREATE TABLE `vote` (
 -- Index pour la table `administrateur`
 --
 ALTER TABLE `administrateur`
-  ADD PRIMARY KEY (`ID_admin`);
+  ADD PRIMARY KEY (`ID_admin`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Index pour la table `candidat`
 --
 ALTER TABLE `candidat`
   ADD PRIMARY KEY (`ID_candidat`),
-  ADD UNIQUE KEY `unique_email` (`email`),
+  ADD UNIQUE KEY `email` (`email`),
   ADD KEY `fk_candidat_scrutin` (`id_scrutin`);
+
+--
+-- Index pour la table `code_professionnel`
+--
+ALTER TABLE `code_professionnel`
+  ADD PRIMARY KEY (`ID_code`),
+  ADD UNIQUE KEY `code` (`code`),
+  ADD KEY `id_college` (`id_college`);
 
 --
 -- Index pour la table `college`
@@ -227,6 +293,7 @@ ALTER TABLE `college`
 --
 ALTER TABLE `electeur`
   ADD PRIMARY KEY (`ID_electeur`),
+  ADD UNIQUE KEY `email` (`email`),
   ADD KEY `fk_electeur_college` (`id_college`);
 
 --
@@ -280,7 +347,13 @@ ALTER TABLE `administrateur`
 -- AUTO_INCREMENT pour la table `candidat`
 --
 ALTER TABLE `candidat`
-  MODIFY `ID_candidat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID_candidat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `code_professionnel`
+--
+ALTER TABLE `code_professionnel`
+  MODIFY `ID_code` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `college`
@@ -292,7 +365,7 @@ ALTER TABLE `college`
 -- AUTO_INCREMENT pour la table `electeur`
 --
 ALTER TABLE `electeur`
-  MODIFY `ID_electeur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID_electeur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT pour la table `media`
@@ -316,7 +389,7 @@ ALTER TABLE `reaction`
 -- AUTO_INCREMENT pour la table `scrutin`
 --
 ALTER TABLE `scrutin`
-  MODIFY `ID_scrutin` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_scrutin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `vote`
@@ -333,6 +406,12 @@ ALTER TABLE `vote`
 --
 ALTER TABLE `candidat`
   ADD CONSTRAINT `fk_candidat_scrutin` FOREIGN KEY (`id_scrutin`) REFERENCES `scrutin` (`ID_scrutin`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `code_professionnel`
+--
+ALTER TABLE `code_professionnel`
+  ADD CONSTRAINT `code_professionnel_ibfk_1` FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`);
 
 --
 -- Contraintes pour la table `electeur`

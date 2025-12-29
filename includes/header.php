@@ -100,7 +100,11 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                 <div class="md:flex md:space-x-8 hidden">
                     <a href="<?php echo $base_url; ?>/index.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Accueil</a>
                     <a href="<?php echo $base_url; ?>/pages/candidats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Candidats</a>
-                    <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
+                    <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'administrateur'): ?>
+                        <a href="<?php echo $base_url; ?>/admin/generer_codes.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">CodePro</a>
+                    <?php else: ?>
+                        <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0 hidden gap-3">
@@ -130,7 +134,46 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                 </div>
             </nav>
         </div>
+        
+        <!-- Menu mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="<?php echo $base_url; ?>/index.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-rouge hover:bg-gris-clair">Accueil</a>
+                <a href="<?php echo $base_url; ?>/pages/candidats.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-bleu hover:bg-gris-clair">Candidats</a>
+                <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'administrateur'): ?>
+                    <a href="<?php echo $base_url; ?>/admin/generer_codes.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">CodePro</a>
+                <?php else: ?>
+                    <a href="<?php echo $base_url; ?>/pages/contact.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">Contact</a>
+                <?php endif; ?>
+                
+                <div class="border-t border-gray-200 pt-4 pb-3">
+                    <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true): ?>
+                        <a href="<?php echo $base_url; ?>/pages/profil.php" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-dore hover:bg-dore/80">Mon Profil</a>
+                        <a href="<?php echo $base_url; ?>/pages/logout.php" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-rouge hover:bg-rouge/80 mt-2">Se déconnecter</a>
+                    <?php else: ?>
+                        <a href="<?php echo $base_url; ?>/pages/login.php" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-rouge hover:bg-rouge/80">Se connecter</a>
+                        <a href="<?php echo $base_url; ?>/pages/register.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir bg-white hover:bg-gris-clair border border-gray-300 mt-2">S'inscrire</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </header>
+
+    <script>
+        // Gestion du menu burger mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+                    menuButton.setAttribute('aria-expanded', !isExpanded);
+                });
+            }
+        });
+    </script>
 
     <!-- Contenu principal avec padding-top pour compenser le header fixe -->
     <main class="pt-20 min-h-screen flex flex-col">
