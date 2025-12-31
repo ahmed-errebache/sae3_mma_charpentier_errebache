@@ -58,9 +58,9 @@ $candidats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-gris-clair font-anek">
     <?php include __DIR__ . '/../includes/header.php'; ?>
 
-    <main class="container mx-auto px-4 py-8 mt-20">
+    <main class="container mx-auto px-4 py-8 mt-20 2xl:mt-8">
         <!-- Titre -->
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 2xl:mb-6">
             <h1 class="text-5xl md:text-6xl font-bebas text-noir mb-4">NOS COMBATTANTS</h1>
             <p class="text-xl text-gray-700">Découvrez les candidats de l'année</p>
         </div>
@@ -103,23 +103,33 @@ $candidats = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ? `${baseUrl}/${candidat.photo_profil}` 
                 : `${baseUrl}/assets/img/default-avatar.png`;
             
-            const sizeClasses = position === 'center' 
-                ? 'w-80 h-96 scale-110 z-10' 
-                : 'w-64 h-80 opacity-70';
+            let sizeClasses = '';
+            let textSize = '';
+            
+            if (position === 'center') {
+                sizeClasses = 'w-80 h-[28rem] scale-110 z-20 shadow-2xl';
+                textSize = 'text-3xl';
+            } else if (position === 'near') {
+                sizeClasses = 'w-64 h-80 opacity-80 z-10 scale-95 shadow-lg';
+                textSize = 'text-2xl';
+            } else {
+                sizeClasses = 'w-48 h-64 opacity-50 z-0 scale-90 shadow-md';
+                textSize = 'text-xl';
+            }
             
             return `
-                <div class="flex-shrink-0 bg-white rounded-xl shadow-xl overflow-hidden transition-all duration-500 ${sizeClasses}">
+                <div class="flex-shrink-0 bg-white rounded-xl overflow-hidden transition-all duration-500 ${sizeClasses}">
                     <div class="relative h-3/5 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
                         <img src="${photoUrl}" 
                              alt="${candidat.nom} ${candidat.prenom}"
                              class="max-w-full max-h-full object-contain">
                     </div>
                     <div class="p-4 h-2/5 flex flex-col justify-center">
-                        <h3 class="text-2xl font-bebas text-noir text-center mb-1">
+                        <h3 class="${textSize} font-bebas text-noir text-center mb-1">
                             ${candidat.nom} ${candidat.prenom}
                         </h3>
                         ${candidat.surnom ? `
-                            <p class="text-center text-gray-600 italic mb-2">
+                            <p class="text-center text-gray-600 italic mb-2 text-sm">
                                 "${candidat.surnom}"
                             </p>
                         ` : ''}
@@ -133,13 +143,17 @@ $candidats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         function updateCarousel() {
             const carousel = document.getElementById('carousel');
-            const leftIndex = (currentIndex - 1 + candidats.length) % candidats.length;
-            const rightIndex = (currentIndex + 1) % candidats.length;
+            const farLeftIndex = (currentIndex - 2 + candidats.length) % candidats.length;
+            const nearLeftIndex = (currentIndex - 1 + candidats.length) % candidats.length;
+            const nearRightIndex = (currentIndex + 1) % candidats.length;
+            const farRightIndex = (currentIndex + 2) % candidats.length;
             
             carousel.innerHTML = 
-                createCard(candidats[leftIndex], 'left') +
+                createCard(candidats[farLeftIndex], 'far') +
+                createCard(candidats[nearLeftIndex], 'near') +
                 createCard(candidats[currentIndex], 'center') +
-                createCard(candidats[rightIndex], 'right');
+                createCard(candidats[nearRightIndex], 'near') +
+                createCard(candidats[farRightIndex], 'far');
             
             updateIndicators();
         }
