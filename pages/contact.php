@@ -22,13 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'votre.email@gmail.com';
-            $mail->Password = 'votre_mot_de_passe_application';
+            $mail->Username = 'ahmed.errebache@gmail.com';
+            $mail->Password = 'cnij ihjw zmbw qxyh';
             $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
             $mail->CharSet = 'UTF-8';
             
-            $mail->setFrom($email, $nom);
+            $mail->setFrom('ahmed.errebache@gmail.com', 'MMA Fighter Election');
             $mail->addAddress('ahmed.errebache@gmail.com');
             $mail->addReplyTo($email, $nom);
             
