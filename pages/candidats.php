@@ -198,5 +198,6 @@ $candidats = $stmt->fetchAll(PDO::FETCH_ASSOC);
         updateCarousel();
         startAutoPlay();
     </script>
+    <p>test</p>
 </body>
 </html>
