@@ -134,7 +134,7 @@ $candidats = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </p>
                         ` : ''}
                         <p class="text-center text-sm text-gray-600">
-                            🏁 ${candidat.nationalite}
+                             ${candidat.nationalite}
                         </p>
                     </div>
                 </div>
