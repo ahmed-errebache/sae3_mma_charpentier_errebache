@@ -302,9 +302,9 @@ function getScrutinActif() {
     try {
         $conn = dbconnect();
         $sql = "SELECT * FROM scrutin 
-                WHERE statut = 'en_cours' 
-                AND date_ouverture <= NOW() 
-                AND date_fermeture >= NOW() 
+                WHERE phase = 'vote' 
+                AND date_ouverture <= CURDATE() 
+                AND date_fermeture >= CURDATE() 
                 ORDER BY date_ouverture DESC 
                 LIMIT 1";
         
@@ -344,7 +344,7 @@ function peutVoter($id_electeur) {
         $stmt = $conn->prepare($sql);
         $stmt->execute([
             ':id_electeur' => $id_electeur,
-            ':id_scrutin' => $scrutin['id_scrutin']
+            ':id_scrutin' => $scrutin['ID_scrutin']
         ]);
         
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -394,8 +394,11 @@ function enregistrerVote($id_electeur, $id_candidat) {
         
         $scrutin = $verification['scrutin'];
         
-        // Récupérer le type d'électeur
-        $sqlElecteur = "SELECT type_electeur FROM electeur WHERE id_electeur = :id_electeur";
+        // Récupérer les infos de l'électeur avec son collège
+        $sqlElecteur = "SELECT e.*, c.type as type_college 
+                        FROM electeur e 
+                        LEFT JOIN college c ON e.id_college = c.ID_college 
+                        WHERE e.ID_electeur = :id_electeur";
         $stmtElecteur = $conn->prepare($sqlElecteur);
         $stmtElecteur->execute([':id_electeur' => $id_electeur]);
         $electeur = $stmtElecteur->fetch(PDO::FETCH_ASSOC);
@@ -408,8 +411,8 @@ function enregistrerVote($id_electeur, $id_candidat) {
         }
         
         // Vérifier que le candidat existe et est vérifié
-        $sqlCandidat = "SELECT id_candidat FROM candidat 
-                        WHERE id_candidat = :id_candidat 
+        $sqlCandidat = "SELECT ID_candidat FROM candidat 
+                        WHERE ID_candidat = :id_candidat 
                         AND compte_verifie = 1";
         $stmtCandidat = $conn->prepare($sqlCandidat);
         $stmtCandidat->execute([':id_candidat' => $id_candidat]);
@@ -425,20 +428,22 @@ function enregistrerVote($id_electeur, $id_candidat) {
         $conn->beginTransaction();
         
         try {
-            // Enregistrer le vote
-            $sqlVote = "INSERT INTO vote (id_electeur, id_candidat, id_scrutin, type_electeur) 
-                        VALUES (:id_electeur, :id_candidat, :id_scrutin, :type_electeur)";
+            // Enregistrer le vote avec les données de l'électeur
+            $sqlVote = "INSERT INTO vote (date, age, sexe, nationalite, id_college, id_candidat, id_scrutin) 
+                        VALUES (CURDATE(), :age, :sexe, :nationalite, :id_college, :id_candidat, :id_scrutin)";
             
             $stmtVote = $conn->prepare($sqlVote);
             $stmtVote->execute([
-                ':id_electeur' => $id_electeur,
+                ':age' => $electeur['age'],
+                ':sexe' => $electeur['sexe'],
+                ':nationalite' => $electeur['nationalite'],
+                ':id_college' => $electeur['id_college'],
                 ':id_candidat' => $id_candidat,
-                ':id_scrutin' => $scrutin['id_scrutin'],
-                ':type_electeur' => $electeur['type_electeur']
+                ':id_scrutin' => $scrutin['ID_scrutin']
             ]);
             
-            // Mettre à jour le flag a_vote
-            $sqlUpdate = "UPDATE electeur SET a_vote = 1 WHERE id_electeur = :id_electeur";
+            // Mettre à jour le flag has_voted
+            $sqlUpdate = "UPDATE electeur SET has_voted = 1 WHERE ID_electeur = :id_electeur";
             $stmtUpdate = $conn->prepare($sqlUpdate);
             $stmtUpdate->execute([':id_electeur' => $id_electeur]);
             
