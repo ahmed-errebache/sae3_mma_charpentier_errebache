@@ -60,10 +60,21 @@ if (isset($electeur['ID_electeur'])) {
     }
 }
 
-// Récupérer tous les candidats vérifiés
-$sqlCandidats = "SELECT * FROM candidat WHERE compte_verifie = 1 ORDER BY nom, prenom";
-$stmtCandidats = $conn->query($sqlCandidats);
-$candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
+// Récupérer tous les candidats vérifiés du scrutin actif
+$candidats = [];
+if ($scrutinActif) {
+    $sqlCandidats = "SELECT * FROM candidat 
+                     WHERE compte_verifie = 1 
+                     AND id_scrutin = :id_scrutin
+                     ORDER BY nom, prenom";
+    $stmtCandidats = $conn->prepare($sqlCandidats);
+    $stmtCandidats->execute([':id_scrutin' => $scrutinActif['ID_scrutin']]);
+    $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $sqlCandidats = "SELECT * FROM candidat WHERE compte_verifie = 1 ORDER BY nom, prenom";
+    $stmtCandidats = $conn->query($sqlCandidats);
+    $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -107,10 +118,10 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
             </h1>
             <?php if ($scrutinActif): ?>
                 <p class="text-xl text-gray-700">
-                    <?php echo htmlspecialchars($scrutinActif['nom_scrutin']); ?>
+                    Election du combattant de l'annee <?php echo htmlspecialchars($scrutinActif['annee']); ?>
                 </p>
                 <p class="text-gray-600 mt-2">
-                    Vote ouvert jusqu'au <?php echo date('d/m/Y à H:i', strtotime($scrutinActif['date_fermeture'])); ?>
+                    Vote ouvert jusqu'au <?php echo date('d/m/Y', strtotime($scrutinActif['date_fermeture'])); ?>
                 </p>
             <?php endif; ?>
         </div>
@@ -229,8 +240,6 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         </label>
-                            </div>
-                        </label>
                     <?php endforeach; ?>
                 </div>
 
@@ -243,8 +252,16 @@ $candidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
                     </button>
                 </div>
             </form>
+        <?php elseif ($peutVoter && empty($candidats)): ?>
+            <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
+                <div class="text-6xl mb-4">👤</div>
+                <h2 class="text-2xl font-bebas text-noir mb-4">AUCUN CANDIDAT DISPONIBLE</h2>
+                <p class="text-gray-700">Aucun candidat n'a encore ete affecte au scrutin en cours.</p>
+                <p class="text-gray-600 mt-2">L'administrateur doit affecter des candidats avant que le vote puisse commencer.</p>
+            </div>
         <?php elseif (!$peutVoter && empty($candidats)): ?>
             <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
+                <div class="text-6xl mb-4">👤</div>
                 <p class="text-xl text-gray-700">Aucun candidat n'est actuellement disponible pour le vote.</p>
             </div>
         <?php elseif (!$peutVoter && !empty($candidats)): ?>
