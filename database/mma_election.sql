@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 29 déc. 2025 à 14:25
+-- Généré le : lun. 05 jan. 2026 à 15:03
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.0.30
 
@@ -72,11 +72,12 @@ CREATE TABLE `candidat` (
 --
 
 INSERT INTO `candidat` (`ID_candidat`, `email`, `mot_de_passe`, `mdp_provisoire`, `prenom`, `surnom`, `slogan`, `nom`, `nationalite`, `palmares`, `photo_profil`, `compte_verifie`, `compte_actif`, `date_creation`, `date_verification`, `id_scrutin`) VALUES
-(1, 'candidat1@exemple.com', '$2y$12$wqUSXjvhhGVRQ156SfxBneJV/9t5Cgvmc/MFu1K.RHyDLWLnWbxZK', NULL, 'Alexandre', 'Le Lion', 'Force et détermination', 'Silva', 'Brésilienne', '{\"victoires\":25,\"defaites\":5,\"egalites\":2,\"no_contest\":1}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
-(2, 'candidat2@exemple.com', '$2y$12$.xS3KTR9yDAzHJqwA.B2xeRFRXQ0g4CgCYRLnIlQbEfcTpJ1LRMKK', NULL, 'Khabib', 'L\'Aigle', 'Invincibilité incarnée', 'Nurmagomedov', 'Russe', '{\"victoires\":29,\"defaites\":0,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
-(3, 'candidat3@exemple.com', '$2y$12$5HEr6pPP.FvWYszmzLTOBOx7QwnBsd9SdTzPqs6jo6re.uqArLvty', NULL, 'Ronda', 'Rowdy', 'La pionnière', 'Rousey', 'Américaine', '{\"victoires\":12,\"defaites\":2,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
-(4, 'candidat4@exemple.com', '$2y$12$U/lwSheLdsGjhRpgO04CK.QcftRzadpsD.C9HID.lHKBau4CI08li', NULL, 'Georges', 'GSP', 'Le rush canadien', 'St-Pierre', 'Canadienne', '{\"victoires\":26,\"defaites\":2,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1),
-(5, 'candidat5@exemple.com', '$2y$12$Otji.p.PHTwV/c1W9mUX2OPHR.NU0Fx2B2libG465ZM/UjC0qQHhO', NULL, 'Amanda', 'La Lionne', 'Double championne', 'Nunes', 'Brésilienne', '{\"victoires\":22,\"defaites\":5,\"egalites\":0,\"no_contest\":0}', NULL, 1, 1, '2025-12-29 13:02:32', '2025-12-29 13:02:32', 1);
+(7, 'alexandre.pantoja@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Alexandre', NULL, NULL, 'Pantoja', 'Bresilienne', '{\"victoires\":28,\"defaites\":5,\"egalites\":0,\"no_contest\":0}', 'images/candidats/AlexandrePantoja.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
+(8, 'brandon.moreno@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Brandon', NULL, NULL, 'Moreno', 'Mexicaine', '{\"victoires\":21,\"defaites\":7,\"egalites\":2,\"no_contest\":0}', 'images/candidats/BrandonMoreno.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
+(9, 'brandon.royval@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Brandon', NULL, NULL, 'Royval', 'Americaine', '{\"victoires\":16,\"defaites\":7,\"egalites\":0,\"no_contest\":0}', 'images/candidats/BrandonRoyval.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
+(10, 'joshua.van@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Joshua', NULL, NULL, 'Van', 'Americaine', '{\"victoires\":10,\"defaites\":1,\"egalites\":0,\"no_contest\":0}', 'images/candidats/JoshuaVan.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
+(11, 'manel.kape@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Manel', NULL, NULL, 'Kape', 'Angolaise', '{\"victoires\":19,\"defaites\":6,\"egalites\":0,\"no_contest\":0}', 'images/candidats/ManelKape.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
+(12, 'tatsuro.taira@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Tatsuro', NULL, NULL, 'Taira', 'Japonaise', '{\"victoires\":16,\"defaites\":0,\"egalites\":0,\"no_contest\":0}', 'images/candidats/TatsuroTaira.png', 1, 1, '2026-01-05 15:01:13', NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -236,7 +237,7 @@ CREATE TABLE `scrutin` (
 --
 
 INSERT INTO `scrutin` (`ID_scrutin`, `annee`, `date_ouverture`, `date_fermeture`, `phase`, `id_admin`) VALUES
-(1, 2025, '2025-01-15', '2025-12-31', 'vote', 1);
+(3, 2026, '2026-01-05', '2026-01-12', 'vote', NULL);
 
 -- --------------------------------------------------------
 
@@ -246,7 +247,9 @@ INSERT INTO `scrutin` (`ID_scrutin`, `annee`, `date_ouverture`, `date_fermeture`
 
 CREATE TABLE `vote` (
   `ID_vote` int(11) NOT NULL,
+  `id_electeur` int(11) DEFAULT NULL,
   `date` date NOT NULL,
+  `date_vote` datetime DEFAULT current_timestamp(),
   `age` int(11) DEFAULT NULL,
   `sexe` enum('Homme','Femme') DEFAULT NULL,
   `nationalite` varchar(50) DEFAULT NULL,
@@ -331,7 +334,8 @@ ALTER TABLE `vote`
   ADD PRIMARY KEY (`ID_vote`),
   ADD KEY `fk_vote_college` (`id_college`),
   ADD KEY `fk_vote_candidat` (`id_candidat`),
-  ADD KEY `fk_vote_scrutin` (`id_scrutin`);
+  ADD KEY `fk_vote_scrutin` (`id_scrutin`),
+  ADD KEY `fk_vote_electeur` (`id_electeur`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -347,7 +351,7 @@ ALTER TABLE `administrateur`
 -- AUTO_INCREMENT pour la table `candidat`
 --
 ALTER TABLE `candidat`
-  MODIFY `ID_candidat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ID_candidat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT pour la table `code_professionnel`
@@ -389,13 +393,13 @@ ALTER TABLE `reaction`
 -- AUTO_INCREMENT pour la table `scrutin`
 --
 ALTER TABLE `scrutin`
-  MODIFY `ID_scrutin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_scrutin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `vote`
 --
 ALTER TABLE `vote`
-  MODIFY `ID_vote` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_vote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Contraintes pour les tables déchargées
@@ -444,6 +448,7 @@ ALTER TABLE `scrutin`
 ALTER TABLE `vote`
   ADD CONSTRAINT `fk_vote_candidat` FOREIGN KEY (`id_candidat`) REFERENCES `candidat` (`ID_candidat`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_vote_college` FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_vote_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_vote_scrutin` FOREIGN KEY (`id_scrutin`) REFERENCES `scrutin` (`ID_scrutin`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 

@@ -489,7 +489,7 @@ function getVoteElecteur($id_electeur) {
         
         $sql = "SELECT v.*, 
                        c.nom, c.prenom, c.surnom, c.photo_profil, c.nationalite,
-                       v.date as date_vote
+                       v.date_vote
                 FROM vote v
                 JOIN candidat c ON v.id_candidat = c.ID_candidat
                 WHERE v.id_electeur = :id_electeur 
@@ -498,10 +498,6 @@ function getVoteElecteur($id_electeur) {
         $stmt = $conn->prepare($sql);
         $stmt->execute([
             ':id_electeur' => $id_electeur,
-                WHERE v.id_scrutin = :id_scrutin";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
             ':id_scrutin' => $scrutin['ID_scrutin']
         ]);
         
