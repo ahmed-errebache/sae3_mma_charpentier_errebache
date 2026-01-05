@@ -118,10 +118,10 @@ if ($scrutinActif) {
             </h1>
             <?php if ($scrutinActif): ?>
                 <p class="text-xl text-gray-700">
-                    <?php echo htmlspecialchars($scrutinActif['nom_scrutin']); ?>
+                    Election du combattant de l'annee <?php echo htmlspecialchars($scrutinActif['annee']); ?>
                 </p>
                 <p class="text-gray-600 mt-2">
-                    Vote ouvert jusqu'au <?php echo date('d/m/Y à H:i', strtotime($scrutinActif['date_fermeture'])); ?>
+                    Vote ouvert jusqu'au <?php echo date('d/m/Y', strtotime($scrutinActif['date_fermeture'])); ?>
                 </p>
             <?php endif; ?>
         </div>
