@@ -481,7 +481,6 @@ function getVoteElecteur($id_electeur) {
     try {
         $conn = dbconnect();
         
-        // Récupérer le scrutin actif
         $scrutin = getScrutinActif();
         if (!$scrutin) {
             return null;
@@ -489,22 +488,112 @@ function getVoteElecteur($id_electeur) {
         
         $sql = "SELECT v.*, 
                        c.nom, c.prenom, c.surnom, c.photo_profil, c.nationalite,
-                       v.date_vote
+                       v.date as date_vote
                 FROM vote v
-                JOIN candidat c ON v.id_candidat = c.id_candidat
-                WHERE v.id_electeur = :id_electeur 
-                AND v.id_scrutin = :id_scrutin";
+                JOIN candidat c ON v.id_candidat = c.ID_candidat
+                WHERE v.id_scrutin = :id_scrutin";
         
         $stmt = $conn->prepare($sql);
         $stmt->execute([
-            ':id_electeur' => $id_electeur,
-            ':id_scrutin' => $scrutin['id_scrutin']
+            ':id_scrutin' => $scrutin['ID_scrutin']
         ]);
         
         return $stmt->fetch(PDO::FETCH_ASSOC);
         
     } catch (PDOException $e) {
         error_log("Erreur getVoteElecteur: " . $e->getMessage());
+        return null;
+    }
+}
+
+function calculerResultatsScrutin($id_scrutin) {
+    try {
+        $conn = dbconnect();
+        
+        $sql = "SELECT 
+                    c.ID_candidat,
+                    c.nom,
+                    c.prenom,
+                    c.surnom,
+                    c.photo_profil,
+                    c.nationalite,
+                    COUNT(v.ID_vote) as nb_votes_total,
+                    SUM(CASE WHEN co.type = 'public' THEN 1 ELSE 0 END) as nb_votes_public,
+                    SUM(CASE WHEN co.type = 'journaliste' THEN 1 ELSE 0 END) as nb_votes_journaliste,
+                    SUM(CASE WHEN co.type = 'coach' THEN 1 ELSE 0 END) as nb_votes_coach
+                FROM candidat c
+                LEFT JOIN vote v ON c.ID_candidat = v.id_candidat AND v.id_scrutin = :id_scrutin
+                LEFT JOIN college co ON v.id_college = co.ID_college
+                WHERE c.compte_verifie = 1
+                GROUP BY c.ID_candidat
+                ORDER BY nb_votes_total DESC";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id_scrutin' => $id_scrutin]);
+        $resultats_bruts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $sqlPoids = "SELECT type, poids FROM college";
+        $stmtPoids = $conn->query($sqlPoids);
+        $poids = [];
+        while ($row = $stmtPoids->fetch(PDO::FETCH_ASSOC)) {
+            $poids[$row['type']] = (float)$row['poids'];
+        }
+        
+        $sqlTotalVotes = "SELECT 
+                            co.type,
+                            COUNT(v.ID_vote) as total
+                          FROM vote v
+                          JOIN college co ON v.id_college = co.ID_college
+                          WHERE v.id_scrutin = :id_scrutin
+                          GROUP BY co.type";
+        $stmtTotal = $conn->prepare($sqlTotalVotes);
+        $stmtTotal->execute([':id_scrutin' => $id_scrutin]);
+        $totaux_colleges = [];
+        while ($row = $stmtTotal->fetch(PDO::FETCH_ASSOC)) {
+            $totaux_colleges[$row['type']] = (int)$row['total'];
+        }
+        
+        $resultats = [];
+        foreach ($resultats_bruts as $candidat) {
+            $score_pondere = 0;
+            
+            $pourcentage_public = $totaux_colleges['public'] > 0 ? 
+                ($candidat['nb_votes_public'] / $totaux_colleges['public']) * 100 : 0;
+            $pourcentage_journaliste = $totaux_colleges['journaliste'] > 0 ? 
+                ($candidat['nb_votes_journaliste'] / $totaux_colleges['journaliste']) * 100 : 0;
+            $pourcentage_coach = $totaux_colleges['coach'] > 0 ? 
+                ($candidat['nb_votes_coach'] / $totaux_colleges['coach']) * 100 : 0;
+            
+            $score_pondere = 
+                ($pourcentage_public * $poids['public']) +
+                ($pourcentage_journaliste * $poids['journaliste']) +
+                ($pourcentage_coach * $poids['coach']);
+            
+            $resultats[] = [
+                'candidat' => $candidat,
+                'nb_votes_public' => (int)$candidat['nb_votes_public'],
+                'nb_votes_journaliste' => (int)$candidat['nb_votes_journaliste'],
+                'nb_votes_coach' => (int)$candidat['nb_votes_coach'],
+                'nb_votes_total' => (int)$candidat['nb_votes_total'],
+                'pourcentage_public' => round($pourcentage_public, 2),
+                'pourcentage_journaliste' => round($pourcentage_journaliste, 2),
+                'pourcentage_coach' => round($pourcentage_coach, 2),
+                'score_pondere' => round($score_pondere, 2)
+            ];
+        }
+        
+        usort($resultats, function($a, $b) {
+            return $b['score_pondere'] <=> $a['score_pondere'];
+        });
+        
+        return [
+            'resultats' => $resultats,
+            'totaux_colleges' => $totaux_colleges,
+            'poids' => $poids
+        ];
+        
+    } catch (PDOException $e) {
+        error_log("Erreur calculerResultatsScrutin: " . $e->getMessage());
         return null;
     }
 }
