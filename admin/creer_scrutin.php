@@ -46,6 +46,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
+        if ($_POST['action'] === 'affecter_candidats' && isset($_POST['id_scrutin']) && isset($_POST['candidats'])) {
+            $id_scrutin = (int)$_POST['id_scrutin'];
+            $candidats = $_POST['candidats'];
+            
+            try {
+                $conn->beginTransaction();
+                
+                // Desaffecter tous les candidats du scrutin
+                $sqlReset = "UPDATE candidat SET id_scrutin = NULL WHERE id_scrutin = :id_scrutin";
+                $stmtReset = $conn->prepare($sqlReset);
+                $stmtReset->execute([':id_scrutin' => $id_scrutin]);
+                
+                // Affecter les candidats selectionnes
+                if (!empty($candidats)) {
+                    $sqlUpdate = "UPDATE candidat SET id_scrutin = :id_scrutin WHERE ID_candidat = :id_candidat";
+                    $stmtUpdate = $conn->prepare($sqlUpdate);
+                    
+                    foreach ($candidats as $id_candidat) {
+                        $stmtUpdate->execute([
+                            ':id_scrutin' => $id_scrutin,
+                            ':id_candidat' => (int)$id_candidat
+                        ]);
+                    }
+                }
+                
+                $conn->commit();
+                $successMessage = "Les candidats ont ete affectes au scrutin avec succes.";
+            } catch (PDOException $e) {
+                $conn->rollBack();
+                $errorMessage = "Erreur lors de l'affectation des candidats.";
+            }
+        }
+        
         if ($_POST['action'] === 'changer_phase' && isset($_POST['id_scrutin']) && isset($_POST['nouvelle_phase'])) {
             $id_scrutin = (int)$_POST['id_scrutin'];
             $nouvelle_phase = $_POST['nouvelle_phase'];
@@ -71,6 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $sqlScrutins = "SELECT * FROM scrutin ORDER BY annee DESC, date_ouverture DESC";
 $stmtScrutins = $conn->query($sqlScrutins);
 $scrutins = $stmtScrutins->fetchAll(PDO::FETCH_ASSOC);
+
+// Recuperer tous les candidats verifies
+$sqlCandidats = "SELECT ID_candidat, prenom, nom, surnom, id_scrutin FROM candidat WHERE compte_verifie = 1 ORDER BY nom, prenom";
+$stmtCandidats = $conn->query($sqlCandidats);
+$tousCandidats = $stmtCandidats->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -161,17 +199,23 @@ require_once __DIR__ . '/../includes/header.php';
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <form method="POST" class="inline-block">
-                                                <input type="hidden" name="action" value="changer_phase">
-                                                <input type="hidden" name="id_scrutin" value="<?php echo $scrutin['ID_scrutin']; ?>">
-                                                <select name="nouvelle_phase" onchange="this.form.submit()" 
-                                                        class="text-sm border-gray-300 rounded-md focus:ring-rouge focus:border-rouge">
-                                                    <option value="">Changer phase...</option>
-                                                    <option value="preparation">Preparation</option>
-                                                    <option value="vote">Vote</option>
-                                                    <option value="resultat">Resultat</option>
-                                                </select>
-                                            </form>
+                                            <div class="flex gap-2">
+                                                <form method="POST" class="inline-block">
+                                                    <input type="hidden" name="action" value="changer_phase">
+                                                    <input type="hidden" name="id_scrutin" value="<?php echo $scrutin['ID_scrutin']; ?>">
+                                                    <select name="nouvelle_phase" onchange="this.form.submit()" 
+                                                            class="text-sm border-gray-300 rounded-md focus:ring-rouge focus:border-rouge">
+                                                        <option value="">Changer phase...</option>
+                                                        <option value="preparation">Preparation</option>
+                                                        <option value="vote">Vote</option>
+                                                        <option value="resultat">Resultat</option>
+                                                    </select>
+                                                </form>
+                                                <button onclick="afficherModaleCandidats(<?php echo $scrutin['ID_scrutin']; ?>)" 
+                                                        class="bg-bleu hover:bg-bleu/80 text-white px-3 py-1 rounded text-xs">
+                                                    Candidats
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -192,5 +236,89 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 </div>
+
+<!-- Modale pour affecter les candidats -->
+<div id="modaleCandidats" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+        <div class="bg-gradient-to-r from-rouge to-rouge/80 px-6 py-4">
+            <h2 class="text-2xl font-bebas text-white">Affecter les candidats au scrutin</h2>
+        </div>
+        
+        <div class="p-6 overflow-y-auto max-h-[60vh]">
+            <form method="POST" id="formCandidats">
+                <input type="hidden" name="action" value="affecter_candidats">
+                <input type="hidden" name="id_scrutin" id="scrutin_id">
+                
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600 mb-4">Selectionnez les candidats qui participeront a ce scrutin :</p>
+                    
+                    <div class="space-y-2">
+                        <?php foreach ($tousCandidats as $candidat): ?>
+                            <label class="flex items-center p-3 hover:bg-gray-50 rounded cursor-pointer border border-gray-200">
+                                <input type="checkbox" 
+                                       name="candidats[]" 
+                                       value="<?php echo $candidat['ID_candidat']; ?>"
+                                       data-candidat-id="<?php echo $candidat['ID_candidat']; ?>"
+                                       data-scrutin-id="<?php echo $candidat['id_scrutin']; ?>"
+                                       class="h-4 w-4 text-rouge focus:ring-rouge border-gray-300 rounded">
+                                <span class="ml-3 text-sm">
+                                    <span class="font-medium text-gray-900">
+                                        <?php echo htmlspecialchars($candidat['prenom'] . ' ' . $candidat['nom']); ?>
+                                    </span>
+                                    <?php if ($candidat['surnom']): ?>
+                                        <span class="text-gray-500">"<?php echo htmlspecialchars($candidat['surnom']); ?>"</span>
+                                    <?php endif; ?>
+                                </span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="fermerModaleCandidats()" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        Annuler
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-rouge hover:bg-rouge/80 text-white rounded-lg">
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function afficherModaleCandidats(scrutinId) {
+    document.getElementById('scrutin_id').value = scrutinId;
+    
+    // Decocher toutes les cases
+    document.querySelectorAll('input[name="candidats[]"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Cocher les candidats deja affectes a ce scrutin
+    document.querySelectorAll('input[name="candidats[]"]').forEach(checkbox => {
+        const candidatScrutinId = checkbox.getAttribute('data-scrutin-id');
+        if (candidatScrutinId == scrutinId) {
+            checkbox.checked = true;
+        }
+    });
+    
+    document.getElementById('modaleCandidats').classList.remove('hidden');
+}
+
+function fermerModaleCandidats() {
+    document.getElementById('modaleCandidats').classList.add('hidden');
+}
+
+// Fermer la modale en cliquant en dehors
+document.getElementById('modaleCandidats').addEventListener('click', function(e) {
+    if (e.target === this) {
+        fermerModaleCandidats();
+    }
+});
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

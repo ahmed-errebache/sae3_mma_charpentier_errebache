@@ -429,11 +429,12 @@ function enregistrerVote($id_electeur, $id_candidat) {
         
         try {
             // Enregistrer le vote avec les données de l'électeur
-            $sqlVote = "INSERT INTO vote (date, age, sexe, nationalite, id_college, id_candidat, id_scrutin) 
-                        VALUES (CURDATE(), :age, :sexe, :nationalite, :id_college, :id_candidat, :id_scrutin)";
+            $sqlVote = "INSERT INTO vote (id_electeur, date, date_vote, age, sexe, nationalite, id_college, id_candidat, id_scrutin) 
+                        VALUES (:id_electeur, CURDATE(), NOW(), :age, :sexe, :nationalite, :id_college, :id_candidat, :id_scrutin)";
             
             $stmtVote = $conn->prepare($sqlVote);
             $stmtVote->execute([
+                ':id_electeur' => $id_electeur,
                 ':age' => $electeur['age'],
                 ':sexe' => $electeur['sexe'],
                 ':nationalite' => $electeur['nationalite'],
@@ -491,14 +492,14 @@ function getVoteElecteur($id_electeur) {
                        c.nom, c.prenom, c.surnom, c.photo_profil, c.nationalite,
                        v.date_vote
                 FROM vote v
-                JOIN candidat c ON v.id_candidat = c.id_candidat
+                JOIN candidat c ON v.id_candidat = c.ID_candidat
                 WHERE v.id_electeur = :id_electeur 
                 AND v.id_scrutin = :id_scrutin";
         
         $stmt = $conn->prepare($sql);
         $stmt->execute([
             ':id_electeur' => $id_electeur,
-            ':id_scrutin' => $scrutin['id_scrutin']
+            ':id_scrutin' => $scrutin['ID_scrutin']
         ]);
         
         return $stmt->fetch(PDO::FETCH_ASSOC);
