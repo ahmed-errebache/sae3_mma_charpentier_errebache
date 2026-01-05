@@ -103,6 +103,7 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                     <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'administrateur'): ?>
                         <a href="<?php echo $base_url; ?>/admin/generer_codes.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">CodePro</a>
                         <a href="<?php echo $base_url; ?>/admin/creer_scrutin.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Scrutins</a>
+                        <a href="<?php echo $base_url; ?>/admin/resultats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Resultats</a>
                     <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'electeur'): ?>
                         <a href="<?php echo $base_url; ?>/pages/voter.php" class="font-medium text-rouge hover:text-rouge/80 transition-colors duration-200 py-2 font-bold">Voter</a>
                         <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
@@ -147,6 +148,7 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                 <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'administrateur'): ?>
                     <a href="<?php echo $base_url; ?>/admin/generer_codes.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">CodePro</a>
                     <a href="<?php echo $base_url; ?>/admin/creer_scrutin.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-rouge hover:bg-gris-clair">Scrutins</a>
+                    <a href="<?php echo $base_url; ?>/admin/resultats.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-bleu hover:bg-gris-clair">Resultats</a>
                 <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'electeur'): ?>
                     <a href="<?php echo $base_url; ?>/pages/voter.php" class="block px-3 py-2 rounded-md text-base font-medium text-rouge hover:text-rouge/80 hover:bg-gris-clair font-bold">Voter</a>
                     <a href="<?php echo $base_url; ?>/pages/contact.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">Contact</a>
