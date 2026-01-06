@@ -1,58 +1,17 @@
 <?php
+/**
+ * PAGE CONTACT - ÉLECTION MMA 2025
+ * ===================================
+ */
+
+// Démarrage de la session pour gérer l'utilisateur connecté
 session_start();
 
+// Connexion à la base de données
 require_once '../includes/config.php'; 
 $connexion = dbconnect();
 
-// Traitement du formulaire
-$message_sent = false;
-$error_message = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nom = htmlspecialchars(trim($_POST['nom'] ?? ''));
-    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-    $message = htmlspecialchars(trim($_POST['message'] ?? ''));
-    
-    if (!empty($nom) && !empty($email) && !empty($message) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        require '../vendor/autoload.php';
-        
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-        
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'ahmed.errebache@gmail.com';
-            $mail->Password = 'cnij ihjw zmbw qxyh';
-            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-            $mail->CharSet = 'UTF-8';
-            
-            $mail->setFrom('ahmed.errebache@gmail.com', 'MMA Fighter Election');
-            $mail->addAddress('ahmed.errebache@gmail.com');
-            $mail->addReplyTo($email, $nom);
-            
-            $mail->isHTML(true);
-            $mail->Subject = 'Nouveau message de contact - MMA Fighter Election';
-            $mail->Body = "
-                <h2>Nouveau message de contact</h2>
-                <p><strong>Nom:</strong> {$nom}</p>
-                <p><strong>Email:</strong> {$email}</p>
-                <p><strong>Message:</strong></p>
-                <p>{$message}</p>
-            ";
-            $mail->AltBody = "Nom: {$nom}\nEmail: {$email}\nMessage: {$message}";
-            
-            $mail->send();
-            $message_sent = true;
-        } catch (Exception $e) {
-            $error_message = "Erreur lors de l'envoi du message. Veuillez réessayer.";
-        }
-    } else {
-        $error_message = "Veuillez remplir tous les champs correctement.";
-    }
-}
-
+// Chargement de l'en-tête avec navigation
 require_once '../includes/header.php'; 
 ?>
 
@@ -60,6 +19,7 @@ require_once '../includes/header.php';
 <div class="min-h-screen bg-gris-clair py-16">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        <!--  TITRE DE LA PAGE -->
         <div class="text-center mb-12">
             <h1 class="text-4xl font-bebas text-noir mb-4 tracking-wide">
                 CONTACT
@@ -69,27 +29,17 @@ require_once '../includes/header.php';
             </p>
         </div>
 
-        <?php if ($message_sent): ?>
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
-                Votre message a été envoyé avec succès !
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($error_message)): ?>
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
-                <?php echo $error_message; ?>
-            </div>
-        <?php endif; ?>
-
+        <!-- Formulaire et informations côte à côte -->
         <div class="bg-white rounded-xl shadow-lg p-8 lg:p-12">
             <div class="grid lg:grid-cols-2 gap-12">
                 
+                <!-- Formulaire de contact -->
                 <div>
                     <h2 class="text-2xl font-bebas text-noir mb-6 tracking-wide">
                         ENVOYEZ UN MESSAGE
                     </h2>
                     
-                    <form method="POST" class="space-y-6">
+                    <form action="#" method="POST" class="space-y-6">
                         
                         <div>
                             <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">
