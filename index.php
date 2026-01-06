@@ -17,12 +17,6 @@ $connexion = dbconnect();
 require_once 'includes/header.php';
 ?>
 
-<?php if (isset($_GET['compte_supprime'])): ?>
-    <div class="bg-success/10 border border-success text-success px-4 py-3 mx-auto max-w-7xl mt-24 mb-4 rounded">
-        Votre compte a ete supprime avec succes. Toutes vos donnees personnelles ont ete effacees.
-    </div>
-<?php endif; ?>
-
 <!-- Section héro avec présentation principale -->
 <?php require_once 'pages/home/heroSection.php'; ?>
 

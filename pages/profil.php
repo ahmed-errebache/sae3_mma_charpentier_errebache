@@ -332,11 +332,7 @@ require_once '../includes/header.php';
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center">
-                            <a href="supprimer_compte.php" 
-                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
-                                Supprimer mon compte
-                            </a>
+                        <div class="flex justify-end">
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
@@ -435,11 +431,7 @@ require_once '../includes/header.php';
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center">
-                            <a href="supprimer_compte.php" 
-                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
-                                Supprimer mon compte
-                            </a>
+                        <div class="flex justify-end">
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
@@ -490,11 +482,7 @@ require_once '../includes/header.php';
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center">
-                            <a href="supprimer_compte.php" 
-                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
-                                Supprimer mon compte
-                            </a>
+                        <div class="flex justify-end">
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
