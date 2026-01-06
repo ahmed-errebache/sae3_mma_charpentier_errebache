@@ -294,6 +294,92 @@ function getListePays() {
     ];
 }
 
+// Verifier un code professionnel
+function verifierCodeUnique($code) {
+    $conn = dbconnect();
+    $sql = "SELECT * FROM code_professionnel WHERE code = :code AND utilise = 0";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':code' => $code]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Utiliser un code professionnel pour creer un compte
+function utiliserCodeProfessionnel($code, $password, $age, $sexe, $nationalite) {
+    $conn = dbconnect();
+    
+    try {
+        $conn->beginTransaction();
+        
+        $sqlCode = "SELECT * FROM code_professionnel WHERE code = :code AND utilise = 0";
+        $stmtCode = $conn->prepare($sqlCode);
+        $stmtCode->execute([':code' => $code]);
+        $codeInfo = $stmtCode->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$codeInfo) {
+            $conn->rollBack();
+            return ['success' => false, 'error' => 'Code invalide ou deja utilise'];
+        }
+        
+        // Recuperer l'adresse IP
+        $adresse_ip = $_SERVER['REMOTE_ADDR'];
+        
+        // Verifier combien de comptes pros existent avec cette IP
+        $checkIpSql = "SELECT COUNT(*) FROM electeur WHERE adresse_IP = :ip AND id_college IN (2, 3)";
+        $checkIpStmt = $conn->prepare($checkIpSql);
+        $checkIpStmt->execute([':ip' => $adresse_ip]);
+        $comptesExistants = $checkIpStmt->fetchColumn();
+        
+        if ($comptesExistants >= 3) {
+            $conn->rollBack();
+            return ['success' => false, 'error' => 'Le nombre maximum de comptes pour cette connexion Internet a ete atteint (3 comptes maximum)'];
+        }
+        
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        
+        $sqlElecteur = "INSERT INTO electeur (email, mot_de_passe, nom, prenom, age, sexe, nationalite, code_fourni, id_college, adresse_IP) 
+                        VALUES (:email, :password, :nom, :prenom, :age, :sexe, :nationalite, :code, :college, :ip)";
+        $stmtElecteur = $conn->prepare($sqlElecteur);
+        $stmtElecteur->execute([
+            ':email' => $codeInfo['email'],
+            ':password' => $hashedPassword,
+            ':nom' => $codeInfo['nom'],
+            ':prenom' => $codeInfo['prenom'],
+            ':age' => $age,
+            ':sexe' => $sexe,
+            ':nationalite' => $nationalite,
+            ':code' => $code,
+            ':college' => $codeInfo['id_college'],
+            ':ip' => $adresse_ip
+        ]);
+        
+        $idElecteur = $conn->lastInsertId();
+        
+        $sqlUpdateCode = "UPDATE code_professionnel SET utilise = 1, date_utilisation = NOW() WHERE code = :code";
+        $stmtUpdateCode = $conn->prepare($sqlUpdateCode);
+        $stmtUpdateCode->execute([':code' => $code]);
+        
+        $conn->commit();
+        
+        return ['success' => true, 'id_electeur' => $idElecteur];
+        
+    } catch (Exception $e) {
+        $conn->rollBack();
+        return ['success' => false, 'error' => 'Erreur lors de la creation du compte'];
+    }
+}
+
+// Calculer l'age a partir de la date de naissance
+function calculerAge($dateNaissance) {
+    try {
+        $date = new DateTime($dateNaissance);
+        $aujourdhui = new DateTime();
+        $age = $aujourdhui->diff($date)->y;
+        return $age;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 /**
  * Récupère le scrutin actif
  * @return array|null Le scrutin en cours ou null
