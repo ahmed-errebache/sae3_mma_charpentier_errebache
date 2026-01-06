@@ -162,12 +162,12 @@ require_once '../includes/header.php';
                         </div>
                         
                         <?php if ($post['type_media'] === 'image'): ?>
-                            <img src="<?php echo htmlspecialchars($post['chemin_media']); ?>" 
+                            <img src="../<?php echo htmlspecialchars($post['chemin_media']); ?>" 
                                  alt="Post" 
                                  class="w-full max-h-96 object-cover rounded mb-3">
                         <?php else: ?>
                             <video controls class="w-full max-h-96 rounded mb-3">
-                                <source src="<?php echo htmlspecialchars($post['chemin_media']); ?>">
+                                <source src="../<?php echo htmlspecialchars($post['chemin_media']); ?>">
                             </video>
                         <?php endif; ?>
                         

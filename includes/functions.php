@@ -551,7 +551,7 @@ function calculerResultatsScrutin($id_scrutin) {
                           GROUP BY co.type";
         $stmtTotal = $conn->prepare($sqlTotalVotes);
         $stmtTotal->execute([':id_scrutin' => $id_scrutin]);
-        $totaux_colleges = [];
+        $totaux_colleges = ['public' => 0, 'journaliste' => 0, 'coach' => 0];
         while ($row = $stmtTotal->fetch(PDO::FETCH_ASSOC)) {
             $totaux_colleges[$row['type']] = (int)$row['total'];
         }
