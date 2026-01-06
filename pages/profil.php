@@ -47,7 +47,7 @@ try {
         exit;
     }
 } catch (PDOException $e) {
-    header('Location: login.php');
+    echo "Erreur SQL: " . $e->getMessage();
     exit;
 }
 
@@ -373,6 +373,15 @@ require_once '../includes/header.php';
                             
                             <div class="border-t border-gray-200 pt-4 mt-4">
                                 <h3 class="text-sm font-semibold text-gray-900 mb-3">Informations non modifiables</h3>
+                                
+                                <!-- DEBUG -->
+                                <div class="bg-yellow-100 p-2 mb-4 text-xs">
+                                    <strong>Debug:</strong><br>
+                                    Age: <?php var_dump($user['age']); ?><br>
+                                    Sexe: <?php var_dump($user['sexe']); ?><br>
+                                    Nationalite: <?php var_dump($user['nationalite']); ?>
+                                </div>
+                                
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Email</p>
