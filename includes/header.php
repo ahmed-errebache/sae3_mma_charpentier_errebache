@@ -37,10 +37,10 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
     $sql = "SELECT prenom, nom FROM $table WHERE email = :email LIMIT 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute([':email' => $_SESSION['email']]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $header_user = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($user) {
-        $user_name = $user['prenom'] . ' ' . $user['nom'];
+    if ($header_user) {
+        $user_name = $header_user['prenom'] . ' ' . $header_user['nom'];
     }
 }
 ?>
