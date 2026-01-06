@@ -100,12 +100,17 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                 <div class="md:flex md:space-x-8 hidden">
                     <a href="<?php echo $base_url; ?>/index.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Accueil</a>
                     <a href="<?php echo $base_url; ?>/pages/candidats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Candidats</a>
+                    <a href="<?php echo $base_url; ?>/pages/posts.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Posts</a>
                     <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'administrateur'): ?>
                         <a href="<?php echo $base_url; ?>/admin/generer_codes.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">CodePro</a>
                         <a href="<?php echo $base_url; ?>/admin/creer_scrutin.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Scrutins</a>
                         <a href="<?php echo $base_url; ?>/admin/resultats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Resultats</a>
+                        <a href="<?php echo $base_url; ?>/pages/moderation_posts.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Moderation</a>
                     <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'electeur'): ?>
                         <a href="<?php echo $base_url; ?>/pages/voter.php" class="font-medium text-rouge hover:text-rouge/80 transition-colors duration-200 py-2 font-bold">Voter</a>
+                        <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
+                    <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'candidat'): ?>
+                        <a href="<?php echo $base_url; ?>/pages/mes_posts.php" class="font-medium text-bleu hover:text-bleu/80 transition-colors duration-200 py-2 font-bold">Mes Posts</a>
                         <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
                     <?php else: ?>
                         <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
