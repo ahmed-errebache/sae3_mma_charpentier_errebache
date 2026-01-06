@@ -517,6 +517,99 @@ ALTER TABLE `vote`
   ADD CONSTRAINT `fk_vote_college` FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_vote_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_vote_scrutin` FOREIGN KEY (`id_scrutin`) REFERENCES `scrutin` (`ID_scrutin`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `post`
+--
+
+CREATE TABLE `post` (
+  `ID_post` int(11) NOT NULL,
+  `id_candidat` int(11) NOT NULL,
+  `type_media` enum('image','video') NOT NULL,
+  `chemin_media` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `date_creation` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `reaction`
+--
+
+CREATE TABLE `reaction` (
+  `ID_reaction` int(11) NOT NULL,
+  `id_post` int(11) NOT NULL,
+  `id_electeur` int(11) NOT NULL,
+  `type_reaction` enum('like','dislike') NOT NULL,
+  `date_creation` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `commentaire`
+--
+
+CREATE TABLE `commentaire` (
+  `ID_commentaire` int(11) NOT NULL,
+  `id_post` int(11) NOT NULL,
+  `id_electeur` int(11) NOT NULL,
+  `contenu` text NOT NULL,
+  `date_creation` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Index pour les tables `post`, `reaction`, `commentaire`
+--
+
+ALTER TABLE `post`
+  ADD PRIMARY KEY (`ID_post`),
+  ADD KEY `fk_post_candidat` (`id_candidat`);
+
+ALTER TABLE `reaction`
+  ADD PRIMARY KEY (`ID_reaction`),
+  ADD UNIQUE KEY `unique_reaction` (`id_post`,`id_electeur`),
+  ADD KEY `fk_reaction_post` (`id_post`),
+  ADD KEY `fk_reaction_electeur` (`id_electeur`);
+
+ALTER TABLE `commentaire`
+  ADD PRIMARY KEY (`ID_commentaire`),
+  ADD KEY `fk_commentaire_post` (`id_post`),
+  ADD KEY `fk_commentaire_electeur` (`id_electeur`);
+
+--
+-- AUTO_INCREMENT pour les tables `post`, `reaction`, `commentaire`
+--
+
+ALTER TABLE `post`
+  MODIFY `ID_post` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `reaction`
+  MODIFY `ID_reaction` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `commentaire`
+  MODIFY `ID_commentaire` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Contraintes pour les tables `post`, `reaction`, `commentaire`
+--
+
+ALTER TABLE `post`
+  ADD CONSTRAINT `fk_post_candidat` FOREIGN KEY (`id_candidat`) REFERENCES `candidat` (`ID_candidat`) ON DELETE CASCADE;
+
+ALTER TABLE `reaction`
+  ADD CONSTRAINT `fk_reaction_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_reaction_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE CASCADE;
+
+ALTER TABLE `commentaire`
+  ADD CONSTRAINT `fk_commentaire_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_commentaire_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

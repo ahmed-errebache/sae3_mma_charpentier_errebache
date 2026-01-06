@@ -8,11 +8,11 @@ Les administrateurs ont un acces complet pour moderer le contenu.
 
 ---
 
-## Fichiers crees
+## Base de donnees
 
-### 1. database/ajout_posts.sql
+### Modifications dans database/mma_election.sql
 
-Fichier SQL pour creer les nouvelles tables necessaires.
+Les nouvelles tables ont ete ajoutees directement dans le fichier principal mma_election.sql.
 
 **Tables ajoutees :**
 
@@ -39,16 +39,17 @@ Fichier SQL pour creer les nouvelles tables necessaires.
 - contenu (texte du commentaire)
 - date_creation
 
-**Comment utiliser :**
+**Installation :**
 1. Ouvrir phpMyAdmin
-2. Selectionner la base mma_election
-3. Aller dans l'onglet SQL
-4. Copier-coller le contenu du fichier
-5. Executer
+2. Creer une nouvelle base de donnees : mma_election
+3. Importer le fichier database/mma_election.sql
+4. Toutes les tables seront creees automatiquement
 
 ---
 
-### 2. pages/mes_posts.php
+## Fichiers crees
+
+### 1. pages/mes_posts.php
 
 Page pour les candidats pour gerer leurs posts.
 
@@ -69,7 +70,7 @@ Page pour les candidats pour gerer leurs posts.
 
 ---
 
-### 3. pages/posts.php
+### 2. pages/posts.php
 
 Page publique pour voir tous les posts de tous les candidats.
 
@@ -92,7 +93,7 @@ Page publique pour voir tous les posts de tous les candidats.
 
 ---
 
-### 4. pages/reagir_post.php
+### 3. pages/reagir_post.php
 
 Script pour gerer les reactions (likes/dislikes).
 
@@ -111,7 +112,7 @@ Script pour gerer les reactions (likes/dislikes).
 
 ---
 
-### 5. pages/voir_post.php
+### 4. pages/voir_post.php
 
 Page pour voir un post en detail avec tous ses commentaires.
 
@@ -130,7 +131,7 @@ Page pour voir un post en detail avec tous ses commentaires.
 
 ---
 
-### 6. pages/supprimer_post.php
+### 5. pages/supprimer_post.php
 
 Script pour supprimer un post.
 
@@ -152,7 +153,7 @@ Quand un post est supprime, grace aux cles etrangeres :
 
 ---
 
-### 7. pages/supprimer_commentaire.php
+### 6. pages/supprimer_commentaire.php
 
 Script pour supprimer un commentaire.
 
@@ -169,7 +170,7 @@ Script pour supprimer un commentaire.
 
 ---
 
-### 8. pages/moderation_posts.php
+### 7. pages/moderation_posts.php
 
 Interface de moderation pour les administrateurs.
 
