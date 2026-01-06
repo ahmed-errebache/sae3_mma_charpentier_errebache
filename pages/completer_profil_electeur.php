@@ -34,18 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sql = "UPDATE electeur SET age = :age, sexe = :sexe, nationalite = :nationalite 
                         WHERE email = :email";
                 $stmt = $connexion->prepare($sql);
-                $stmt->execute([
+                $result = $stmt->execute([
                     ':age' => $age,
                     ':sexe' => $sexe,
                     ':nationalite' => $nationalite,
                     ':email' => $_SESSION['email']
                 ]);
                 
-                $_SESSION['profil_complet'] = true;
-                header('Location: ../index.php');
-                exit;
+                if ($result && $stmt->rowCount() > 0) {
+                    $_SESSION['profil_complet'] = true;
+                    header('Location: ../index.php');
+                    exit;
+                } else {
+                    $error = 'Aucune ligne mise a jour. Verifiez que votre compte existe.';
+                }
             } catch (Exception $e) {
-                $error = 'Une erreur est survenue lors de la mise a jour de votre profil.';
+                $error = 'Une erreur est survenue lors de la mise a jour de votre profil: ' . $e->getMessage();
             }
         }
     }
