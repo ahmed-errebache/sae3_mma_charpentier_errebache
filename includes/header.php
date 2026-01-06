@@ -100,7 +100,16 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                 <div class="md:flex md:space-x-8 hidden">
                     <a href="<?php echo $base_url; ?>/index.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Accueil</a>
                     <a href="<?php echo $base_url; ?>/pages/candidats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Candidats</a>
-                    <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
+                    <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'administrateur'): ?>
+                        <a href="<?php echo $base_url; ?>/admin/generer_codes.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">CodePro</a>
+                        <a href="<?php echo $base_url; ?>/admin/creer_scrutin.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Scrutins</a>
+                        <a href="<?php echo $base_url; ?>/admin/resultats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Resultats</a>
+                    <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'electeur'): ?>
+                        <a href="<?php echo $base_url; ?>/pages/voter.php" class="font-medium text-rouge hover:text-rouge/80 transition-colors duration-200 py-2 font-bold">Voter</a>
+                        <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
+                    <?php else: ?>
+                        <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0 hidden gap-3">
@@ -108,7 +117,7 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                         // si on est connecté, afficher les boutons profil et déconnexion
                         if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true) {
                             echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/profil.php" class="items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-dore border border-dore hover:bg-dore/80 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/30">Mon Profil</a></span>';
-                            echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/logout.php" class="items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-rouge/80 backdrop-blur-sm inline-flex border border-white/30 hover:bg-rouge hover:border-white transition-all duration-200" title="Se déconnecter">
+                            echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/logout.php" class="items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-rouge backdrop-blur-sm inline-flex border border-white/30 hover:bg-rouge hover:border-white transition-all duration-200" title="Se déconnecter">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
@@ -116,7 +125,7 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                         }
                         // sinon le bouton "se connecter" est affiché
                         else {
-                            echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/login.php" class="items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-rouge/80 backdrop-blur-sm inline-flex border border-white/30 hover:bg-rouge hover:border-white transition-all duration-200">Se connecter</a></span>';
+                            echo '<span class="rounded-md inline-flex shadow-lg"><a href="'.$base_url.'/pages/login.php" class="items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-rouge backdrop-blur-sm inline-flex border border-white/30 hover:bg-rouge hover:border-white transition-all duration-200">Se connecter</a></span>';
                         }
                     ?>
 
@@ -130,7 +139,51 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                 </div>
             </nav>
         </div>
+        
+        <!-- Menu mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="<?php echo $base_url; ?>/index.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-rouge hover:bg-gris-clair">Accueil</a>
+                <a href="<?php echo $base_url; ?>/pages/candidats.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-bleu hover:bg-gris-clair">Candidats</a>
+                <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'administrateur'): ?>
+                    <a href="<?php echo $base_url; ?>/admin/generer_codes.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">CodePro</a>
+                    <a href="<?php echo $base_url; ?>/admin/creer_scrutin.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-rouge hover:bg-gris-clair">Scrutins</a>
+                    <a href="<?php echo $base_url; ?>/admin/resultats.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-bleu hover:bg-gris-clair">Resultats</a>
+                <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'electeur'): ?>
+                    <a href="<?php echo $base_url; ?>/pages/voter.php" class="block px-3 py-2 rounded-md text-base font-medium text-rouge hover:text-rouge/80 hover:bg-gris-clair font-bold">Voter</a>
+                    <a href="<?php echo $base_url; ?>/pages/contact.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">Contact</a>
+                <?php else: ?>
+                    <a href="<?php echo $base_url; ?>/pages/contact.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">Contact</a>
+                <?php endif; ?>
+                
+                <div class="border-t border-gray-200 pt-4 pb-3">
+                    <?php if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true): ?>
+                        <a href="<?php echo $base_url; ?>/pages/profil.php" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-dore hover:bg-dore/80">Mon Profil</a>
+                        <a href="<?php echo $base_url; ?>/pages/logout.php" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-rouge hover:bg-rouge mt-2">Se déconnecter</a>
+                    <?php else: ?>
+                        <a href="<?php echo $base_url; ?>/pages/login.php" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-rouge hover:bg-rouge">Se connecter</a>
+                        <a href="<?php echo $base_url; ?>/pages/register.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir bg-white hover:bg-gris-clair border border-gray-300 mt-2">S'inscrire</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </header>
+
+    <script>
+        // Gestion du menu burger mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+                    menuButton.setAttribute('aria-expanded', !isExpanded);
+                });
+            }
+        });
+    </script>
 
     <!-- Contenu principal avec padding-top pour compenser le header fixe -->
     <main class="pt-20 min-h-screen flex flex-col">
