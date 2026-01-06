@@ -90,7 +90,7 @@ require_once '../includes/header.php';
             <div class="p-4 border-b">
                 <div class="flex items-center">
                     <?php if ($post['photo_profil']): ?>
-                        <img src="<?php echo htmlspecialchars($post['photo_profil']); ?>" 
+                        <img src="../<?php echo htmlspecialchars($post['photo_profil']); ?>" 
                              alt="Photo" 
                              class="w-12 h-12 rounded-full object-cover mr-3">
                     <?php endif; ?>
@@ -107,12 +107,12 @@ require_once '../includes/header.php';
             
             <div class="bg-black">
                 <?php if ($post['type_media'] === 'image'): ?>
-                    <img src="<?php echo htmlspecialchars($post['chemin_media']); ?>" 
+                    <img src="../<?php echo htmlspecialchars($post['chemin_media']); ?>" 
                          alt="Post" 
                          class="w-full max-h-[500px] object-contain mx-auto">
                 <?php else: ?>
                     <video controls class="w-full max-h-[500px] mx-auto">
-                        <source src="<?php echo htmlspecialchars($post['chemin_media']); ?>">
+                        <source src="../<?php echo htmlspecialchars($post['chemin_media']); ?>">
                     </video>
                 <?php endif; ?>
             </div>
