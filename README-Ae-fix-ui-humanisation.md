@@ -298,3 +298,20 @@ Le texte est reste le meme mais sans emoji, ca fait plus simple et direct.
 ## Conclusion
 
 Les modifications rendent l'interface plus coherente et plus naturelle. Le code est plus simple et fait moins "genere automatiquement". C'est plus adapte a un projet etudiant.
+
+### Problemes resolus
+
+✅ **Countdown:** Fonctionne correctement avec la date du scrutin actif (23:59:59 le 12 janvier 2026)  
+✅ **Profil:** Affiche correctement "Non renseigne" pour les champs vides (age, sexe, nationalite)  
+✅ **Menu Voter:** Style uniforme avec les autres liens  
+✅ **Carousel:** Vitesse reduite pour une meilleure lisibilite  
+✅ **Page Voter:** Design simplifie sans emojis
+
+### Note importante
+
+Le fichier profil.php a ete fusionne avec les ameliorations de la branche `Ae-complete-profil` qui:
+- Charge les donnees utilisateur AVANT le traitement du formulaire
+- Rafraichit les donnees apres chaque modification
+- Ameliore la logique generale du profil
+
+Les champs age/sexe/nationalite affichent "Non renseigne" car ils ne sont jamais remplis lors de l'inscription (register.php ne les demande pas). C'est le comportement attendu.
