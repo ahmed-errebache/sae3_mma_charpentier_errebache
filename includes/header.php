@@ -12,10 +12,10 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
     $sql = "SELECT prenom, nom FROM $table WHERE email = :email LIMIT 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute([':email' => $_SESSION['email']]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user_header = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($user) {
-        $user_name = $user['prenom'] . ' ' . $user['nom'];
+    if ($user_header) {
+        $user_name = $user_header['prenom'] . ' ' . $user_header['nom'];
     }
 }
 ?>

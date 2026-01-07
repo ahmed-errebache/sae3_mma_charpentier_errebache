@@ -218,21 +218,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 require_once '../includes/header.php';
-
-// DEBUG TEMPORAIRE - A RETIRER
-if (isset($_GET['debug'])) {
-    echo "<div style='background:#f0f0f0;padding:20px;margin:20px;'>";
-    echo "<h3>DEBUG - Contenu de \$user:</h3>";
-    echo "<pre>";
-    print_r($user);
-    echo "</pre>";
-    echo "<p>age: " . var_export(!empty($user['age']), true) . " = " . var_export($user['age'], true) . "</p>";
-    echo "<p>sexe: " . var_export(!empty($user['sexe']), true) . " = " . var_export($user['sexe'], true) . "</p>";
-    echo "<p>nationalite: " . var_export(!empty($user['nationalite']), true) . " = " . var_export($user['nationalite'], true) . "</p>";
-    echo "</div>";
-}
-// FIN DEBUG
-
 ?>
 
 <?php require_once '../includes/header.php'; ?>
@@ -359,7 +344,11 @@ if (isset($_GET['debug'])) {
                             </div>
                         </div>
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between items-center">
+                            <a href="supprimer_compte.php"
+                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
+                                Supprimer mon compte
+                            </a>
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
@@ -474,7 +463,11 @@ if (isset($_GET['debug'])) {
                             </div>
                         </div>
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between items-center">
+                            <a href="supprimer_compte.php"
+                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
+                                Supprimer mon compte
+                            </a>
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
@@ -525,7 +518,11 @@ if (isset($_GET['debug'])) {
                             </div>
                         </div>
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between items-center">
+                            <a href="supprimer_compte.php"
+                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
+                                Supprimer mon compte
+                            </a>
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
