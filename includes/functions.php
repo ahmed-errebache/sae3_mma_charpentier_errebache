@@ -612,4 +612,31 @@ function calculerResultatsScrutin($id_scrutin) {
         return null;
     }
 }
+
+// Supprimer le compte utilisateur
+function supprimerCompte($email, $userType) {
+    try {
+        $conn = dbconnect();
+        
+        // Verification du type d'utilisateur
+        if (!in_array($userType, ['electeur', 'candidat', 'administrateur'])) {
+            return ['success' => false, 'message' => 'Type utilisateur invalide'];
+        }
+        
+        // Supprimer le compte
+        $sql = "DELETE FROM $userType WHERE email = :email";
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->execute([':email' => $email]);
+        
+        if ($result) {
+            return ['success' => true, 'message' => 'Compte supprime avec succes'];
+        } else {
+            return ['success' => false, 'message' => 'Erreur lors de la suppression'];
+        }
+        
+    } catch (PDOException $e) {
+        error_log("Erreur supprimerCompte: " . $e->getMessage());
+        return ['success' => false, 'message' => 'Erreur technique'];
+    }
+}
 ?>
