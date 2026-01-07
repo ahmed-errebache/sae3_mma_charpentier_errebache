@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 05 jan. 2026 à 15:03
+-- Généré le : mer. 07 jan. 2026 à 11:44
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.0.30
 
@@ -77,7 +77,8 @@ INSERT INTO `candidat` (`ID_candidat`, `email`, `mot_de_passe`, `mdp_provisoire`
 (9, 'brandon.royval@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Brandon', NULL, NULL, 'Royval', 'Americaine', '{\"victoires\":16,\"defaites\":7,\"egalites\":0,\"no_contest\":0}', 'images/candidats/BrandonRoyval.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
 (10, 'joshua.van@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Joshua', NULL, NULL, 'Van', 'Americaine', '{\"victoires\":10,\"defaites\":1,\"egalites\":0,\"no_contest\":0}', 'images/candidats/JoshuaVan.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
 (11, 'manel.kape@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Manel', NULL, NULL, 'Kape', 'Angolaise', '{\"victoires\":19,\"defaites\":6,\"egalites\":0,\"no_contest\":0}', 'images/candidats/ManelKape.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
-(12, 'tatsuro.taira@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Tatsuro', NULL, NULL, 'Taira', 'Japonaise', '{\"victoires\":16,\"defaites\":0,\"egalites\":0,\"no_contest\":0}', 'images/candidats/TatsuroTaira.png', 1, 1, '2026-01-05 15:01:13', NULL, 3);
+(12, 'tatsuro.taira@mma.com', '$2y$12$abcd1234567890abcdefgh', NULL, 'Tatsuro', NULL, NULL, 'Taira', 'Japonaise', '{\"victoires\":16,\"defaites\":0,\"egalites\":0,\"no_contest\":0}', 'images/candidats/TatsuroTaira.png', 1, 1, '2026-01-05 15:01:13', NULL, 3),
+(13, 'ahmed.errebache1@gmail.com', '$2y$10$64pzlbrP00dyI8oIPb5aeuWsRFPrK.AIZGdgb0CXF6kWrad7JsPPK', '0', 'can1', 'The Spider', NULL, 'can1', 'Maroc', '{\"victoires\":12,\"defaites\":1,\"egalites\":0,\"no_contest\":0}', 'images/candidats/695ce7acf3388.jpg', 1, 1, '2026-01-06 11:44:07', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -134,6 +135,27 @@ INSERT INTO `college` (`ID_college`, `type`, `poids`) VALUES
 (1, 'public', 0.20),
 (2, 'journaliste', 0.40),
 (3, 'coach', 0.40);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `commentaire`
+--
+
+CREATE TABLE `commentaire` (
+  `ID_commentaire` int(11) NOT NULL,
+  `id_post` int(11) NOT NULL,
+  `id_electeur` int(11) NOT NULL,
+  `contenu` text NOT NULL,
+  `date_creation` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `commentaire`
+--
+
+INSERT INTO `commentaire` (`ID_commentaire`, `id_post`, `id_electeur`, `contenu`, `date_creation`) VALUES
+(2, 4, 1, 'q', '2026-01-06 11:55:14');
 
 -- --------------------------------------------------------
 
@@ -198,9 +220,19 @@ CREATE TABLE `media` (
 
 CREATE TABLE `post` (
   `ID_post` int(11) NOT NULL,
-  `texte` text NOT NULL,
-  `date` datetime NOT NULL
+  `id_candidat` int(11) NOT NULL,
+  `type_media` enum('image','video') NOT NULL,
+  `chemin_media` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `date_creation` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `post`
+--
+
+INSERT INTO `post` (`ID_post`, `id_candidat`, `type_media`, `chemin_media`, `description`, `date_creation`) VALUES
+(4, 13, 'image', 'uploads/posts/images/post_695ce9a4a9673.png', 'd', '2026-01-06 11:53:24');
 
 -- --------------------------------------------------------
 
@@ -210,12 +242,18 @@ CREATE TABLE `post` (
 
 CREATE TABLE `reaction` (
   `ID_reaction` int(11) NOT NULL,
-  `type` enum('like','commentaire') NOT NULL,
-  `contenu_commentaire` text DEFAULT NULL,
-  `date` datetime NOT NULL,
-  `id_electeur` int(11) DEFAULT NULL,
-  `id_post` int(11) DEFAULT NULL
+  `id_post` int(11) NOT NULL,
+  `id_electeur` int(11) NOT NULL,
+  `type_reaction` enum('like','dislike') NOT NULL,
+  `date_creation` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `reaction`
+--
+
+INSERT INTO `reaction` (`ID_reaction`, `id_post`, `id_electeur`, `type_reaction`, `date_creation`) VALUES
+(2, 4, 1, 'like', '2026-01-06 11:53:54');
 
 -- --------------------------------------------------------
 
@@ -292,6 +330,14 @@ ALTER TABLE `college`
   ADD PRIMARY KEY (`ID_college`);
 
 --
+-- Index pour la table `commentaire`
+--
+ALTER TABLE `commentaire`
+  ADD PRIMARY KEY (`ID_commentaire`),
+  ADD KEY `fk_commentaire_post` (`id_post`),
+  ADD KEY `fk_commentaire_electeur` (`id_electeur`);
+
+--
 -- Index pour la table `electeur`
 --
 ALTER TABLE `electeur`
@@ -310,15 +356,17 @@ ALTER TABLE `media`
 -- Index pour la table `post`
 --
 ALTER TABLE `post`
-  ADD PRIMARY KEY (`ID_post`);
+  ADD PRIMARY KEY (`ID_post`),
+  ADD KEY `fk_post_candidat` (`id_candidat`);
 
 --
 -- Index pour la table `reaction`
 --
 ALTER TABLE `reaction`
   ADD PRIMARY KEY (`ID_reaction`),
-  ADD KEY `fk_reaction_electeur` (`id_electeur`),
-  ADD KEY `fk_reaction_post` (`id_post`);
+  ADD UNIQUE KEY `unique_reaction` (`id_post`,`id_electeur`),
+  ADD KEY `fk_reaction_post` (`id_post`),
+  ADD KEY `fk_reaction_electeur` (`id_electeur`);
 
 --
 -- Index pour la table `scrutin`
@@ -351,7 +399,7 @@ ALTER TABLE `administrateur`
 -- AUTO_INCREMENT pour la table `candidat`
 --
 ALTER TABLE `candidat`
-  MODIFY `ID_candidat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID_candidat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `code_professionnel`
@@ -364,6 +412,12 @@ ALTER TABLE `code_professionnel`
 --
 ALTER TABLE `college`
   MODIFY `ID_college` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `commentaire`
+--
+ALTER TABLE `commentaire`
+  MODIFY `ID_commentaire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `electeur`
@@ -381,13 +435,13 @@ ALTER TABLE `media`
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `ID_post` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_post` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `reaction`
 --
 ALTER TABLE `reaction`
-  MODIFY `ID_reaction` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_reaction` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `scrutin`
@@ -418,6 +472,13 @@ ALTER TABLE `code_professionnel`
   ADD CONSTRAINT `code_professionnel_ibfk_1` FOREIGN KEY (`id_college`) REFERENCES `college` (`ID_college`);
 
 --
+-- Contraintes pour la table `commentaire`
+--
+ALTER TABLE `commentaire`
+  ADD CONSTRAINT `fk_commentaire_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_commentaire_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE CASCADE;
+
+--
 -- Contraintes pour la table `electeur`
 --
 ALTER TABLE `electeur`
@@ -430,11 +491,17 @@ ALTER TABLE `media`
   ADD CONSTRAINT `fk_media_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
+-- Contraintes pour la table `post`
+--
+ALTER TABLE `post`
+  ADD CONSTRAINT `fk_post_candidat` FOREIGN KEY (`id_candidat`) REFERENCES `candidat` (`ID_candidat`) ON DELETE CASCADE;
+
+--
 -- Contraintes pour la table `reaction`
 --
 ALTER TABLE `reaction`
-  ADD CONSTRAINT `fk_reaction_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_reaction_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_reaction_electeur` FOREIGN KEY (`id_electeur`) REFERENCES `electeur` (`ID_electeur`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_reaction_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`ID_post`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `scrutin`
