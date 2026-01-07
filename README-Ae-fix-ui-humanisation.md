@@ -16,27 +16,38 @@ Ce document explique les modifications apportees pour corriger plusieurs problem
 
 **Fichier modifie:** `pages/profil.php`
 
-**Lignes modifiees:** 374-392
+**Lignes modifiees:** 374-407
 
 **Explication:**
 Le probleme venait de la verification des champs. Avant, on utilisait juste `!empty($user['age'])` mais ca ne marchait pas bien avec les valeurs NULL ou vides de la base de donnees.
 
 **Solution:**
-On a change la verification pour etre plus complete:
+On a change la verification pour etre plus complete avec `!empty()` qui verifie a la fois:
+- Si la variable existe
+- Si elle n'est pas NULL
+- Si elle n'est pas vide
+- Si elle n'est pas egale a 0 ou false
+
 ```php
-if (isset($user['age']) && $user['age'] !== null && $user['age'] !== '') {
+if (!empty($user['age']) && $user['age'] > 0) {
     echo htmlspecialchars($user['age']) . ' ans';
 } else {
     echo 'Non renseigne';
 }
 ```
 
-On verifie maintenant 3 choses:
-- Est-ce que la variable existe? (`isset`)
-- Est-ce qu'elle n'est pas NULL? (`!== null`)
-- Est-ce qu'elle n'est pas vide? (`!== ''`)
+Pour le sexe et la nationalite, on utilise juste `!empty()`:
+```php
+if (!empty($user['sexe'])) {
+    echo htmlspecialchars($user['sexe']);
+} else {
+    echo 'Non renseigne';
+}
+```
 
 Ca marche mieux maintenant pour les champs: Age, Sexe et Nationalite.
+
+**Note importante:** Ces champs ne sont pas remplis lors de l'inscription dans register.php. C'est normal qu'ils affichent "Non renseigne" pour les nouveaux utilisateurs. Il faudrait ajouter ces champs au formulaire d'inscription si on veut les collecter.
 
 ---
 
@@ -80,6 +91,8 @@ C'est plus coherent avec le reste du menu.
 **Explication:**
 Le probleme c'est que la date etait codee en dur dans le JavaScript. Il fallait recuperer la vraie date de fermeture du scrutin depuis la base de donnees.
 
+**Probleme supplementaire decouvert:** Dans la base de donnees, le champ `date_fermeture` est de type DATE (juste la date, pas l'heure). Ca veut dire qu'on a juste "2026-01-12" sans l'heure. Du coup le countdown ne savait pas a quelle heure exactement ca finissait.
+
 **Solution partie 1 - countdown.php:**
 
 On a ajoute du code PHP au debut pour recuperer le scrutin actif:
@@ -90,12 +103,19 @@ require_once __DIR__ . '/../../includes/functions.php';
 $conn = dbconnect();
 $scrutinActif = getScrutinActif();
 
+// Date par defaut
 $dateFin = 'December 31, 2025 23:59:59';
+
 if ($scrutinActif && isset($scrutinActif['date_fermeture'])) {
-    $timestamp = strtotime($scrutinActif['date_fermeture']);
+    // La date dans la base est au format DATE (YYYY-MM-DD) sans heure
+    // On ajoute 23:59:59 pour avoir la fin de la journee
+    $dateStr = $scrutinActif['date_fermeture'] . ' 23:59:59';
+    $timestamp = strtotime($dateStr);
     $dateFin = date('F d, Y H:i:s', $timestamp);
 }
 ```
+
+**Important:** On ajoute ' 23:59:59' a la date pour dire que ca se termine a la fin de la journee, pas a minuit au debut.
 
 Et on passe cette date au JavaScript:
 ```html

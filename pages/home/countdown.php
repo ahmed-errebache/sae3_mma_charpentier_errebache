@@ -10,10 +10,14 @@ require_once __DIR__ . '/../../includes/functions.php';
 $conn = dbconnect();
 $scrutinActif = getScrutinActif();
 
+// Date par defaut
 $dateFin = 'December 31, 2025 23:59:59';
+
 if ($scrutinActif && isset($scrutinActif['date_fermeture'])) {
-    // Convertir la date de fermeture au format JavaScript
-    $timestamp = strtotime($scrutinActif['date_fermeture']);
+    // La date dans la base est au format DATE (YYYY-MM-DD) sans heure
+    // On ajoute 23:59:59 pour avoir la fin de la journee
+    $dateStr = $scrutinActif['date_fermeture'] . ' 23:59:59';
+    $timestamp = strtotime($dateStr);
     $dateFin = date('F d, Y H:i:s', $timestamp);
 }
 ?>

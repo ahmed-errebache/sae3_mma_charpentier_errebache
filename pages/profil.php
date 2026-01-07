@@ -374,7 +374,7 @@ require_once '../includes/header.php';
                                         <p class="text-sm font-medium text-gray-500">Age</p>
                                         <p class="mt-1 text-gray-900">
                                             <?php 
-                                            if (isset($user['age']) && $user['age'] !== null && $user['age'] !== '') {
+                                            if (!empty($user['age']) && $user['age'] > 0) {
                                                 echo htmlspecialchars($user['age']) . ' ans';
                                             } else {
                                                 echo 'Non renseigne';
@@ -386,7 +386,7 @@ require_once '../includes/header.php';
                                         <p class="text-sm font-medium text-gray-500">Sexe</p>
                                         <p class="mt-1 text-gray-900">
                                             <?php 
-                                            if (isset($user['sexe']) && $user['sexe'] !== null && $user['sexe'] !== '') {
+                                            if (!empty($user['sexe'])) {
                                                 echo htmlspecialchars($user['sexe']);
                                             } else {
                                                 echo 'Non renseigne';
@@ -398,7 +398,7 @@ require_once '../includes/header.php';
                                         <p class="text-sm font-medium text-gray-500">Nationalite</p>
                                         <p class="mt-1 text-gray-900">
                                             <?php 
-                                            if (isset($user['nationalite']) && $user['nationalite'] !== null && $user['nationalite'] !== '') {
+                                            if (!empty($user['nationalite'])) {
                                                 echo htmlspecialchars($user['nationalite']);
                                             } else {
                                                 echo 'Non renseignee';
