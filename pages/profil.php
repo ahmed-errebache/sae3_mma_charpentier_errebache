@@ -35,6 +35,22 @@ if (!$email || !$userType) {
 $errors = [];
 $success = '';
 
+// Recuperation initiale des donnees utilisateur
+try {
+    $sql = "SELECT * FROM $userType WHERE email = :email";
+    $stmt = $connexion->prepare($sql);
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$user) {
+        header('Location: login.php');
+        exit;
+    }
+} catch (PDOException $e) {
+    echo "Erreur SQL: " . $e->getMessage();
+    exit;
+}
+
 // Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
@@ -79,6 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute($params);
                 
                 $success = "Informations mises à jour avec succès.";
+                
+                // Rafraichir les donnees
+                $stmt = $connexion->prepare("SELECT * FROM administrateur WHERE email = :email");
+                $stmt->execute([':email' => $email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
                 $errors[] = "Erreur lors de la mise à jour.";
             }
@@ -126,6 +147,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute($params);
                 
                 $success = "Informations mises a jour avec succes.";
+                
+                // Rafraichir les donnees
+                $stmt = $connexion->prepare("SELECT * FROM electeur WHERE email = :email");
+                $stmt->execute([':email' => $email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
                 $errors[] = "Erreur lors de la mise a jour.";
             }
@@ -189,20 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-}
-
-// Récupération des données utilisateur
-try {
-    $sql = "SELECT * FROM $userType WHERE email = :email";
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute([':email' => $email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$user) {
-        $errors[] = "Impossible de récupérer vos informations.";
-    }
-} catch (PDOException $e) {
-    $errors[] = "Erreur lors de la récupération des informations.";
 }
 
 require_once '../includes/header.php';
@@ -361,6 +373,7 @@ require_once '../includes/header.php';
                             
                             <div class="border-t border-gray-200 pt-4 mt-4">
                                 <h3 class="text-sm font-semibold text-gray-900 mb-3">Informations non modifiables</h3>
+                                
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Email</p>

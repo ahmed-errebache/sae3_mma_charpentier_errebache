@@ -74,7 +74,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         exit;
                     }
                 } else {
-                    $error = "Email ou mot de passe incorrect.";
+                    $_SESSION["isConnected"] = true;
+                    $_SESSION['email'] = $email;
+                    $_SESSION['user_type'] = $user_table;
+
+                    if ($user_table === 'electeur' && (empty($user['age']) || empty($user['sexe']) || empty($user['nationalite']))) {
+                        $_SESSION['profil_complet'] = false;
+                        header('Location: completer_profil_electeur.php');
+                        exit;
+                    }
+
+                    header('Location: ../index.php');
+                    exit;
                 }
             }
         }

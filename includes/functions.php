@@ -266,6 +266,18 @@ function supprimerCandidat($id) {
     return $stmt->execute([':id' => $id]);
 }
 
+// Calculer l'age a partir de la date de naissance
+function calculerAge($dateNaissance) {
+    try {
+        $date = new DateTime($dateNaissance);
+        $aujourdhui = new DateTime();
+        $age = $aujourdhui->diff($date)->y;
+        return $age;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 // Liste de tous les pays du monde
 function getListePays() {
     return [
