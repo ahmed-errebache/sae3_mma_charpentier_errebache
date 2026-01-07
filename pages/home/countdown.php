@@ -2,6 +2,24 @@
 /**
  * Section countdown - Affiche le temps restant pour voter
  */
+
+// Recuperation du scrutin actif
+require_once __DIR__ . '/../../includes/config.php';
+require_once __DIR__ . '/../../includes/functions.php';
+
+$conn = dbconnect();
+$scrutinActif = getScrutinActif();
+
+// Date par defaut
+$dateFin = 'December 31, 2025 23:59:59';
+
+if ($scrutinActif && isset($scrutinActif['date_fermeture'])) {
+    // La date dans la base est au format DATE (YYYY-MM-DD) sans heure
+    // On ajoute 23:59:59 pour avoir la fin de la journee
+    $dateStr = $scrutinActif['date_fermeture'] . ' 23:59:59';
+    $timestamp = strtotime($dateStr);
+    $dateFin = date('F d, Y H:i:s', $timestamp);
+}
 ?>
 
 <section class="py-8 md:py-12 bg-noir">
@@ -65,4 +83,8 @@
 </section>
 
 <!-- Chargement du script pour le compteur -->
+<script>
+    // Passer la date de fin du PHP au JavaScript
+    const countdownDate = "<?php echo $dateFin; ?>";
+</script>
 <script src="<?php echo $base_url; ?>/assets/js/countdown.js"></script>

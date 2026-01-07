@@ -344,7 +344,11 @@ require_once '../includes/header.php';
                             </div>
                         </div>
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between items-center">
+                            <a href="supprimer_compte.php"
+                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
+                                Supprimer mon compte
+                            </a>
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
@@ -372,7 +376,6 @@ require_once '../includes/header.php';
                             </div>
                             
                             <div class="border-t border-gray-200 pt-4 mt-4">
-                                <h3 class="text-sm font-semibold text-gray-900 mb-3">Informations non modifiables</h3>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
@@ -393,11 +396,27 @@ require_once '../includes/header.php';
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Sexe</p>
-                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['sexe'] ?? 'Non renseigne'); ?></p>
+                                        <p class="mt-1 text-gray-900">
+                                            <?php 
+                                            if (!empty($user['sexe'])) {
+                                                echo htmlspecialchars($user['sexe']);
+                                            } else {
+                                                echo 'Non renseigne';
+                                            }
+                                            ?>
+                                        </p>
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Nationalite</p>
-                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['nationalite'] ?? 'Non renseignee'); ?></p>
+                                        <p class="mt-1 text-gray-900">
+                                            <?php 
+                                            if (!empty($user['nationalite'])) {
+                                                echo htmlspecialchars($user['nationalite']);
+                                            } else {
+                                                echo 'Non renseignee';
+                                            }
+                                            ?>
+                                        </p>
                                     </div>
                                     <?php if (!empty($user['code_fourni'])): ?>
                                     <div>
@@ -444,7 +463,11 @@ require_once '../includes/header.php';
                             </div>
                         </div>
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between items-center">
+                            <a href="supprimer_compte.php"
+                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
+                                Supprimer mon compte
+                            </a>
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
@@ -495,7 +518,11 @@ require_once '../includes/header.php';
                             </div>
                         </div>
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between items-center">
+                            <a href="supprimer_compte.php"
+                               class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
+                                Supprimer mon compte
+                            </a>
                             <button type="submit"
                                 class="px-6 py-3 rounded-md bg-bleu text-white font-medium shadow hover:bg-bleu/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu">
                                 Enregistrer les modifications
