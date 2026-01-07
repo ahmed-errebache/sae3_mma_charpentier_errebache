@@ -84,8 +84,6 @@ require_once '../includes/header.php';
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 sm:p-8">
             <h1 class="text-2xl font-bold text-center text-noir mb-6">Inscription</h1>
 
-<?php require_once '../includes/header.php'; ?>
-
             <?php if (!empty($error)): ?>
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     <?php echo htmlspecialchars($error); ?>
