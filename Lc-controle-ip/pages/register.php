@@ -40,7 +40,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($checkStmt->fetchColumn() > 0) {
             $error = "Cet email est déjà utilisé.";
         } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             // Recuperer l'adresse IP de l'utilisateur
             $adresse_ip = $_SERVER['REMOTE_ADDR'];
             
@@ -56,15 +55,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Hasher le mot de passe
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                 
-                $_SESSION['isConnected'] = true;
-                $_SESSION['email'] = $email;
-                $_SESSION['user_type'] = 'electeur';
-                $_SESSION['profil_complet'] = false;
-                
-                header('Location: completer_profil_electeur.php');
-                exit;
-            } catch (Exception $e) {
-                $error = "Une erreur est survenue lors de l'inscription.";
                 try {
                     $sql = "INSERT INTO electeur (email, mot_de_passe, nom, prenom, id_college, adresse_IP) 
                             VALUES (:email, :password, :nom, :prenom, 1, :ip)";

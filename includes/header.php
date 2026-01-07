@@ -2,6 +2,31 @@
 // Chemin de base du projet
 $base_url = '/sae3_mma_charpentier_errebache';
 
+// Verifier si l'electeur doit completer son profil
+$page_actuelle = basename($_SERVER['PHP_SELF']);
+$pages_autorisees = ['completer_profil_electeur.php', 'logout.php'];
+
+if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && 
+    isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'electeur' &&
+    !in_array($page_actuelle, $pages_autorisees)) {
+    
+    require_once __DIR__ . '/config.php';
+    $conn = dbconnect();
+    
+    $sql = "SELECT age, sexe, nationalite FROM electeur WHERE email = :email LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':email' => $_SESSION['email']]);
+    $profil = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($profil && (empty($profil['age']) || empty($profil['sexe']) || empty($profil['nationalite']))) {
+        $_SESSION['profil_complet'] = false;
+        header('Location: ' . $base_url . '/pages/completer_profil_electeur.php');
+        exit;
+    } else {
+        $_SESSION['profil_complet'] = true;
+    }
+}
+
 // Récupérer les informations de l'utilisateur connecté
 $user_name = '';
 if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isset($_SESSION['email']) && isset($_SESSION['user_type'])) {
@@ -12,10 +37,10 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
     $sql = "SELECT prenom, nom FROM $table WHERE email = :email LIMIT 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute([':email' => $_SESSION['email']]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $header_user = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($user) {
-        $user_name = $user['prenom'] . ' ' . $user['nom'];
+    if ($header_user) {
+        $user_name = $header_user['prenom'] . ' ' . $header_user['nom'];
     }
 }
 ?>
