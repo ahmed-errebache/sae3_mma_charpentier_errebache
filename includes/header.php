@@ -1,4 +1,7 @@
 <?php
+// Headers de securite
+require_once __DIR__ . '/security.php';
+
 // Chemin de base du projet
 $base_url = '/sae3_mma_charpentier_errebache';
 
