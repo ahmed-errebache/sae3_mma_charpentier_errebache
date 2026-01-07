@@ -627,4 +627,16 @@ function supprimerCompte($email, $userType) {
         return ['success' => false, 'message' => 'Erreur technique'];
     }
 }
+
+// Calculer l'âge à partir d'une date de naissance
+function calculerAge($dateNaissance) {
+    try {
+        $date = new DateTime($dateNaissance);
+        $aujourdhui = new DateTime();
+        $age = $aujourdhui->diff($date)->y;
+        return $age;
+    } catch (Exception $e) {
+        return false;
+    }
+}
 ?>
