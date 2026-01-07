@@ -218,6 +218,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 require_once '../includes/header.php';
+
+// DEBUG TEMPORAIRE - A RETIRER
+if (isset($_GET['debug'])) {
+    echo "<div style='background:#f0f0f0;padding:20px;margin:20px;'>";
+    echo "<h3>DEBUG - Contenu de \$user:</h3>";
+    echo "<pre>";
+    print_r($user);
+    echo "</pre>";
+    echo "<p>age: " . var_export(!empty($user['age']), true) . " = " . var_export($user['age'], true) . "</p>";
+    echo "<p>sexe: " . var_export(!empty($user['sexe']), true) . " = " . var_export($user['sexe'], true) . "</p>";
+    echo "<p>nationalite: " . var_export(!empty($user['nationalite']), true) . " = " . var_export($user['nationalite'], true) . "</p>";
+    echo "</div>";
+}
+// FIN DEBUG
+
 ?>
 
 <?php require_once '../includes/header.php'; ?>
