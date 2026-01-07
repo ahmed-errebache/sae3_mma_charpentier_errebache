@@ -374,7 +374,7 @@ require_once '../includes/header.php';
                                         <p class="text-sm font-medium text-gray-500">Age</p>
                                         <p class="mt-1 text-gray-900">
                                             <?php 
-                                            if (!empty($user['age'])) {
+                                            if (isset($user['age']) && $user['age'] !== null && $user['age'] !== '') {
                                                 echo htmlspecialchars($user['age']) . ' ans';
                                             } else {
                                                 echo 'Non renseigne';
@@ -384,11 +384,27 @@ require_once '../includes/header.php';
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Sexe</p>
-                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['sexe'] ?? 'Non renseigne'); ?></p>
+                                        <p class="mt-1 text-gray-900">
+                                            <?php 
+                                            if (isset($user['sexe']) && $user['sexe'] !== null && $user['sexe'] !== '') {
+                                                echo htmlspecialchars($user['sexe']);
+                                            } else {
+                                                echo 'Non renseigne';
+                                            }
+                                            ?>
+                                        </p>
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Nationalite</p>
-                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['nationalite'] ?? 'Non renseignee'); ?></p>
+                                        <p class="mt-1 text-gray-900">
+                                            <?php 
+                                            if (isset($user['nationalite']) && $user['nationalite'] !== null && $user['nationalite'] !== '') {
+                                                echo htmlspecialchars($user['nationalite']);
+                                            } else {
+                                                echo 'Non renseignee';
+                                            }
+                                            ?>
+                                        </p>
                                     </div>
                                     <?php if (!empty($user['code_fourni'])): ?>
                                     <div>

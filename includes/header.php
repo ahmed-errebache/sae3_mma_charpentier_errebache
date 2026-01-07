@@ -107,7 +107,7 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                         <a href="<?php echo $base_url; ?>/admin/resultats.php" class="font-medium text-noir hover:text-bleu transition-colors duration-200 py-2">Resultats</a>
                         <a href="<?php echo $base_url; ?>/pages/moderation_posts.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Moderation</a>
                     <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'electeur'): ?>
-                        <a href="<?php echo $base_url; ?>/pages/voter.php" class="font-medium text-rouge hover:text-rouge/80 transition-colors duration-200 py-2 font-bold">Voter</a>
+                        <a href="<?php echo $base_url; ?>/pages/voter.php" class="font-medium text-noir hover:text-rouge transition-colors duration-200 py-2">Voter</a>
                         <a href="<?php echo $base_url; ?>/pages/contact.php" class="font-medium text-noir hover:text-dore transition-colors duration-200 py-2">Contact</a>
                     <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'candidat'): ?>
                         <a href="<?php echo $base_url; ?>/pages/mes_posts.php" class="font-medium text-bleu hover:text-bleu/80 transition-colors duration-200 py-2 font-bold">Mes Posts</a>
@@ -155,7 +155,7 @@ if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true && isse
                     <a href="<?php echo $base_url; ?>/admin/creer_scrutin.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-rouge hover:bg-gris-clair">Scrutins</a>
                     <a href="<?php echo $base_url; ?>/admin/resultats.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-bleu hover:bg-gris-clair">Resultats</a>
                 <?php elseif (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] && $_SESSION['user_type'] === 'electeur'): ?>
-                    <a href="<?php echo $base_url; ?>/pages/voter.php" class="block px-3 py-2 rounded-md text-base font-medium text-rouge hover:text-rouge/80 hover:bg-gris-clair font-bold">Voter</a>
+                    <a href="<?php echo $base_url; ?>/pages/voter.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-rouge hover:bg-gris-clair">Voter</a>
                     <a href="<?php echo $base_url; ?>/pages/contact.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">Contact</a>
                 <?php else: ?>
                     <a href="<?php echo $base_url; ?>/pages/contact.php" class="block px-3 py-2 rounded-md text-base font-medium text-noir hover:text-dore hover:bg-gris-clair">Contact</a>

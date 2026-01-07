@@ -186,7 +186,7 @@ $candidats = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         function startAutoPlay() {
-            autoPlayInterval = setInterval(nextSlide, 3000);
+            autoPlayInterval = setInterval(nextSlide, 5000);
         }
 
         function resetAutoPlay() {
