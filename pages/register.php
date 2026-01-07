@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-// Rediriger si déjà connecté
-if (isset($_SESSION['isConnected']) && $_SESSION['isConnected'] === true) {
-    header('Location: /sae3_mma_charpentier_errebache/index.php');
-    exit;
-}
-
 require_once '../includes/config.php'; 
 
 $connexion = dbconnect();
@@ -44,17 +38,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Recuperer l'adresse IP de l'utilisateur
             $adresse_ip = $_SERVER['REMOTE_ADDR'];
             
-            // Verifier combien de comptes existent deja avec cette IP
-            $checkIpSql = "SELECT COUNT(*) FROM electeur WHERE adresse_IP = :ip AND id_college = 1";
-            $checkIpStmt = $connexion->prepare($checkIpSql);
-            $checkIpStmt->execute([':ip' => $adresse_ip]);
-            $comptesExistants = $checkIpStmt->fetchColumn();
-            
-            if ($comptesExistants >= 3) {
-                $error = "Vous avez atteint le nombre maximum de comptes (3 comptes).";
-            } else {
-                // Hasher le mot de passe
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            try {
+                $sql = "INSERT INTO electeur (email, mot_de_passe, nom, prenom, id_college) 
+                        VALUES (:email, :password, :nom, :prenom, 1)";
+                $stmt = $connexion->prepare($sql);
+                $stmt->execute([
+                    ':email' => $email,
+                    ':password' => $hashedPassword,
+                    ':nom' => $nom,
+                    ':prenom' => $prenom
+                ]);
                 
                 $_SESSION['isConnected'] = true;
                 $_SESSION['email'] = $email;
@@ -96,12 +89,6 @@ require_once '../includes/header.php';
 
 <?php require_once '../includes/header.php'; ?>
 
-            <?php if (!empty($error)): ?>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <?php echo htmlspecialchars($error); ?>
-                </div>
-            <?php endif; ?>
-
             <?php if (!empty($success)): ?>
                 <div class="bg-success/10 border border-success text-success px-4 py-3 rounded mb-4">
                     <?php echo htmlspecialchars($success); ?>
@@ -139,34 +126,18 @@ require_once '../includes/header.php';
                 <!-- Mot de passe -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-                    <div class="relative">
-                        <input type="password" id="password" name="password" required
-                            class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
-                            placeholder="••••••••">
-                        <button type="button" onclick="togglePassword('password')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
-                            <svg id="eye-icon-password" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                        </button>
-                    </div>
+                    <input type="password" id="password" name="password" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
+                        placeholder="••••••••">
                     <p class="text-xs text-gray-500 mt-1">Au moins 6 caractères</p>
                 </div>
 
                 <!-- Confirmer mot de passe -->
                 <div>
                     <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
-                    <div class="relative">
-                        <input type="password" id="confirm_password" name="confirm_password" required
-                            class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
-                            placeholder="••••••••">
-                        <button type="button" onclick="togglePassword('confirm_password')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
-                            <svg id="eye-icon-confirm_password" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                        </button>
-                    </div>
+                    <input type="password" id="confirm_password" name="confirm_password" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
+                        placeholder="••••••••">
                 </div>
 
                 <!-- Bouton inscription -->
@@ -185,26 +156,5 @@ require_once '../includes/header.php';
         </div>
     </div>
 </main>
-
-<script>
-function togglePassword(fieldId) {
-    const field = document.getElementById(fieldId);
-    const icon = document.getElementById('eye-icon-' + fieldId);
-    
-    if (field.type === 'password') {
-        field.type = 'text';
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>';
-    } else {
-        field.type = 'password';
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
-    }
-}
-
-<?php if (!empty($error) && strpos($error, 'nombre maximum') !== false): ?>
-window.addEventListener('load', function() {
-    alert('⚠️ LIMITE ATTEINTE\n\nVous avez obtenu le nombre maximum de comptes (3 comptes).\n\nIl n\'est plus possible de creer un nouveau compte avec cette connexion Internet.');
-});
-<?php endif; ?>
-</script>
 
 <?php require_once '../includes/footer.php'; ?>
