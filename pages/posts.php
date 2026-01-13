@@ -105,38 +105,28 @@ require_once '../includes/header.php';
                                 <?php if (isset($_SESSION['isConnected']) && $_SESSION['user_type'] === 'electeur'): ?>
                                     <a href="reagir_post.php?id=<?php echo $post['ID_post']; ?>&type=like" 
                                        class="flex items-center gap-2 <?php echo isset($post['ma_reaction']) && $post['ma_reaction'] === 'like' ? 'text-bleu' : 'text-gray-600'; ?> hover:text-bleu">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
-                                        </svg>
+                                        <span class="text-xl">👍</span>
                                         <span><?php echo $post['nb_likes']; ?></span>
                                     </a>
                                     <a href="reagir_post.php?id=<?php echo $post['ID_post']; ?>&type=dislike" 
                                        class="flex items-center gap-2 <?php echo isset($post['ma_reaction']) && $post['ma_reaction'] === 'dislike' ? 'text-rouge' : 'text-gray-600'; ?> hover:text-rouge">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z"/>
-                                        </svg>
+                                        <span class="text-xl">👎</span>
                                         <span><?php echo $post['nb_dislikes']; ?></span>
                                     </a>
                                 <?php else: ?>
                                     <div class="flex items-center gap-2 text-gray-600">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
-                                        </svg>
+                                        <span class="text-xl">👍</span>
                                         <span><?php echo $post['nb_likes']; ?></span>
                                     </div>
                                     <div class="flex items-center gap-2 text-gray-600">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z"/>
-                                        </svg>
+                                        <span class="text-xl">👎</span>
                                         <span><?php echo $post['nb_dislikes']; ?></span>
                                     </div>
                                 <?php endif; ?>
                                 
                                 <a href="voir_post.php?id=<?php echo $post['ID_post']; ?>" 
                                    class="flex items-center gap-2 text-gray-600 hover:text-bleu">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l.917-3.917A6.986 6.986 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
-                                    </svg>
+                                    <span class="text-xl">💬</span>
                                     <span><?php echo $post['nb_commentaires']; ?></span>
                                 </a>
                             </div>

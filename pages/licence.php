@@ -138,6 +138,10 @@ require_once '../includes/header.php';
                 <strong>Hebergeur :</strong> IUT de Saint-Die-des-Vosges<br>
                 <strong>Contact :</strong> contact@mma-election.fr
             </p>
+            <p class="text-gray-700 mt-4">
+                Pour plus d'informations sur l'utilisation des cookies, consultez notre 
+                <a href="politique_cookies.php" class="text-bleu hover:underline font-medium">Politique de cookies</a>.
+            </p>
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-6">

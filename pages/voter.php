@@ -162,7 +162,9 @@ if ($scrutinActif) {
                             <p class="text-xl text-gray-700 italic">"<?php echo htmlspecialchars($voteExistant['surnom']); ?>"</p>
                         <?php endif; ?>
                         <p class="text-gray-600 mt-2">
-                            <?php echo htmlspecialchars($voteExistant['nationalite']); ?>
+                            <span class="inline-flex items-center gap-2">
+                                🏁 <?php echo htmlspecialchars($voteExistant['nationalite']); ?>
+                            </span>
                         </p>
                         <p class="text-sm text-gray-500 mt-4">
                             Vote enregistré le <?php echo date('d/m/Y à H:i', strtotime($voteExistant['date_vote'])); ?>
@@ -171,7 +173,7 @@ if ($scrutinActif) {
                 </div>
                 <div class="mt-6 p-4 bg-blue-50 rounded-lg">
                     <p class="text-sm text-bleu text-center">
-                        Votre vote a ete enregistre et ne peut plus etre modifie.
+                        ℹ️ Votre vote a été enregistré et ne peut plus être modifié.
                     </p>
                 </div>
             </div>
@@ -180,6 +182,7 @@ if ($scrutinActif) {
         <!-- Message si impossible de voter -->
         <?php if (!$peutVoter && !$scrutinActif): ?>
             <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
+                <div class="text-6xl mb-4">🗳️</div>
                 <p class="text-xl text-gray-700"><?php echo htmlspecialchars($messageVerification); ?></p>
             </div>
         <?php endif; ?>
@@ -225,13 +228,13 @@ if ($scrutinActif) {
                                     <?php endif; ?>
                                     
                                     <p class="text-center text-sm text-gray-600">
-                                        <?php echo htmlspecialchars($candidat['nationalite']); ?>
+                                        🏁 <?php echo htmlspecialchars($candidat['nationalite']); ?>
                                     </p>
                                     
-                                    <!-- Badge selectionne -->
+                                    <!-- Badge sélectionné -->
                                     <div class="mt-3 text-center">
-                                        <span class="hidden peer-checked:inline-flex items-center gap-1 px-4 py-2 bg-rouge text-white font-bebas text-sm rounded-full shadow-lg">
-                                            SELECTIONNE
+                                        <span class="hidden peer-checked:inline-flex items-center gap-1 px-4 py-2 bg-rouge text-white font-bebas text-sm rounded-full shadow-lg animate-pulse">
+                                            ✓ SÉLECTIONNÉ
                                         </span>
                                     </div>
                                 </div>
@@ -251,12 +254,14 @@ if ($scrutinActif) {
             </form>
         <?php elseif ($peutVoter && empty($candidats)): ?>
             <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
+                <div class="text-6xl mb-4">👤</div>
                 <h2 class="text-2xl font-bebas text-noir mb-4">AUCUN CANDIDAT DISPONIBLE</h2>
                 <p class="text-gray-700">Aucun candidat n'a encore ete affecte au scrutin en cours.</p>
                 <p class="text-gray-600 mt-2">L'administrateur doit affecter des candidats avant que le vote puisse commencer.</p>
             </div>
         <?php elseif (!$peutVoter && empty($candidats)): ?>
             <div class="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-center">
+                <div class="text-6xl mb-4">👤</div>
                 <p class="text-xl text-gray-700">Aucun candidat n'est actuellement disponible pour le vote.</p>
             </div>
         <?php elseif (!$peutVoter && !empty($candidats)): ?>
@@ -293,7 +298,7 @@ if ($scrutinActif) {
                                 <?php endif; ?>
                                 
                                 <p class="text-center text-sm text-gray-600">
-                                    <?php echo htmlspecialchars($candidat['nationalite']); ?>
+                                    🏁 <?php echo htmlspecialchars($candidat['nationalite']); ?>
                                 </p>
                             </div>
                         </div>
@@ -318,7 +323,7 @@ if ($scrutinActif) {
             
             <div class="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mb-6">
                 <p class="text-sm text-yellow-800 text-center">
-                    <strong>Attention :</strong> Une fois confirme, votre vote ne pourra plus etre modifie.
+                    ⚠️ <strong>Attention :</strong> Une fois confirmé, votre vote ne pourra plus être modifié.
                 </p>
             </div>
             

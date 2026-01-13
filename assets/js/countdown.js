@@ -1,32 +1,24 @@
 // count-down timer
+// Attendre que le DOM soit chargé
 document.addEventListener('DOMContentLoaded', function() {
-    // Utiliser la date passee depuis PHP, sinon date par defaut
-    let dest;
-    if (typeof countdownDate !== 'undefined' && countdownDate) {
-        dest = new Date(countdownDate).getTime();
-    } else {
-        dest = new Date("December 31, 2025 23:59:59").getTime();
-    }
+    // Date cible mise à jour - Changez cette date selon vos besoins
+    let dest = new Date("December 31, 2025 23:59:59").getTime();
     
     function updateCountdown() {
         let now = new Date().getTime();
         let diff = dest - now;
 
-        // Verifier si le countdown est termine
+        // Check if the countdown has reached zero or negative
         if (diff <= 0) {
-            clearInterval(x);
+            clearInterval(x); // Stop the countdown
             
-            // Afficher des zeros quand le countdown est termine
-            const daysEl = document.querySelector('.countdown-element.days');
-            const hoursEl = document.querySelector('.countdown-element.hours');
-            const minutesEl = document.querySelector('.countdown-element.minutes');
-            const secondsEl = document.querySelector('.countdown-element.seconds');
+            // Afficher des zéros quand le countdown est terminé
+            document.querySelector('.countdown-element.days').innerHTML = "00";
+            document.querySelector('.countdown-element.hours').innerHTML = "00";
+            document.querySelector('.countdown-element.minutes').innerHTML = "00";
+            document.querySelector('.countdown-element.seconds').innerHTML = "00";
             
-            if (daysEl) daysEl.innerHTML = "00";
-            if (hoursEl) hoursEl.innerHTML = "00";
-            if (minutesEl) minutesEl.innerHTML = "00";
-            if (secondsEl) secondsEl.innerHTML = "00";
-            
+            console.log("Countdown terminé!");
             return;
         }
 
@@ -35,13 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
         let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         let seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        // Formatage avec zeros en prefixe
+        // Formatage avec zéros en préfixe
         days = days < 10 ? `0${days}` : days;
         hours = hours < 10 ? `0${hours}` : hours;
         minutes = minutes < 10 ? `0${minutes}` : minutes;
         seconds = seconds < 10 ? `0${seconds}` : seconds;
 
-        // Mise a jour des elements
+        // Mise à jour des éléments avec une méthode plus robuste
         const daysElement = document.querySelector('.countdown-element.days');
         const hoursElement = document.querySelector('.countdown-element.hours');
         const minutesElement = document.querySelector('.countdown-element.minutes');
@@ -53,9 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (secondsElement) secondsElement.innerHTML = seconds;
     }
 
-    // Executer immediatement une fois
+    // Exécuter immédiatement une fois
     updateCountdown();
     
-    // Puis repeter chaque seconde
+    // Puis répéter chaque seconde
     let x = setInterval(updateCountdown, 1000);
 });

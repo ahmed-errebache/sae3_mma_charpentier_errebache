@@ -35,7 +35,8 @@ if (!$email || !$userType) {
 $errors = [];
 $success = '';
 
-// Recuperation initiale des donnees utilisateur
+// Récupération des données utilisateur AVANT traitement
+$user = null;
 try {
     $sql = "SELECT * FROM $userType WHERE email = :email";
     $stmt = $connexion->prepare($sql);
@@ -43,12 +44,10 @@ try {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$user) {
-        header('Location: login.php');
-        exit;
+        $errors[] = "Impossible de récupérer vos informations.";
     }
 } catch (PDOException $e) {
-    echo "Erreur SQL: " . $e->getMessage();
-    exit;
+    $errors[] = "Erreur lors de la récupération des informations.";
 }
 
 // Traitement du formulaire
@@ -95,11 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute($params);
                 
                 $success = "Informations mises à jour avec succès.";
-                
-                // Rafraichir les donnees
-                $stmt = $connexion->prepare("SELECT * FROM administrateur WHERE email = :email");
-                $stmt->execute([':email' => $email]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
                 $errors[] = "Erreur lors de la mise à jour.";
             }
@@ -146,12 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $connexion->prepare($sql);
                 $stmt->execute($params);
                 
-                $success = "Informations mises a jour avec succes.";
-                
-                // Rafraichir les donnees
+                // Recharger les donnees utilisateur apres modification
                 $stmt = $connexion->prepare("SELECT * FROM electeur WHERE email = :email");
                 $stmt->execute([':email' => $email]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $success = "Informations mises a jour avec succes.";
             } catch (PDOException $e) {
                 $errors[] = "Erreur lors de la mise a jour.";
             }
@@ -219,11 +213,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once '../includes/header.php';
 ?>
-
-<?php require_once '../includes/header.php'; ?>
-
-
-
 
 
 <main class="flex-1">
@@ -345,7 +334,7 @@ require_once '../includes/header.php';
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <a href="supprimer_compte.php"
+                            <a href="supprimer_compte.php" 
                                class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
                                 Supprimer mon compte
                             </a>
@@ -376,17 +365,18 @@ require_once '../includes/header.php';
                             </div>
                             
                             <div class="border-t border-gray-200 pt-4 mt-4">
+                                <h3 class="text-sm font-semibold text-gray-900 mb-3">Informations non modifiables</h3>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Email</p>
-                                        <p class="mt-1 text-gray-900"><?php echo htmlspecialchars($user['email'] ?? ''); ?></p>
+                                        <p class="mt-1 text-gray-900"><?php echo isset($user['email']) ? htmlspecialchars($user['email']) : 'Non disponible'; ?></p>
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Age</p>
                                         <p class="mt-1 text-gray-900">
                                             <?php 
-                                            if (!empty($user['age'])) {
+                                            if (isset($user['age']) && $user['age']) {
                                                 echo htmlspecialchars($user['age']) . ' ans';
                                             } else {
                                                 echo 'Non renseigne';
@@ -396,27 +386,11 @@ require_once '../includes/header.php';
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Sexe</p>
-                                        <p class="mt-1 text-gray-900">
-                                            <?php 
-                                            if (!empty($user['sexe'])) {
-                                                echo htmlspecialchars($user['sexe']);
-                                            } else {
-                                                echo 'Non renseigne';
-                                            }
-                                            ?>
-                                        </p>
+                                        <p class="mt-1 text-gray-900"><?php echo (isset($user['sexe']) && $user['sexe']) ? htmlspecialchars($user['sexe']) : 'Non renseigne'; ?></p>
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Nationalite</p>
-                                        <p class="mt-1 text-gray-900">
-                                            <?php 
-                                            if (!empty($user['nationalite'])) {
-                                                echo htmlspecialchars($user['nationalite']);
-                                            } else {
-                                                echo 'Non renseignee';
-                                            }
-                                            ?>
-                                        </p>
+                                        <p class="mt-1 text-gray-900"><?php echo (isset($user['nationalite']) && $user['nationalite']) ? htmlspecialchars($user['nationalite']) : 'Non renseignee'; ?></p>
                                     </div>
                                     <?php if (!empty($user['code_fourni'])): ?>
                                     <div>
@@ -464,7 +438,7 @@ require_once '../includes/header.php';
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <a href="supprimer_compte.php"
+                            <a href="supprimer_compte.php" 
                                class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
                                 Supprimer mon compte
                             </a>
@@ -519,7 +493,7 @@ require_once '../includes/header.php';
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <a href="supprimer_compte.php"
+                            <a href="supprimer_compte.php" 
                                class="px-4 py-2 text-sm text-rouge border border-rouge rounded-md hover:bg-rouge hover:text-white transition-colors">
                                 Supprimer mon compte
                             </a>

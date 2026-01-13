@@ -21,10 +21,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'] ?? '';
     $nom = $_POST['nom'] ?? '';
     $prenom = $_POST['prenom'] ?? '';
+    $accepte_cgu = isset($_POST['accepte_cgu']) ? true : false;
     
     // Validation
     if (empty($user_type) || empty($email) || empty($password) || empty($confirm_password) || empty($nom) || empty($prenom)) {
         $error = 'Veuillez remplir tous les champs.';
+    } elseif (!$accepte_cgu) {
+        $error = 'Vous devez accepter les conditions générales d\'utilisation.';
     } elseif ($user_type !== 'electeur_public') {
         $error = 'Seuls les électeurs publics peuvent s\'inscrire directement.';
     } elseif ($password !== $confirm_password) {
@@ -40,28 +43,37 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($checkStmt->fetchColumn() > 0) {
             $error = "Cet email est déjà utilisé.";
         } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            // Recuperer l'adresse IP de l'utilisateur
+            $adresse_ip = $_SERVER['REMOTE_ADDR'];
             
-            try {
-                $sql = "INSERT INTO electeur (email, mot_de_passe, nom, prenom, id_college) 
-                        VALUES (:email, :password, :nom, :prenom, 1)";
-                $stmt = $connexion->prepare($sql);
-                $stmt->execute([
-                    ':email' => $email,
-                    ':password' => $hashedPassword,
-                    ':nom' => $nom,
-                    ':prenom' => $prenom
-                ]);
+            // Verifier combien de comptes existent deja avec cette IP
+            $checkIpSql = "SELECT COUNT(*) FROM electeur WHERE adresse_IP = :ip AND id_college = 1";
+            $checkIpStmt = $connexion->prepare($checkIpSql);
+            $checkIpStmt->execute([':ip' => $adresse_ip]);
+            $comptesExistants = $checkIpStmt->fetchColumn();
+            
+            if ($comptesExistants >= 3) {
+                $error = "Vous avez atteint le nombre maximum de comptes (3 comptes).";
+            } else {
+                // Hasher le mot de passe
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                 
-                $_SESSION['isConnected'] = true;
-                $_SESSION['email'] = $email;
-                $_SESSION['user_type'] = 'electeur';
-                $_SESSION['profil_complet'] = false;
-                
-                header('Location: completer_profil_electeur.php');
-                exit;
-            } catch (Exception $e) {
-                $error = "Une erreur est survenue lors de l'inscription.";
+                try {
+                    $sql = "INSERT INTO electeur (email, mot_de_passe, nom, prenom, id_college, adresse_IP) 
+                            VALUES (:email, :password, :nom, :prenom, 1, :ip)";
+                    $stmt = $connexion->prepare($sql);
+                    $stmt->execute([
+                        ':email' => $email,
+                        ':password' => $hashedPassword,
+                        ':nom' => $nom,
+                        ':prenom' => $prenom,
+                        ':ip' => $adresse_ip
+                    ]);
+                    
+                    $success = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+                } catch (Exception $e) {
+                    $error = "Une erreur est survenue lors de l'inscription.";
+                }
             }
         }
     }
@@ -75,7 +87,11 @@ require_once '../includes/header.php';
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 sm:p-8">
             <h1 class="text-2xl font-bold text-center text-noir mb-6">Inscription</h1>
 
-<?php require_once '../includes/header.php'; ?>
+            <?php if (!empty($error)): ?>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <?php echo htmlspecialchars($error); ?>
+                </div>
+            <?php endif; ?>
 
             <?php if (!empty($success)): ?>
                 <div class="bg-success/10 border border-success text-success px-4 py-3 rounded mb-4">
@@ -144,6 +160,20 @@ require_once '../includes/header.php';
                     </div>
                 </div>
 
+                <!-- Acceptation CGU -->
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="accepte_cgu" name="accepte_cgu" type="checkbox" required
+                            class="w-4 h-4 text-rouge bg-gray-100 border-gray-300 rounded focus:ring-rouge focus:ring-2">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="accepte_cgu" class="text-gray-700">
+                            J'accepte les <a href="politique_confidentialite.php" target="_blank" class="text-bleu hover:underline font-medium">conditions générales d'utilisation</a> 
+                            et la <a href="politique_cookies.php" target="_blank" class="text-bleu hover:underline font-medium">politique de cookies</a>
+                        </label>
+                    </div>
+                </div>
+
                 <!-- Bouton inscription -->
                 <div>
                     <button type="submit"
@@ -174,6 +204,12 @@ function togglePassword(fieldId) {
         icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
     }
 }
+
+<?php if (!empty($error) && strpos($error, 'nombre maximum') !== false): ?>
+window.addEventListener('load', function() {
+    alert('⚠️ LIMITE ATTEINTE\n\nVous avez obtenu le nombre maximum de comptes (3 comptes).\n\nIl n\'est plus possible de creer un nouveau compte avec cette connexion Internet.');
+});
+<?php endif; ?>
 </script>
 
 <?php require_once '../includes/footer.php'; ?>
