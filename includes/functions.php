@@ -639,4 +639,26 @@ function calculerAge($dateNaissance) {
         return false;
     }
 }
+
+// Nettoyer et valider une chaine de caracteres
+function cleanInput($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+    return $data;
+}
+
+// Valider un email
+function validateEmail($email) {
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return $email;
+    }
+    return false;
+}
+
+// Valider un entier
+function validateInt($value) {
+    return filter_var($value, FILTER_VALIDATE_INT) !== false;
+}
 ?>
