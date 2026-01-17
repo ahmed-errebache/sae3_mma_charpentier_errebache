@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../includes/config.php';
-require_once '../includes/functions.php';
+require_once '../includes/config.php';
 
 // Déconnexion avec le bouton
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {

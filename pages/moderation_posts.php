@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../includes/config.php';
-require_once '../includes/functions.php';
+require_once '../includes/config.php';
 
 // Verifier que c'est un admin
 if (!isset($_SESSION['isConnected']) || $_SESSION['user_type'] !== 'administrateur') {

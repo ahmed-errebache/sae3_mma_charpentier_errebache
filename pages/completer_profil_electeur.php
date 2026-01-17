@@ -12,7 +12,7 @@ if (isset($_SESSION['profil_complet']) && $_SESSION['profil_complet'] === true) 
 }
 
 require_once '../includes/config.php';
-require_once '../includes/functions.php';
+require_once '../includes/config.php';
 
 $connexion = dbconnect();
 $error = '';

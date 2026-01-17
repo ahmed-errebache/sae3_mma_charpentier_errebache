@@ -5,55 +5,77 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Calculer l'age à partir d'une date de naissance
+function calculerAge($dateNaissance) {
+    if (empty($dateNaissance)) {
+        return null;
+    }
+    try {
+        $naissance = new DateTime($dateNaissance);
+        $aujourdhui = new DateTime();
+        $age = $aujourdhui->diff($naissance)->y;
+        return $age;
+    } catch (Exception $e) {
+        error_log("Erreur calcul age: " . $e->getMessage());
+        return null;
+    }
+}
+
 // Générer un mot de passe provisoire aléatoire
 function genererMotDePasseProvisoire() {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $mdp = '';
+    $max = strlen($chars) - 1;
     for ($i = 0; $i < 12; $i++) {
-        $mdp .= $chars[rand(0, strlen($chars) - 1)];
+        $mdp .= $chars[random_int(0, $max)];
     }
     return $mdp;
 }
 
 // Créer un candidat et envoyer l'email
 function creerCandidat($data) {
-    $conn = dbconnect();
-    
-    $mdpProvisoire = genererMotDePasseProvisoire();
-    $mdpHash = password_hash($mdpProvisoire, PASSWORD_DEFAULT);
-    
-    // Créer le palmarès au format JSON
-    $palmares = json_encode([
-        'victoires' => (int)$data['victoires'],
-        'defaites' => (int)$data['defaites'],
-        'egalites' => (int)$data['egalites'],
-        'no_contest' => (int)$data['no_contest']
-    ]);
-    
-    $sql = "INSERT INTO candidat (email, mot_de_passe, nom, prenom, nationalite, palmares, mdp_provisoire, compte_verifie, compte_actif) 
-            VALUES (:email, :mdp, :nom, :prenom, :nationalite, :palmares, 1, 0, 1)";
-    
-    $stmt = $conn->prepare($sql);
-    $result = $stmt->execute([
-        ':email' => $data['email'],
-        ':mdp' => $mdpHash,
-        ':nom' => $data['nom'],
-        ':prenom' => $data['prenom'],
-        ':nationalite' => $data['nationalite'],
-        ':palmares' => $palmares
-    ]);
-    
-    if ($result) {
-        $idCandidat = $conn->lastInsertId();
+    try {
+        $conn = dbconnect();
         
-        if (envoyerEmailCreationCompte($data['email'], $mdpProvisoire, $data['prenom'])) {
-            return ['success' => true, 'id' => $idCandidat];
-        } else {
-            return ['success' => false, 'error' => 'Erreur envoi email'];
+        $mdpProvisoire = genererMotDePasseProvisoire();
+        $mdpHash = password_hash($mdpProvisoire, PASSWORD_DEFAULT);
+        
+        // Créer le palmarès au format JSON
+        $palmares = json_encode([
+            'victoires' => (int)$data['victoires'],
+            'defaites' => (int)$data['defaites'],
+            'egalites' => (int)$data['egalites'],
+            'no_contest' => (int)$data['no_contest']
+        ]);
+        
+        $sql = "INSERT INTO candidat (email, mot_de_passe, nom, prenom, nationalite, palmares, mdp_provisoire, compte_verifie, compte_actif) 
+                VALUES (:email, :mdp, :nom, :prenom, :nationalite, :palmares, 1, 0, 1)";
+        
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->execute([
+            ':email' => $data['email'],
+            ':mdp' => $mdpHash,
+            ':nom' => $data['nom'],
+            ':prenom' => $data['prenom'],
+            ':nationalite' => $data['nationalite'],
+            ':palmares' => $palmares
+        ]);
+        
+        if ($result) {
+            $idCandidat = $conn->lastInsertId();
+            
+            if (envoyerEmailCreationCompte($data['email'], $mdpProvisoire, $data['prenom'])) {
+                return ['success' => true, 'id' => $idCandidat];
+            } else {
+                return ['success' => false, 'error' => 'Erreur envoi email'];
+            }
         }
+        
+        return ['success' => false, 'error' => 'Erreur création'];
+    } catch (PDOException $e) {
+        error_log("Erreur creerCandidat: " . $e->getMessage());
+        return ['success' => false, 'error' => 'Erreur technique'];
     }
-    
-    return ['success' => false, 'error' => 'Erreur création'];
 }
 
 // Envoyer email de création de compte
@@ -129,92 +151,123 @@ function envoyerEmailCreationCompte($email, $mdpProvisoire, $prenom) {
 }
 
 // Récupérer tous les candidats
+// Récupérer tous les candidats
 function getTousCandidats() {
-    $conn = dbconnect();
-    $sql = "SELECT * FROM candidat ORDER BY date_creation DESC";
-    $stmt = $conn->query($sql);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        $conn = dbconnect();
+        $sql = "SELECT * FROM candidat ORDER BY date_creation DESC";
+        $stmt = $conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erreur getTousCandidats: " . $e->getMessage());
+        return [];
+    }
 }
 
 // Récupérer un candidat par ID
 function getCandidatById($id) {
-    $conn = dbconnect();
-    $sql = "SELECT * FROM candidat WHERE ID_candidat = :id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([':id' => $id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        $conn = dbconnect();
+        $sql = "SELECT * FROM candidat WHERE ID_candidat = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erreur getCandidatById: " . $e->getMessage());
+        return null;
+    }
 }
 
 // Récupérer un candidat par email
 function getCandidatByEmail($email) {
-    $conn = dbconnect();
-    $sql = "SELECT * FROM candidat WHERE email = :email";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([':email' => $email]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        $conn = dbconnect();
+        $sql = "SELECT * FROM candidat WHERE email = :email";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erreur getCandidatByEmail: " . $e->getMessage());
+        return null;
+    }
 }
 
 // Modifier les informations du candidat (admin uniquement)
 function modifierCandidatAdmin($id, $data) {
-    $conn = dbconnect();
-    
-    // Créer le palmarès au format JSON
-    $palmares = json_encode([
-        'victoires' => (int)$data['victoires'],
-        'defaites' => (int)$data['defaites'],
-        'egalites' => (int)$data['egalites'],
-        'no_contest' => (int)$data['no_contest']
-    ]);
-    
+    try {
+        $conn = dbconnect();
+        
+        // Créer le palmarès au format JSON
+        $palmares = json_encode([
+            'victoires' => (int)$data['victoires'],
+            'defaites' => (int)$data['defaites'],
+            'egalites' => (int)$data['egalites'],
+            'no_contest' => (int)$data['no_contest']
+        ]);
+        
         $sql = "UPDATE candidat 
-            SET nom = :nom, prenom = :prenom, nationalite = :nationalite, 
-                palmares = :palmares 
-            WHERE id_candidat = :id";
-    
-    $stmt = $conn->prepare($sql);
-    return $stmt->execute([
-        ':id' => $id,
-        ':nom' => $data['nom'],
-        ':prenom' => $data['prenom'],
-        ':nationalite' => $data['nationalite'],
-        ':palmares' => $palmares
-    ]);
+                SET nom = :nom, prenom = :prenom, nationalite = :nationalite, 
+                    palmares = :palmares 
+                WHERE id_candidat = :id";
+        
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            ':id' => $id,
+            ':nom' => $data['nom'],
+            ':prenom' => $data['prenom'],
+            ':nationalite' => $data['nationalite'],
+            ':palmares' => $palmares
+        ]);
+    } catch (PDOException $e) {
+        error_log("Erreur modifierCandidatAdmin: " . $e->getMessage());
+        return false;
+    }
 }
 
 // Finaliser le compte candidat - Étape 1: Changer mot de passe
 function changerMotDePasseCandidat($email, $mdpProvisoire, $nouveauMdp) {
-    $candidat = getCandidatByEmail($email);
-    
-    if (!$candidat || !password_verify($mdpProvisoire, $candidat['mot_de_passe']) || $candidat['mdp_provisoire'] != 1) {
+    try {
+        $candidat = getCandidatByEmail($email);
+        
+        if (!$candidat || !password_verify($mdpProvisoire, $candidat['mot_de_passe']) || $candidat['mdp_provisoire'] != 1) {
+            return false;
+        }
+        
+        return $candidat['ID_candidat'];
+    } catch (Exception $e) {
+        error_log("Erreur changerMotDePasseCandidat: " . $e->getMessage());
         return false;
     }
-    
-    return $candidat['ID_candidat'];
 }
 
 // Finaliser le compte candidat - Étape 2: Compléter profil
 function completerProfilCandidat($id, $nouveauMdp, $surnom, $photo) {
-    $conn = dbconnect();
-    
-    $photoPath = null;
-    if ($photo && $photo['error'] === 0) {
-        $photoPath = uploadPhoto($photo);
+    try {
+        $conn = dbconnect();
+        
+        $photoPath = null;
+        if ($photo && $photo['error'] === 0) {
+            $photoPath = uploadPhoto($photo);
+        }
+        
+        $mdpHash = password_hash($nouveauMdp, PASSWORD_DEFAULT);
+        
+        $sql = "UPDATE candidat 
+                SET mot_de_passe = :mdp, surnom = :surnom, 
+                    photo_profil = :photo, mdp_provisoire = 0, compte_verifie = 1 
+                WHERE ID_candidat = :id";
+        
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            ':id' => $id,
+            ':mdp' => $mdpHash,
+            ':surnom' => $surnom,
+            ':photo' => $photoPath
+        ]);
+    } catch (PDOException $e) {
+        error_log("Erreur completerProfilCandidat: " . $e->getMessage());
+        return false;
     }
-    
-    $mdpHash = password_hash($nouveauMdp, PASSWORD_DEFAULT);
-    
-    $sql = "UPDATE candidat 
-            SET mot_de_passe = :mdp, surnom = :surnom, 
-                photo_profil = :photo, mdp_provisoire = 0, compte_verifie = 1 
-            WHERE ID_candidat = :id";
-    
-    $stmt = $conn->prepare($sql);
-    return $stmt->execute([
-        ':id' => $id,
-        ':mdp' => $mdpHash,
-        ':surnom' => $surnom,
-        ':photo' => $photoPath
-    ]);
 }
 
 // Upload photo de profil
@@ -243,27 +296,37 @@ function uploadPhoto($file) {
 
 // Activer/désactiver un compte
 function toggleCompteActif($id) {
-    $conn = dbconnect();
-    $sql = "UPDATE candidat SET compte_actif = NOT compte_actif WHERE ID_candidat = :id";
-    $stmt = $conn->prepare($sql);
-    return $stmt->execute([':id' => $id]);
+    try {
+        $conn = dbconnect();
+        $sql = "UPDATE candidat SET compte_actif = NOT compte_actif WHERE ID_candidat = :id";
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    } catch (PDOException $e) {
+        error_log("Erreur toggleCompteActif: " . $e->getMessage());
+        return false;
+    }
 }
 
 // Supprimer un candidat
 function supprimerCandidat($id) {
-    $conn = dbconnect();
-    
-    $candidat = getCandidatById($id);
-    if ($candidat && $candidat['photo_profil']) {
-        $photoPath = __DIR__ . '/../' . $candidat['photo_profil'];
-        if (file_exists($photoPath)) {
-            unlink($photoPath);
+    try {
+        $conn = dbconnect();
+        
+        $candidat = getCandidatById($id);
+        if ($candidat && $candidat['photo_profil']) {
+            $photoPath = __DIR__ . '/../' . $candidat['photo_profil'];
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
         }
+        
+        $sql = "DELETE FROM candidat WHERE ID_candidat = :id";
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    } catch (PDOException $e) {
+        error_log("Erreur supprimerCandidat: " . $e->getMessage());
+        return false;
     }
-    
-    $sql = "DELETE FROM candidat WHERE ID_candidat = :id";
-    $stmt = $conn->prepare($sql);
-    return $stmt->execute([':id' => $id]);
 }
 
 // Liste de tous les pays du monde
@@ -374,7 +437,7 @@ function peutVoter($id_electeur) {
 }
 
 /**
- * Enregistre un vote dans la base de données
+ * Enregistre un vote dans la base de données en utilisant la procédure stockée
  * @param int $id_electeur L'ID de l'électeur
  * @param int $id_candidat L'ID du candidat choisi
  * @return array ['success' => bool, 'message' => string]
@@ -424,31 +487,20 @@ function enregistrerVote($id_electeur, $id_candidat) {
             ];
         }
         
-        // Transaction pour garantir l'intégrité
-        $conn->beginTransaction();
+        // Appeler la procédure stockée pour enregistrer le vote
+        $sqlProcedure = "CALL sp_enregistrer_vote(:id_electeur, :id_candidat, :id_scrutin, :age, :sexe, :nationalite, :id_college)";
         
         try {
-            // Enregistrer le vote avec les données de l'électeur
-            $sqlVote = "INSERT INTO vote (id_electeur, date, date_vote, age, sexe, nationalite, id_college, id_candidat, id_scrutin) 
-                        VALUES (:id_electeur, CURDATE(), NOW(), :age, :sexe, :nationalite, :id_college, :id_candidat, :id_scrutin)";
-            
-            $stmtVote = $conn->prepare($sqlVote);
-            $stmtVote->execute([
+            $stmtProcedure = $conn->prepare($sqlProcedure);
+            $stmtProcedure->execute([
                 ':id_electeur' => $id_electeur,
+                ':id_candidat' => $id_candidat,
+                ':id_scrutin' => $scrutin['ID_scrutin'],
                 ':age' => $electeur['age'],
                 ':sexe' => $electeur['sexe'],
                 ':nationalite' => $electeur['nationalite'],
-                ':id_college' => $electeur['id_college'],
-                ':id_candidat' => $id_candidat,
-                ':id_scrutin' => $scrutin['ID_scrutin']
+                ':id_college' => $electeur['id_college']
             ]);
-            
-            // Mettre à jour le flag has_voted
-            $sqlUpdate = "UPDATE electeur SET has_voted = 1 WHERE ID_electeur = :id_electeur";
-            $stmtUpdate = $conn->prepare($sqlUpdate);
-            $stmtUpdate->execute([':id_electeur' => $id_electeur]);
-            
-            $conn->commit();
             
             return [
                 'success' => true,
@@ -456,8 +508,7 @@ function enregistrerVote($id_electeur, $id_candidat) {
             ];
             
         } catch (PDOException $e) {
-            $conn->rollBack();
-            error_log("Erreur transaction vote: " . $e->getMessage());
+            error_log("Erreur procédure sp_enregistrer_vote: " . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Une erreur est survenue lors de l\'enregistrement du vote.'
@@ -625,6 +676,163 @@ function supprimerCompte($email, $userType) {
     } catch (PDOException $e) {
         error_log("Erreur supprimerCompte: " . $e->getMessage());
         return ['success' => false, 'message' => 'Erreur technique'];
+    }
+}
+
+// Vérifier si un code professionnel existe et est valide
+function verifierCodeUnique($code) {
+    try {
+        $conn = dbconnect();
+        $sql = "SELECT COUNT(*) as count FROM code_professionnel WHERE code = :code";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':code' => $code]);
+        $result = $stmt->fetch();
+        return $result['count'] > 0;
+    } catch (PDOException $e) {
+        error_log("Erreur verifierCodeUnique: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Créer un code professionnel
+function creerCodeProfessionnel($email, $prenom, $nom, $type_professionnel, $id_college) {
+    try {
+        $conn = dbconnect();
+        
+        // Générer un code unique
+        do {
+            $code = strtoupper(bin2hex(random_bytes(4)));
+        } while (verifierCodeUnique($code));
+        
+        $sql = "INSERT INTO code_professionnel (code, email, prenom, nom, type_professionnel, id_college, date_generation, utilise) 
+                VALUES (:code, :email, :prenom, :nom, :type, :id_college, NOW(), 0)";
+        
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->execute([
+            ':code' => $code,
+            ':email' => $email,
+            ':prenom' => $prenom,
+            ':nom' => $nom,
+            ':type' => $type_professionnel,
+            ':id_college' => $id_college
+        ]);
+        
+        if ($result) {
+            return ['success' => true, 'code' => $code];
+        }
+        
+        return ['success' => false, 'error' => 'Erreur création code'];
+    } catch (PDOException $e) {
+        error_log("Erreur creerCodeProfessionnel: " . $e->getMessage());
+        return ['success' => false, 'error' => 'Erreur technique'];
+    }
+}
+
+// Utiliser un code professionnel lors de l'inscription
+function utiliserCodeProfessionnel($code) {
+    try {
+        $conn = dbconnect();
+        
+        $sql = "SELECT * FROM code_professionnel WHERE code = :code AND utilise = 0";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':code' => $code]);
+        $codeData = $stmt->fetch();
+        
+        if (!$codeData) {
+            return ['success' => false, 'message' => 'Code invalide ou déjà utilisé'];
+        }
+        
+        // Marquer le code comme utilisé
+        $sqlUpdate = "UPDATE code_professionnel SET utilise = 1, date_utilisation = NOW() WHERE code = :code";
+        $stmtUpdate = $conn->prepare($sqlUpdate);
+        $stmtUpdate->execute([':code' => $code]);
+        
+        return [
+            'success' => true,
+            'data' => [
+                'email' => $codeData['email'],
+                'prenom' => $codeData['prenom'],
+                'nom' => $codeData['nom'],
+                'type_professionnel' => $codeData['type_professionnel'],
+                'id_college' => $codeData['id_college']
+            ]
+        ];
+        
+    } catch (PDOException $e) {
+        error_log("Erreur utiliserCodeProfessionnel: " . $e->getMessage());
+        return ['success' => false, 'message' => 'Erreur technique'];
+    }
+}
+
+// Envoyer un code professionnel par email
+function envoyerCodeProfessionnel($email, $prenom, $nom, $code, $type) {
+    $mail = new PHPMailer(true);
+    
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ahmed.errebache@gmail.com';
+        $mail->Password = 'cnij ihjw zmbw qxyh';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->CharSet = 'UTF-8';
+        
+        $mail->setFrom('votre-email@gmail.com', 'MMA Fighter Election');
+        $mail->addAddress($email, $prenom . ' ' . $nom);
+        
+        $mail->isHTML(true);
+        $mail->Subject = 'Votre code professionnel - MMA Fighter Election';
+        
+        $typeLabel = ($type === 'journaliste') ? 'Journaliste' : 'Coach';
+        
+        $mail->Body = '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+        </head>
+        <body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f3f4f6;">
+            <div style="max-width:600px;margin:0 auto;">
+                <div style="background:#1f2937;padding:30px;text-align:center;">
+                    <h1 style="color:#fff;margin:0;font-size:24px;">MMA Fighter Election</h1>
+                </div>
+                
+                <div style="padding:40px 30px;background:#fff;">
+                    <h2 style="color:#1f2937;margin:0 0 20px 0;">Bonjour ' . htmlspecialchars($prenom) . ',</h2>
+                    
+                    <p style="color:#4b5563;line-height:1.6;margin:0 0 20px 0;">
+                        Votre code professionnel (' . $typeLabel . ') a été généré pour participer au vote.
+                    </p>
+                    
+                    <div style="background:#f9fafb;padding:20px;border-radius:8px;margin:20px 0;text-align:center;">
+                        <p style="margin:0 0 10px 0;color:#6b7280;font-size:14px;">Votre code unique :</p>
+                        <p style="margin:0;color:#1f2937;font-size:24px;font-weight:bold;letter-spacing:2px;">' . htmlspecialchars($code) . '</p>
+                    </div>
+                    
+                    <p style="color:#4b5563;line-height:1.6;margin:20px 0;">
+                        Utilisez ce code lors de votre inscription sur la plateforme. Ce code ne peut être utilisé qu\'une seule fois.
+                    </p>
+                    
+                    <div style="text-align:center;margin:30px 0;">
+                        <a href="' . BASE_URL . 'pages/register.php" style="background:#1f2937;color:#fff;padding:14px 32px;text-decoration:none;border-radius:6px;display:inline-block;font-weight:500;">
+                            S\'inscrire maintenant
+                        </a>
+                    </div>
+                </div>
+                
+                <div style="background:#f3f4f6;padding:20px;text-align:center;color:#6b7280;font-size:14px;">
+                    <p style="margin:0;">© 2025 MMA Fighter Election</p>
+                </div>
+            </div>
+        </body>
+        </html>';
+        
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Erreur envoi email code pro: {$mail->ErrorInfo}");
+        return false;
     }
 }
 ?>

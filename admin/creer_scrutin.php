@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/config.php';
 
 if (!isset($_SESSION['isConnected']) || $_SESSION['user_type'] !== 'administrateur') {
     header('Location: /sae3_mma_charpentier_errebache/pages/login.php');

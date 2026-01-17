@@ -7,7 +7,7 @@ if (!isset($_SESSION['code_valide'])) {
 }
 
 require_once '../includes/config.php';
-require_once '../includes/functions.php';
+require_once '../includes/config.php';
 
 $error = '';
 $codeInfo = $_SESSION['code_valide'];

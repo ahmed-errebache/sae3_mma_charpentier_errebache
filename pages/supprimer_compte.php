@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../includes/config.php';
-require_once '../includes/functions.php';
+require_once '../includes/config.php';
 
 // Verifier que l'utilisateur est connecte
 if (!isset($_SESSION['isConnected']) || $_SESSION['isConnected'] !== true) {

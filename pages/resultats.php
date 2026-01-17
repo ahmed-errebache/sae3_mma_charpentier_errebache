@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../includes/config.php';
-require_once '../includes/functions.php';
+require_once '../includes/config.php';
 
 $base_url = '/sae3_mma_charpentier_errebache';
 $conn = dbconnect();

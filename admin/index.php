@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/config.php';
 
 // Vérifier si admin connecté
 if (!isset($_SESSION['isConnected']) || !$_SESSION['isConnected'] || $_SESSION['user_type'] !== 'administrateur') {

@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/functions.php';
 
 if (!isset($_SESSION['isConnected']) || !$_SESSION['isConnected'] || $_SESSION['user_type'] !== 'administrateur') {
     header('Location: ../pages/login.php');
@@ -21,16 +20,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if (empty($email) || empty($prenom) || empty($nom) || empty($type)) {
             $error = 'Tous les champs sont obligatoires.';
         } else {
-            $result = creerCodeProfessionnel($email, $prenom, $nom, $type);
+            // Récupérer l'ID du collège basé sur le type
+            $conn = dbconnect();
+            $sqlCollege = "SELECT ID_college FROM college WHERE type = :type";
+            $stmtCollege = $conn->prepare($sqlCollege);
+            $stmtCollege->execute([':type' => $type]);
+            $college = $stmtCollege->fetch(PDO::FETCH_ASSOC);
             
-            if ($result['success']) {
-                if (envoyerCodeProfessionnel($email, $prenom, $result['code'], $type)) {
-                    $message = 'Code genere et envoye avec succes.';
-                } else {
-                    $error = 'Code genere mais erreur d\'envoi de l\'email.';
-                }
+            if (!$college) {
+                $error = 'Collège introuvable pour ce type de professionnel.';
             } else {
-                $error = 'Erreur lors de la generation du code.';
+                $id_college = $college['ID_college'];
+                $result = creerCodeProfessionnel($email, $prenom, $nom, $type, $id_college);
+            
+                if ($result['success']) {
+                    if (envoyerCodeProfessionnel($email, $prenom, $nom, $result['code'], $type)) {
+                        $message = 'Code genere et envoye avec succes.';
+                    } else {
+                        $error = 'Code genere mais erreur d\'envoi de l\'email.';
+                    }
+                } else {
+                    $error = 'Erreur lors de la generation du code.';
+                }
             }
         }
     }

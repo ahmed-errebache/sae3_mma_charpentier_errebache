@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/config.php';
 
 $action = $_GET['action'] ?? 'liste';
 $baseUrl = '/sae3_mma_charpentier_errebache';
