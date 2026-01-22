@@ -21,10 +21,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'] ?? '';
     $nom = $_POST['nom'] ?? '';
     $prenom = $_POST['prenom'] ?? '';
+    $age = $_POST['age'] ?? '';
+    $sexe = $_POST['sexe'] ?? '';
+    $nationalite = $_POST['nationalite'] ?? '';
     $accepte_cgu = isset($_POST['accepte_cgu']) ? true : false;
     
     // Validation
-    if (empty($user_type) || empty($email) || empty($password) || empty($confirm_password) || empty($nom) || empty($prenom)) {
+    if (empty($user_type) || empty($email) || empty($password) || empty($confirm_password) || empty($nom) || empty($prenom) || empty($age) || empty($sexe) || empty($nationalite)) {
         $error = 'Veuillez remplir tous les champs.';
     } elseif (!$accepte_cgu) {
         $error = 'Vous devez accepter les conditions générales d\'utilisation.';
@@ -34,6 +37,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Les mots de passe ne correspondent pas.';
     } elseif (strlen($password) < 6) {
         $error = 'Le mot de passe doit contenir au moins 6 caractères.';
+    } elseif (!is_numeric($age) || $age < 18 || $age > 120) {
+        $error = 'Vous devez avoir entre 18 et 120 ans.';
     } else {
         // Vérifier si l'email existe déjà
         $checkSql = "SELECT COUNT(*) FROM electeur WHERE email = :email";
@@ -59,14 +64,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                 
                 try {
-                    $sql = "INSERT INTO electeur (email, mot_de_passe, nom, prenom, id_college, adresse_IP) 
-                            VALUES (:email, :password, :nom, :prenom, 1, :ip)";
+                    $sql = "INSERT INTO electeur (email, mot_de_passe, nom, prenom, age, sexe, nationalite, id_college, adresse_IP) 
+                            VALUES (:email, :password, :nom, :prenom, :age, :sexe, :nationalite, 1, :ip)";
                     $stmt = $connexion->prepare($sql);
                     $stmt->execute([
                         ':email' => $email,
                         ':password' => $hashedPassword,
                         ':nom' => $nom,
                         ':prenom' => $prenom,
+                        ':age' => $age,
+                        ':sexe' => $sexe,
+                        ':nationalite' => $nationalite,
                         ':ip' => $adresse_ip
                     ]);
                     
@@ -117,6 +125,40 @@ require_once '../includes/header.php';
                             class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
                             placeholder="Jean">
                     </div>
+                </div>
+
+                <!-- Âge -->
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Âge *</label>
+                    <input type="number" id="age" name="age" min="18" max="120" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu"
+                        placeholder="18">
+                    <p class="text-xs text-gray-500 mt-1">Vous devez avoir au moins 18 ans</p>
+                </div>
+
+                <!-- Sexe -->
+                <div>
+                    <label for="sexe" class="block text-sm font-medium text-gray-700 mb-1">Sexe *</label>
+                    <select id="sexe" name="sexe" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
+                        <option value="">-- Sélectionner --</option>
+                        <option value="Homme">Homme</option>
+                        <option value="Femme">Femme</option>
+                    </select>
+                </div>
+
+                <!-- Nationalité -->
+                <div>
+                    <label for="nationalite" class="block text-sm font-medium text-gray-700 mb-1">Nationalité *</label>
+                    <select id="nationalite" name="nationalite" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bleu focus:border-bleu">
+                        <option value="">-- Sélectionner --</option>
+                        <?php foreach (getListePays() as $pays): ?>
+                            <option value="<?php echo htmlspecialchars($pays); ?>">
+                                <?php echo htmlspecialchars($pays); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <!-- Email -->

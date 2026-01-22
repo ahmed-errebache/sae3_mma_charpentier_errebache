@@ -44,21 +44,15 @@ function peutVoter($id_electeur) {
             ];
         }
         
-        // Vérifier si l'électeur a déjà voté pour ce scrutin
-        $sql = "SELECT COUNT(*) as nb_votes 
-                FROM vote 
-                WHERE id_electeur = :id_electeur 
-                AND id_scrutin = :id_scrutin";
+        // Vérifier si l'électeur a déjà voté via la colonne has_voted
+        $sql = "SELECT has_voted FROM electeur WHERE ID_electeur = :id_electeur";
         
         $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':id_electeur' => $id_electeur,
-            ':id_scrutin' => $scrutin['ID_scrutin']
-        ]);
+        $stmt->execute([':id_electeur' => $id_electeur]);
         
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if ($result['nb_votes'] > 0) {
+        if ($result && $result['has_voted'] == 1) {
             return [
                 'peut_voter' => false,
                 'message' => 'Vous avez déjà voté pour ce scrutin.',
@@ -83,7 +77,7 @@ function peutVoter($id_electeur) {
 }
 
 /**
- * Enregistre un vote dans la base de données en utilisant la procédure stockée
+ * Enregistre un vote dans la base de données de manière anonyme
  */
 function enregistrerVote($id_electeur, $id_candidat) {
     try {
@@ -100,7 +94,7 @@ function enregistrerVote($id_electeur, $id_candidat) {
         
         $scrutin = $verification['scrutin'];
         
-        // Récupérer les infos de l'électeur avec son collège
+        // Récupérer les infos de l'électeur
         $sqlElecteur = "SELECT e.*, c.type as type_college 
                         FROM electeur e 
                         LEFT JOIN college c ON e.id_college = c.ID_college 
@@ -130,20 +124,31 @@ function enregistrerVote($id_electeur, $id_candidat) {
             ];
         }
         
-        // Appeler la procédure stockée pour enregistrer le vote
-        $sqlProcedure = "CALL sp_enregistrer_vote(:id_electeur, :id_candidat, :id_scrutin, :age, :sexe, :nationalite, :id_college)";
+        // Démarrer une transaction
+        $conn->beginTransaction();
         
         try {
-            $stmtProcedure = $conn->prepare($sqlProcedure);
-            $stmtProcedure->execute([
-                ':id_electeur' => $id_electeur,
-                ':id_candidat' => $id_candidat,
-                ':id_scrutin' => $scrutin['ID_scrutin'],
+            // Insérer le vote SANS id_electeur (anonymat garanti)
+            $sqlVote = "INSERT INTO vote (date, date_vote, age, sexe, nationalite, id_college, id_candidat, id_scrutin)
+                        VALUES (CURDATE(), NOW(), :age, :sexe, :nationalite, :id_college, :id_candidat, :id_scrutin)";
+            
+            $stmtVote = $conn->prepare($sqlVote);
+            $stmtVote->execute([
                 ':age' => $electeur['age'],
                 ':sexe' => $electeur['sexe'],
                 ':nationalite' => $electeur['nationalite'],
-                ':id_college' => $electeur['id_college']
+                ':id_college' => $electeur['id_college'],
+                ':id_candidat' => $id_candidat,
+                ':id_scrutin' => $scrutin['ID_scrutin']
             ]);
+            
+            // Marquer l'électeur comme ayant voté
+            $sqlUpdate = "UPDATE electeur SET has_voted = 1 WHERE ID_electeur = :id_electeur";
+            $stmtUpdate = $conn->prepare($sqlUpdate);
+            $stmtUpdate->execute([':id_electeur' => $id_electeur]);
+            
+            // Valider la transaction
+            $conn->commit();
             
             return [
                 'success' => true,
@@ -151,7 +156,9 @@ function enregistrerVote($id_electeur, $id_candidat) {
             ];
             
         } catch (PDOException $e) {
-            error_log("Erreur procédure sp_enregistrer_vote: " . $e->getMessage());
+            // Annuler la transaction en cas d'erreur
+            $conn->rollBack();
+            error_log("Erreur insertion vote: " . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Une erreur est survenue lors de l\'enregistrement du vote.'
@@ -168,36 +175,23 @@ function enregistrerVote($id_electeur, $id_candidat) {
 }
 
 /**
- * Récupère le vote d'un électeur pour le scrutin actif
+ * Vérifie si un électeur a déjà voté (pour affichage)
+ * Note : On ne peut plus récupérer le vote spécifique car il est anonyme
  */
-function getVoteElecteur($id_electeur) {
+function aVote($id_electeur) {
     try {
         $conn = Database::getInstance()->getConnection();
         
-        $scrutin = getScrutinActif();
-        if (!$scrutin) {
-            return null;
-        }
-        
-        $sql = "SELECT v.*, 
-                       c.nom, c.prenom, c.surnom, c.photo_profil, c.nationalite,
-                       v.date_vote
-                FROM vote v
-                JOIN candidat c ON v.id_candidat = c.ID_candidat
-                WHERE v.id_electeur = :id_electeur 
-                AND v.id_scrutin = :id_scrutin";
-        
+        $sql = "SELECT has_voted FROM electeur WHERE ID_electeur = :id_electeur";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':id_electeur' => $id_electeur,
-            ':id_scrutin' => $scrutin['ID_scrutin']
-        ]);
+        $stmt->execute([':id_electeur' => $id_electeur]);
         
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result && $result['has_voted'] == 1;
         
     } catch (PDOException $e) {
-        error_log("Erreur getVoteElecteur: " . $e->getMessage());
-        return null;
+        error_log("Erreur aVote: " . $e->getMessage());
+        return false;
     }
 }
 

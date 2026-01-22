@@ -53,11 +53,6 @@ if (isset($electeur['ID_electeur'])) {
     $peutVoter = $verification['peut_voter'];
     $messageVerification = $verification['message'];
     $scrutinActif = $verification['scrutin'];
-    
-    // Récupérer le vote existant si l'électeur a déjà voté
-    if (!$peutVoter && $scrutinActif) {
-        $voteExistant = getVoteElecteur($electeur['ID_electeur']);
-    }
 }
 
 // Récupérer tous les candidats vérifiés du scrutin actif
@@ -140,41 +135,23 @@ if ($scrutinActif) {
         <?php endif; ?>
 
         <!-- Vote déjà effectué -->
-        <?php if ($voteExistant): ?>
+        <?php if (!$peutVoter && $scrutinActif): ?>
             <div class="max-w-3xl mx-auto mb-8 p-8 bg-white rounded-lg shadow-lg border-2 border-dore">
-                <h2 class="text-3xl font-bebas text-noir mb-6 text-center">VOTRE VOTE</h2>
-                <div class="flex flex-col md:flex-row items-center gap-6">
-                    <div class="flex-shrink-0">
-                        <?php 
-                        $photoUrl = !empty($voteExistant['photo_profil']) 
-                            ? $baseUrl . '/' . $voteExistant['photo_profil'] 
-                            : $baseUrl . '/assets/img/default-avatar.png';
-                        ?>
-                        <img src="<?php echo htmlspecialchars($photoUrl); ?>" 
-                             alt="<?php echo htmlspecialchars($voteExistant['nom'] . ' ' . $voteExistant['prenom']); ?>"
-                             class="w-32 h-32 rounded-full object-cover border-4 border-dore">
-                    </div>
-                    <div class="flex-1 text-center md:text-left">
-                        <p class="text-2xl font-bebas text-rouge">
-                            <?php echo htmlspecialchars($voteExistant['nom'] . ' ' . $voteExistant['prenom']); ?>
-                        </p>
-                        <?php if (!empty($voteExistant['surnom'])): ?>
-                            <p class="text-xl text-gray-700 italic">"<?php echo htmlspecialchars($voteExistant['surnom']); ?>"</p>
-                        <?php endif; ?>
-                        <p class="text-gray-600 mt-2">
-                            <span class="inline-flex items-center gap-2">
-                                🏁 <?php echo htmlspecialchars($voteExistant['nationalite']); ?>
-                            </span>
-                        </p>
-                        <p class="text-sm text-gray-500 mt-4">
-                            Vote enregistré le <?php echo date('d/m/Y à H:i', strtotime($voteExistant['date_vote'])); ?>
-                        </p>
-                    </div>
-                </div>
-                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <p class="text-sm text-bleu text-center">
-                        ℹ️ Votre vote a été enregistré et ne peut plus être modifié.
+                <h2 class="text-3xl font-bebas text-noir mb-6 text-center">VOTE ENREGISTRÉ</h2>
+                <div class="text-center">
+                    <div class="text-6xl mb-4">✅</div>
+                    <p class="text-xl text-gray-700 mb-4">
+                        Votre vote a été enregistré avec succès !
                     </p>
+                    <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                        <p class="text-sm text-bleu">
+                            🔒 <strong>Vote anonyme :</strong> Pour garantir la confidentialité du vote, 
+                            il est impossible de retrouver pour quel candidat vous avez voté.
+                        </p>
+                        <p class="text-sm text-gray-600 mt-2">
+                            Votre vote ne peut plus être modifié.
+                        </p>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>
