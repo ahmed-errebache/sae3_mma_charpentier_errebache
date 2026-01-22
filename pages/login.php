@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (strlen($password) < 8) {
             $error = 'Le mot de passe doit contenir au moins 8 caracteres.';
         } else {
-            $codeInfo = verifierCodeUnique($code);
+            $codeInfo = obtenirInfoCode($code);
             
             if (!$codeInfo) {
                 $error = 'Code invalide ou deja utilise.';

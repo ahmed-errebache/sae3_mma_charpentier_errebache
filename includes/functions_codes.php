@@ -61,9 +61,9 @@ function creerCodeProfessionnel($email, $prenom, $nom, $type_professionnel, $id_
 }
 
 /**
- * Utiliser un code professionnel lors de l'inscription
+ * Obtenir les informations d'un code professionnel sans le marquer comme utilisé
  */
-function utiliserCodeProfessionnel($code) {
+function obtenirInfoCode($code) {
     try {
         $conn = Database::getInstance()->getConnection();
         
@@ -73,8 +73,62 @@ function utiliserCodeProfessionnel($code) {
         $codeData = $stmt->fetch();
         
         if (!$codeData) {
-            return ['success' => false, 'message' => 'Code invalide ou déjà utilisé'];
+            return false;
         }
+        
+        return [
+            'code' => $codeData['code'],
+            'email' => $codeData['email'],
+            'prenom' => $codeData['prenom'],
+            'nom' => $codeData['nom'],
+            'type_professionnel' => $codeData['type_professionnel'],
+            'id_college' => $codeData['id_college']
+        ];
+        
+    } catch (PDOException $e) {
+        error_log("Erreur obtenirInfoCode: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Utiliser un code professionnel lors de l'inscription
+ */
+function utiliserCodeProfessionnel($code, $password, $age, $sexe, $nationalite) {
+    try {
+        $conn = Database::getInstance()->getConnection();
+        
+        $sql = "SELECT * FROM code_professionnel WHERE code = :code AND utilise = 0";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':code' => $code]);
+        $codeData = $stmt->fetch();
+        
+        if (!$codeData) {
+            return ['success' => false, 'error' => 'Code invalide ou déjà utilisé'];
+        }
+        
+        // Hash du mot de passe
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        
+        // Créer l'électeur
+        $sqlElecteur = "INSERT INTO electeur (email, mot_de_passe, age, sexe, nationalite, type_professionnel, id_college) 
+                        VALUES (:email, :password, :age, :sexe, :nationalite, :type_pro, :id_college)";
+        $stmtElecteur = $conn->prepare($sqlElecteur);
+        $resultElecteur = $stmtElecteur->execute([
+            ':email' => $codeData['email'],
+            ':password' => $hashedPassword,
+            ':age' => $age,
+            ':sexe' => $sexe,
+            ':nationalite' => $nationalite,
+            ':type_pro' => $codeData['type_professionnel'],
+            ':id_college' => $codeData['id_college']
+        ]);
+        
+        if (!$resultElecteur) {
+            return ['success' => false, 'error' => 'Erreur lors de la création du compte'];
+        }
+        
+        $id_electeur = $conn->lastInsertId();
         
         // Marquer le code comme utilisé
         $sqlUpdate = "UPDATE code_professionnel SET utilise = 1, date_utilisation = NOW() WHERE code = :code";
@@ -83,18 +137,13 @@ function utiliserCodeProfessionnel($code) {
         
         return [
             'success' => true,
-            'data' => [
-                'email' => $codeData['email'],
-                'prenom' => $codeData['prenom'],
-                'nom' => $codeData['nom'],
-                'type_professionnel' => $codeData['type_professionnel'],
-                'id_college' => $codeData['id_college']
-            ]
+            'id_electeur' => $id_electeur,
+            'email' => $codeData['email']
         ];
         
     } catch (PDOException $e) {
         error_log("Erreur utiliserCodeProfessionnel: " . $e->getMessage());
-        return ['success' => false, 'message' => 'Erreur technique'];
+        return ['success' => false, 'error' => 'Erreur technique: ' . $e->getMessage()];
     }
 }
 ?>

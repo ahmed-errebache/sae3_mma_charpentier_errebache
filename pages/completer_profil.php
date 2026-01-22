@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../index.php');
             exit;
             } else {
-                $error = $result['error'];
+                $error = isset($result['error']) ? $result['error'] : 'Une erreur est survenue';
             }
         }
     }
@@ -69,6 +69,7 @@ require_once '../includes/header.php';
                 </div>
             <?php endif; ?>
 
+            <?php if (is_array($codeInfo) && isset($codeInfo['prenom']) && isset($codeInfo['nom']) && isset($codeInfo['type_professionnel'])): ?>
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <p class="text-sm text-gray-700">
                     <strong>Nom :</strong> <?php echo htmlspecialchars($codeInfo['prenom'] . ' ' . $codeInfo['nom']); ?>
@@ -77,6 +78,7 @@ require_once '../includes/header.php';
                     <strong>Type :</strong> <?php echo $codeInfo['type_professionnel'] === 'journaliste' ? 'Journaliste' : 'Coach'; ?>
                 </p>
             </div>
+            <?php endif; ?>
 
             <form action="completer_profil.php" method="post" class="space-y-6">
                 <div>

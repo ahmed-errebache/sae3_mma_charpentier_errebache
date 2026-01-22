@@ -25,7 +25,7 @@ function envoyerEmailCreationCompte($email, $mdpProvisoire, $prenom) {
         $mail->Port = 587;
         $mail->CharSet = 'UTF-8';
         
-        $mail->setFrom('votre-email@gmail.com', 'MMA Fighter Election');
+        $mail->setFrom('contact@mma-election.ahmed-errebache.space', 'MMA Fighter Election');
         $mail->addAddress($email, $prenom);
         
         $mail->isHTML(true);
@@ -99,7 +99,7 @@ function envoyerCodeProfessionnel($email, $prenom, $nom, $code, $type) {
         $mail->Port = 587;
         $mail->CharSet = 'UTF-8';
         
-        $mail->setFrom('votre-email@gmail.com', 'MMA Fighter Election');
+        $mail->setFrom('contact@mma-election.ahmed-errebache.space', 'MMA Fighter Election');
         $mail->addAddress($email, $prenom . ' ' . $nom);
         
         $mail->isHTML(true);

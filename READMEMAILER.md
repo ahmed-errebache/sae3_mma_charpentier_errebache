@@ -44,11 +44,19 @@ $mail->Password = 'le-mot-de-passe-que-tas-copié';
 
 ## Base de données
 
-Faut lancer le fichier SQL pour ajouter les colonnes :
+Faut lancer le fichier SQL pour ajouter les colonnes nécessaires :
 
-Avec phpMyAdmin :
+### Avec phpMyAdmin :
 1. Ouvre phpMyAdmin
 2. Clique sur la base `mma_election`
 3. Va dans l'onglet "SQL"
-4. Copie/colle le contenu de `database/update_candidat.sql`
+4. Copie/colle le contenu de `database/update_electeur.sql`
 5. Clique sur "Exécuter"
+
+### Avec la ligne de commande MySQL :
+```bash
+cd c:\xampp\mysql\bin
+.\mysql.exe -u root -e "USE mma_election; ALTER TABLE electeur ADD COLUMN type_professionnel ENUM('journaliste', 'coach') DEFAULT NULL AFTER nationalite;"
+```
+
+**Note** : Cette colonne permet de gérer les comptes professionnels (journalistes et coaches) créés avec un code professionnel.

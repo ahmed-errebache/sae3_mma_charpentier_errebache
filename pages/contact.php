@@ -28,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Port = 587;
             $mail->CharSet = 'UTF-8';
             
-            $mail->setFrom('ahmed.errebache@gmail.com', 'MMA Fighter Election');
-            $mail->addAddress('ahmed.errebache@gmail.com');
+            $mail->setFrom('contact@mma-election.ahmed-errebache.space', 'MMA Fighter Election');
+            $mail->addAddress('contact@mma-election.ahmed-errebache.space');
             $mail->addReplyTo($email, $nom);
             
             $mail->isHTML(true);
